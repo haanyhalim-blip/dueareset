@@ -1,4 +1,4 @@
-<!-- DueAReset v5 -->
+<!-- DueAReset v7 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -54,6 +54,21 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .hero p{margin:0 0 12px}
 .hero .btn{margin-top:6px}
 .quiet{font-size:.92rem;color:var(--muted);margin:16px 0 0}
+.lead{font-size:1.08rem}
+.kinds{margin:4px 0 16px;display:grid;gap:8px}
+.kinds button{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--muted);font-size:.95rem}
+.kinds b{display:block;color:var(--ink);font-size:1.02rem}
+.kinds button::after{content:"→";float:right;color:var(--brand);font-weight:700;margin-top:-1.4em}
+.kpick{display:grid;gap:7px}
+.kpick button{text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 14px;font-weight:700}
+.kpick button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.picked{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.picked span{background:var(--brand-wash);border-radius:999px;padding:4px 6px 4px 12px;font-size:.88rem;display:inline-flex;align-items:center;gap:2px}
+.picked .x{font-size:1rem;padding:0 6px}
+.why{border-color:transparent;background:#ecebf4}
+.why h2{font-size:1.45rem;color:#3f3270;margin:2px 0 10px}
+.why p{margin:0 0 10px}
+.eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:#5b4a8e}
 
 /* form and chips */
 #formSlot h2,#sheetBox h2{font-size:1.45rem;margin-bottom:12px}
@@ -188,18 +203,41 @@ footer p{margin:6px 0}
   <main id="front">
     <section class="hero">
       <h1>Due a reset?</h1>
-      <p>Most of us run on habits we never chose. Every so often it's worth drawing a line. Cut something down, stop it, start something new, go without for a few days – or take on an adventure: something hard and a bit scary, with a real chance you won't manage it. It doesn't have to be big. It has to be on purpose. That's a reset.</p>
-      <p>Say what you're resetting, then build your own page to get you through it: a timer, tips, a journal, words to keep you going. Nobody sees your page but you. And the list below shows what people commonly reset and how they go about it, so you know you're not the only one.</p>
+      <p class="lead">Most of us run on habits we never chose. A reset is drawing a line, on purpose, and deciding to do things differently for a while. It can take a few forms – tap one to start:</p>
+      <div class="kinds">
+        <button type="button" data-kind="giveup"><b>Give something up</b>quit smoking or vaping, give up gambling, no more phone in bed</button>
+        <button type="button" data-kind="cutdown"><b>Cut down</b>less sugar, less screen time, fewer drinks</button>
+        <button type="button" data-kind="more"><b>Do more of something</b>walk every day, sleep earlier, eat better, read</button>
+        <button type="button" data-kind="without"><b>Go without for a while</b>a fast, a dry month, a weekend offline</button>
+        <button type="button" data-kind="adventure"><b>Go on an adventure</b>something hard and a bit scary that shakes you out of the everyday</button>
+      </div>
+      <p>It doesn't have to be big. It has to be on purpose. That's a reset.</p>
+      <p>Say what you're resetting, then build your own page to get you through it: a timer, tips, a journal, your weight, a plan, words to keep you going, and a question each day about why it's hard. Nobody sees your page but you. The list further down shows what people commonly reset and how they go about it, so you know you're not the only one.</p>
       <a class="btn" href="#start" id="heroGo">Start one</a>
-      <p class="quiet">People use it for quitting smoking or vaping, cutting sugar, less screen time, a fast, drinking less, walking every day – or a misogi, the big yearly challenge from Michael Easter's book The Comfort Crisis.</p>
+      <p class="quiet">People use it for quitting smoking or vaping, cutting sugar, less screen time, a fast, drinking less, walking every day – or a big adventure.</p>
+    </section>
+
+    <section class="card why" aria-labelledby="whyAdv">
+      <div class="eyebrow">From the book The Comfort Crisis</div>
+      <h2 id="whyAdv">Why an adventure?</h2>
+      <p>In <i>The Comfort Crisis</i> (2021), the journalist Michael Easter argues that modern life has quietly taken the hard parts out of our days. We're rarely cold, hungry, bored or pushed anywhere near our limit, and he thinks we're worse off for it.</p>
+      <p>His answer is the <b>misogi</b>, a name borrowed from a Japanese purification ritual: a big challenge, taken on on purpose, hard enough that you might not manage it. It has just two rules – <b>make it really hard, and don't die.</b></p>
+      <p>The point isn't the challenge itself. It's finding out you can do more than you thought, and bringing that back into the rest of your life. Easter suggests one a year. Even one every few years can reset how you see yourself.</p>
+      <p class="small" style="margin:0">To start one, pick "Going on an adventure" in the form below.</p>
     </section>
 
     <section class="card" id="formSlot">
       <h2 id="start">What are you resetting?</h2>
       <form id="rf" novalidate autocomplete="off">
-        <input class="field" id="fName" maxlength="40" placeholder="In your words, e.g. Smoking" aria-label="In your words">
-        <p class="hint">Or tap as many as you like – each one gets its own page.</p>
-        <div id="fPick"></div>
+        <div class="lbl" style="margin-top:0">Are you…</div>
+        <div class="kpick" id="fKind" role="group" aria-label="Kind of reset"></div>
+        <div id="fStep2" hidden>
+          <label class="lbl" for="fName" id="fQ">What is it?</label>
+          <input class="field" id="fName" maxlength="40" placeholder="In your words">
+          <p class="hint">Or tap as many as you like – each one gets its own page.</p>
+          <div id="fPick"></div>
+        </div>
+        <div class="picked" id="fPicked"></div>
         <button class="btn wide" id="fGo" type="submit">Start one</button>
       </form>
     </section>
@@ -244,7 +282,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account, no tracking, no ads. <span class="ver">v5</span></p>
+    <p>No account, no tracking, no ads. <span class="ver">v7</span></p>
   </footer>
 </div>
 
@@ -262,8 +300,8 @@ footer p{margin:6px 0}
   // ---------- What people reset (starter list from common advice online) ----------
   // g = group, pop = shown before "Show all", ways = ways people go about it
   var GROUPS = {
-    stop: {n:"Stop or cut down", kind:"Stopping", c:"#b4532f", tips:["Know your triggers – the times, places and people","Plan what you'll do instead when the urge comes","Make it harder to get to","Pick a date and stop, or cut down in steps","Tell one person"]},
-    start: {n:"Start something", kind:"Starting", c:"#2f6b45", tips:["Start smaller than feels worthwhile","Same time every day","Tie it to something you already do","Get things ready the night before","Missing one day is fine – try not to miss two"]},
+    stop: {n:"Stop or cut down", kind:"Giving up", c:"#b4532f", tips:["Know your triggers – the times, places and people","Plan what you'll do instead when the urge comes","Make it harder to get to","Pick a date and stop, or cut down in steps","Tell one person"]},
+    start: {n:"Start something", kind:"Doing more", c:"#2f6b45", tips:["Start smaller than feels worthwhile","Same time every day","Tie it to something you already do","Get things ready the night before","Missing one day is fine – try not to miss two"]},
     without: {n:"Go without for a while", kind:"Going without", c:"#9a6f1e", tips:["Pick the end date before you start","Plan for the hard moments","Tell the people you live with","Have something to replace it with","Plan how you'll finish"]},
     adventure: {n:"An adventure", kind:"Adventure", c:"#5b4a8e", tips:["Pick something with a real chance you won't manage it","Put a date on it and tell someone","Prepare properly – kit, route, weather","Make sure someone knows where you are and when you'll be back","Write it down while it's fresh"],
       book:"In The Comfort Crisis, Michael Easter calls this a misogi: one big, hard challenge a year, taken on on purpose. It has two rules – make it really hard, and don't die."}
@@ -273,7 +311,7 @@ footer p{margin:6px 0}
     {k:"vaping", n:"Vaping", g:"stop", pop:1, ways:["Cold turkey on a set date","Lowering the strength bit by bit","Nicotine patches or gum","Leaving the vape at home","Local stop smoking service","Noticing what sets it off"]},
     {k:"drinking", n:"Drinking", g:"stop", pop:1, ways:["Drink-free days","Alcohol-free drinks instead","Smaller glasses","Not keeping it at home","Only at weekends","Counting units"]},
     {k:"sugar", n:"Sugar", g:"stop", pop:1, ways:["Cutting sugary drinks first","Reading labels","Nothing sweet in the house","Fruit instead of pudding","Cutting down bit by bit","Cold turkey"]},
-    {k:"eating", less:1, n:"Eating less", g:"stop", pop:1, ways:["Smaller plates","Eating slowly","No eating in front of a screen","A set time to stop eating in the evening","Planning meals ahead","A glass of water first"]},
+    {k:"eating", less:1, n:"Eating", g:"stop", pop:1, ways:["Smaller plates","Eating slowly","No eating in front of a screen","A set time to stop eating in the evening","Planning meals ahead","A glass of water first"]},
     {k:"snacking", less:1, n:"Snacking", g:"stop", ways:["No snacks in the house","Three proper meals","A glass of water first","Snacks only at the table"]},
     {k:"junk", less:1, n:"Junk food", g:"stop"},
     {k:"takeaways", less:1, n:"Takeaways", g:"stop", ways:["Delete the delivery apps","A few easy meals I can cook","Batch cooking at the weekend","Takeaway once a week only"]},
@@ -331,7 +369,7 @@ footer p{margin:6px 0}
   function waysOf(t){ return t.ways || GROUPS[t.g].tips; }
   function isSmoke(r){ return ["smoking","vaping"].indexOf(r.key) > -1 || /smok|cig|vap|nicotin|tobacco|roll.?up/i.test(r.name || ""); }
   function isDrink(r){ return ["drinking","dry"].indexOf(r.key) > -1 || /drink|alcohol|booze|wine|beer|lager|spirits|sober/i.test(r.name || ""); }
-  function kindOf(r){ return r.g === "stop" ? (r.mode === "less" ? "Cutting down" : "Stopping") : gOf(r).kind; }
+  function kindOf(r){ return r.g === "stop" ? (r.mode === "less" ? "Cutting down" : "Giving up") : gOf(r).kind; }
   function extras(r){ var g = GROUPS[r.g] || {};
     return (isSmoke(r) ? '<a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a>' : "")
       + (isDrink(r) ? '<a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a>' : "")
@@ -407,8 +445,11 @@ footer p{margin:6px 0}
   $("askYes").addEventListener("click", function(){ var cb = askCb; askClose(); if(cb) cb(); });
 
   // ---------- Chip pickers: a few popular ones, "Show all" opens the long list by group ----------
-  function picker(sel, open){
+  function picker(sel, open, group){
     var chip = function(t){ return '<button type="button" class="chip" data-k="' + t.k + '" aria-pressed="' + (sel.indexOf(t.k) > -1) + '">' + esc(t.n) + "</button>"; };
+    if(group){ var all = TYPES.filter(function(t){ return t.g === group; }), few = all.length > 9;
+      return '<div class="chips">' + all.filter(function(t){ return open || !few || t.pop || sel.indexOf(t.k) > -1; }).map(chip).join("") + "</div>"
+        + (few ? '<button type="button" class="more" data-more="1">' + (open ? "Show fewer" : "Show all " + all.length + " →") + "</button>" : ""); }
     var h = open
       ? Object.keys(GROUPS).map(function(g){ return '<div class="grp">' + esc(GROUPS[g].n) + '</div><div class="chips">' + TYPES.filter(function(t){ return t.g === g; }).map(chip).join("") + "</div>"; }).join("")
       : '<div class="chips">' + TYPES.filter(function(t){ return t.pop || sel.indexOf(t.k) > -1; }).map(chip).join("") + "</div>";
@@ -416,20 +457,46 @@ footer p{margin:6px 0}
   }
 
   // ---------- The start form: in your words, or tap as many as you like ----------
-  var F = {sel:[], open:false};
-  function drawForm(){ $("fPick").innerHTML = picker(F.sel, F.open); $("fGo").textContent = P ? "Add " + (F.sel.length > 1 ? "them" : "it") : "Start one"; }
-  function resetForm(){ F.sel = []; F.open = false; $("fName").value = ""; drawForm(); }
+  // First: what kind of reset. Then: what is it (own words, or tap as many as you like).
+  var KINDS = [
+    {k:"giveup", n:"Giving something up", q:"What are you giving up?", g:"stop", mode:"stop", eg:"e.g. Smoking"},
+    {k:"cutdown", n:"Cutting down on something", q:"What are you cutting down on?", g:"stop", mode:"less", eg:"e.g. Sugar"},
+    {k:"more", n:"Doing more of something", q:"What are you doing more of?", g:"start", eg:"e.g. Walking"},
+    {k:"without", n:"Going without for a while", q:"What are you going without?", g:"without", eg:"e.g. A fast"},
+    {k:"adventure", n:"Going on an adventure", q:"What's the adventure?", g:"adventure", eg:"e.g. Climbing Ben Nevis"}
+  ];
+  var KWORD = {giveup:"giving up", cutdown:"cutting down", more:"doing more", without:"going without", adventure:"adventure"};
+  function K(k){ return KINDS.filter(function(x){ return x.k === k; })[0]; }
+  var F = {kind:"", sel:[], open:false};   // sel: [{k, kind}]
+  function selKeys(){ return F.sel.filter(function(x){ return x.kind === F.kind; }).map(function(x){ return x.k; }); }
+  function drawForm(){ var kd = K(F.kind);
+    $("fKind").innerHTML = KINDS.map(function(x){ return '<button type="button" data-kind="' + x.k + '" aria-pressed="' + (F.kind === x.k) + '">' + esc(x.n) + "</button>"; }).join("");
+    $("fStep2").hidden = !kd;
+    if(kd){ $("fQ").textContent = kd.q; $("fName").placeholder = "In your words, " + kd.eg; $("fPick").innerHTML = picker(selKeys(), F.open, kd.g); }
+    $("fPicked").innerHTML = F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "";
+    var n = F.sel.length + ($("fName").value.trim() ? 1 : 0);
+    $("fGo").textContent = P ? (n > 1 ? "Add them" : "Add it") : "Start one"; }
+  function resetForm(){ F.kind = ""; F.sel = []; F.open = false; $("fName").value = ""; drawForm(); }
+  function pickKind(k){ F.kind = k; F.open = false; drawForm(); }
+  $("fKind").addEventListener("click", function(e){ var b = e.target.closest("[data-kind]"); if(b) pickKind(b.dataset.kind); });
+  $("fName").addEventListener("input", function(){ var n = F.sel.length + (this.value.trim() ? 1 : 0); $("fGo").textContent = P ? (n > 1 ? "Add them" : "Add it") : "Start one"; });
   $("fPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return;
     if(b.dataset.more){ F.open = !F.open; drawForm(); return; }
-    var i = F.sel.indexOf(b.dataset.k); if(i > -1) F.sel.splice(i, 1); else F.sel.push(b.dataset.k); drawForm(); });
-  function makeReset(key, name){ var t = T(key); return {id:uid(), key:key, g:t.g || "stop", mode:t.less ? "less" : "stop", name:name || t.n, why:"", how:"", ways:[], start:Date.now(), end:null,
+    var k = b.dataset.k, i = F.sel.findIndex(function(x){ return x.k === k; });
+    if(i > -1 && F.sel[i].kind === F.kind) F.sel.splice(i, 1); else if(i > -1) F.sel[i].kind = F.kind; else F.sel.push({k:k, kind:F.kind}); drawForm(); });
+  $("fPicked").addEventListener("click", function(e){ var b = e.target.closest("[data-unpick]"); if(b){ F.sel.splice(+b.dataset.unpick, 1); drawForm(); } });
+  // Tapping a kind in the intro jumps to the form with it picked
+  document.querySelector(".kinds").addEventListener("click", function(e){ var b = e.target.closest("[data-kind]"); if(!b) return; pickKind(b.dataset.kind);
+    $("formSlot").scrollIntoView({behavior:"smooth", block:"start"}); });
+  function makeReset(key, name, kind){ var t = T(key), kd = K(kind) || {}; return {id:uid(), key:key, g:kd.g || t.g || "stop", mode:kd.mode || (t.less ? "less" : "stop"), name:name || t.n, why:"", how:"", ways:[], start:Date.now(), end:null,
     secs:SEC_DEFAULT.slice(), notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", best:0, done:null, made:Date.now()}; }
   $("rf").addEventListener("submit", function(e){ e.preventDefault();
-    var typed = $("fName").value.trim(), keys = F.sel.slice();
-    if(typed){ var match = TYPES.filter(function(t){ return t.n.toLowerCase() === typed.toLowerCase(); })[0]; if(match){ if(keys.indexOf(match.k) < 0) keys.push(match.k); typed = ""; } }
-    if(!typed && !keys.length){ toast("Type what you're resetting, or tap one below"); $("fName").focus(); return; }
+    var typed = $("fName").value.trim(), picks = F.sel.slice();
+    if(!F.kind && !picks.length){ toast("First pick what kind of reset it is"); return; }
+    if(typed){ var match = TYPES.filter(function(t){ return t.n.toLowerCase() === typed.toLowerCase(); })[0]; if(match){ if(!picks.some(function(x){ return x.k === match.k; })) picks.push({k:match.k, kind:F.kind}); typed = ""; } }
+    if(!typed && !picks.length){ toast("Type what it is, or tap one of the buttons"); $("fName").focus(); return; }
     var fresh = !P; if(fresh){ CODE = newCode(); P = {v:3, resets:[], ack:false}; }
-    var made = keys.map(function(k){ return makeReset(k); }); if(typed) made.push(makeReset("own", typed));
+    var made = picks.map(function(x){ return makeReset(x.k, "", x.kind); }); if(typed) made.push(makeReset("own", typed, F.kind));
     made.forEach(function(r){ P.resets.push(r); }); save(); closeSheet(); resetForm();
     go(made.length === 1 ? "#p=" + CODE + "&r=" + made[0].id : "#p=" + CODE);
     if(!fresh) toast(made.length === 1 ? "Added" : made.length + " added"); });
@@ -516,7 +583,7 @@ footer p{margin:6px 0}
       + list.map(function(w, i){ return '<circle cx="' + X(xs[i]).toFixed(1) + '" cy="' + Y(ys[i]).toFixed(1) + '" r="' + (i === list.length - 1 ? 5.5 : 4) + '" fill="' + c + '"><title>' + esc(nice(new Date(w.d + "T12:00").getTime())) + ": " + esc(fmtW(w.kg)) + "</title></circle>"; }).join("") + "</svg>"; }
   var wAll = {}, planDays = {}, planOpen = "", askEdit = {};
   // Today's question: asked once a day, answers kept so you can see how they change
-  function question(r){ return r.g === "stop" ? "Why do you think it's hard to " + (r.mode === "less" ? "cut down" : "stop") + "?" : r.g === "start" ? "Why do you think it's hard to keep going?" : r.g === "without" ? "Why do you think it's hard to go without?" : "Why do you think this is hard to do?"; }
+  function question(r){ return r.g === "stop" ? "Why do you think it's hard to " + (r.mode === "less" ? "cut down" : "give it up") + "?" : r.g === "start" ? "Why do you think it's hard to keep going?" : r.g === "without" ? "Why do you think it's hard to go without?" : "Why do you think this is hard to do?"; }
   function askToday(r){ var t = ds(Date.now()); return r.asks.filter(function(a){ return a.d === t; })[0]; }
   function askWaiting(r){ return !r.done && r.secs.indexOf("ask") > -1 && !askToday(r) && Date.now() >= r.start; }
   function askDay(r, a){ var n = dayNo(new Date(a.d + "T12:00").getTime()) - dayNo(r.start) + 1; return n > 0 ? "Day " + n : nice(new Date(a.d + "T12:00").getTime()); }
@@ -538,7 +605,7 @@ footer p{margin:6px 0}
         + r.words.map(function(w, j){ return '<div class="litem"><p>' + esc(w) + '</p><button type="button" class="x" data-dword="' + j + '" aria-label="Delete">×</button></div>'; }).join(""); },
     about: function(r){
       return '<label class="lbl" for="aName" style="margin-top:0">Name</label><input class="field" id="aName" data-f="name" maxlength="40" value="' + esc(r.name) + '">'
-        + (r.g === "stop" ? '<div class="lbl">Stopping or cutting down?</div><div class="chips"><button type="button" class="chip" data-mode="stop" aria-pressed="' + (r.mode !== "less") + '">Stopping</button><button type="button" class="chip" data-mode="less" aria-pressed="' + (r.mode === "less") + '">Cutting down</button></div>' : "")
+        + (r.g === "stop" ? '<div class="lbl">Giving up or cutting down?</div><div class="chips"><button type="button" class="chip" data-mode="stop" aria-pressed="' + (r.mode !== "less") + '">Giving up</button><button type="button" class="chip" data-mode="less" aria-pressed="' + (r.mode === "less") + '">Cutting down</button></div>' : "")
         + '<label class="lbl" for="aWhy">Why? <span>(as little or as much as you like)</span></label><textarea class="field" id="aWhy" data-f="why" maxlength="4000">' + esc(r.why) + "</textarea>"
         + '<label class="lbl" for="aHow">How I\'m doing it</label>'
         + (r.ways.length ? '<div class="hchips" style="margin-bottom:8px">' + r.ways.map(function(w){ return '<span class="hchip">' + esc(w) + "</span>"; }).join("") + "</div>" : "")
