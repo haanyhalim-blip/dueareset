@@ -1,4 +1,4 @@
-<!-- DueAReset v3 -->
+<!-- DueAReset v5 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -135,6 +135,29 @@ textarea.field{resize:vertical;min-height:80px}
 .addsec button{text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 14px}
 .addsec b{display:block}
 .addsec span{font-size:.88rem;color:var(--muted)}
+.wbig{font-family:Fraunces,Georgia,serif;font-size:2.2rem;line-height:1.1;color:var(--brand-deep);font-variant-numeric:tabular-nums}
+.wchart{width:100%;height:auto;display:block;margin:12px 0 4px}
+.wchart text{fill:var(--muted);font-size:11px;font-family:"Atkinson Hyperlegible",system-ui,sans-serif}
+.wchart .grid{stroke:var(--line);stroke-width:1}
+.wchart circle{stroke:var(--card);stroke-width:2}
+.wrow{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid #efece5;font-variant-numeric:tabular-nums}
+.wrow .x{margin-left:6px}
+.win{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.win .field{width:auto;flex:1 1 90px;min-width:0}
+.win input[type=date]{flex:1 1 140px;min-height:46px}
+.pday{display:grid;grid-template-columns:112px 1fr auto;gap:4px 10px;align-items:start;padding:9px 0;border-top:1px solid #efece5}
+.pday.today{background:var(--brand-wash);border-radius:10px;padding:9px 8px;border-top-color:transparent}
+.pdate{font-weight:700;font-size:.9rem;line-height:1.3;white-space:nowrap}
+.pdate small{display:block;font-weight:400;color:var(--muted);font-size:.8rem}
+.pitems{min-width:0}
+.pitem{display:flex;gap:8px;align-items:flex-start;padding:2px 0}
+.pitem p{margin:0;flex:1;word-break:break-word}
+.pitem.done p{text-decoration:line-through;color:var(--faint)}
+.tick{border:1.5px solid var(--faint);background:var(--card);width:22px;height:22px;border-radius:6px;flex:none;padding:0;font-size:.8rem;line-height:1;color:#fff;margin-top:1px}
+.pitem.done .tick{background:var(--brand);border-color:var(--brand)}
+.padd{border:0;background:none;color:var(--brand);font-weight:700;font-size:1.2rem;padding:0 6px;line-height:1}
+.pin{grid-column:2 / 4;display:flex;gap:8px}
+.pin input{flex:1;min-width:0}
 .foot{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:6px 0 0}
 .danger{color:var(--accent)!important}
 
@@ -221,7 +244,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account, no tracking, no ads. <span class="ver">v3</span></p>
+    <p>No account, no tracking, no ads. <span class="ver">v5</span></p>
   </footer>
 </div>
 
@@ -250,15 +273,15 @@ footer p{margin:6px 0}
     {k:"vaping", n:"Vaping", g:"stop", pop:1, ways:["Cold turkey on a set date","Lowering the strength bit by bit","Nicotine patches or gum","Leaving the vape at home","Local stop smoking service","Noticing what sets it off"]},
     {k:"drinking", n:"Drinking", g:"stop", pop:1, ways:["Drink-free days","Alcohol-free drinks instead","Smaller glasses","Not keeping it at home","Only at weekends","Counting units"]},
     {k:"sugar", n:"Sugar", g:"stop", pop:1, ways:["Cutting sugary drinks first","Reading labels","Nothing sweet in the house","Fruit instead of pudding","Cutting down bit by bit","Cold turkey"]},
-    {k:"eating", n:"Eating less", g:"stop", pop:1, ways:["Smaller plates","Eating slowly","No eating in front of a screen","A set time to stop eating in the evening","Planning meals ahead","A glass of water first"]},
-    {k:"snacking", n:"Snacking", g:"stop", ways:["No snacks in the house","Three proper meals","A glass of water first","Snacks only at the table"]},
-    {k:"junk", n:"Junk food", g:"stop"},
-    {k:"takeaways", n:"Takeaways", g:"stop", ways:["Delete the delivery apps","A few easy meals I can cook","Batch cooking at the weekend","Takeaway once a week only"]},
-    {k:"caffeine", n:"Caffeine", g:"stop", ways:["Cutting down one cup at a time","Half-caf first","None after lunch","Herbal tea instead"]},
-    {k:"screen", n:"Screen time", g:"stop", pop:1, ways:["Phone out of the bedroom","A real alarm clock","App time limits","Deleting one app","Greyscale mode","No phone at meals"]},
-    {k:"social", n:"Social media", g:"stop", ways:["Deleting the apps from my phone","Logging out every time","Set times only","Turning off notifications"]},
+    {k:"eating", less:1, n:"Eating less", g:"stop", pop:1, ways:["Smaller plates","Eating slowly","No eating in front of a screen","A set time to stop eating in the evening","Planning meals ahead","A glass of water first"]},
+    {k:"snacking", less:1, n:"Snacking", g:"stop", ways:["No snacks in the house","Three proper meals","A glass of water first","Snacks only at the table"]},
+    {k:"junk", less:1, n:"Junk food", g:"stop"},
+    {k:"takeaways", less:1, n:"Takeaways", g:"stop", ways:["Delete the delivery apps","A few easy meals I can cook","Batch cooking at the weekend","Takeaway once a week only"]},
+    {k:"caffeine", less:1, n:"Caffeine", g:"stop", ways:["Cutting down one cup at a time","Half-caf first","None after lunch","Herbal tea instead"]},
+    {k:"screen", less:1, n:"Screen time", g:"stop", pop:1, ways:["Phone out of the bedroom","A real alarm clock","App time limits","Deleting one app","Greyscale mode","No phone at meals"]},
+    {k:"social", less:1, n:"Social media", g:"stop", ways:["Deleting the apps from my phone","Logging out every time","Set times only","Turning off notifications"]},
     {k:"phonebed", n:"Phone in bed", g:"stop", ways:["Charging it in another room","A real alarm clock","A book by the bed","A set time the phone goes away"]},
-    {k:"spending", n:"Spending", g:"stop", ways:["Deleting saved cards","A 24-hour wait before buying","Unsubscribing from shop emails","A weekly amount in cash"]},
+    {k:"spending", less:1, n:"Spending", g:"stop", ways:["Deleting saved cards","A 24-hour wait before buying","Unsubscribing from shop emails","A weekly amount in cash"]},
     {k:"gambling", n:"Gambling", g:"stop", ways:["Blocking gambling sites and apps","Telling someone I trust","Self-exclusion schemes","Handing over control of money for a while"]},
     {k:"nails", n:"Nail biting", g:"stop"},
     {k:"walking", n:"Walking daily", g:"start", pop:1, ways:["Same time every day","Starting with ten minutes","A walking buddy","Shoes by the door","Counting days, not distance"]},
@@ -288,15 +311,18 @@ footer p{margin:6px 0}
   var FEEL = ["Craving","Irritable","Restless","Tired","Hungry","Headache","Low mood","Anxious","Can't sleep","Can't focus","Feeling good","Proud"];
   var SECS = {
     timer: {n:"Timer", d:"Counts the days and hours since you started, or down to the end."},
+    ask: {n:"Today's question", d:"Asked once a day: why is this hard? See how your answer changes."},
     words: {n:"Words to keep me strong", d:"A line to read when it's hard. Add your own."},
     about: {n:"All about my reset", d:"Why, how, and when it started and ends."},
     tips: {n:"Tips", d:"Ways people go about this. Tick the ones you're trying."},
     journal: {n:"Journal", d:"Quick notes, stamped with the time and filed by day."},
     feel: {n:"Symptoms I'm noticing", d:"Log cravings, moods and symptoms with one tap."},
     canvas: {n:"My thoughts", d:"A blank page to write whatever's on your mind."},
-    learn: {n:"Things I keep learning", d:"Facts and tips that keep coming up."}
+    learn: {n:"Things I keep learning", d:"Facts and tips that keep coming up."},
+    weight: {n:"Weight", d:"Log your weight any day and see the line."},
+    plan: {n:"Plan", d:"A day-by-day list so you can plan ahead."}
   };
-  var SEC_ORDER = ["timer","words","about","tips","journal","feel","canvas","learn"], SEC_DEFAULT = ["timer","words","about","tips","journal"];
+  var SEC_ORDER = ["timer","ask","words","about","tips","journal","feel","canvas","weight","plan","learn"], SEC_DEFAULT = ["timer","ask","words","about","tips","journal"];
   var NHS_SMOKE = "https://www.nhs.uk/better-health/quit-smoking/", NHS_DRINK = "https://www.nhs.uk/live-well/alcohol-advice/";
   var OWN = {k:"own", n:"", g:"stop"};
   function T(k){ for(var i = 0; i < TYPES.length; i++) if(TYPES[i].k === k) return TYPES[i]; return OWN; }
@@ -353,7 +379,8 @@ footer p{margin:6px 0}
       if(r.type && !r.key){ r.key = r.type === "other" ? "own" : r.type; delete r.type; }
       if(!r.g) r.g = T(r.key).g || "stop";
       if(!r.secs) r.secs = SEC_DEFAULT.slice();
-      ["notes","learn","feel","words","ways"].forEach(function(f){ if(!Array.isArray(r[f])) r[f] = []; });
+      ["notes","learn","feel","words","ways","weight","plan","asks"].forEach(function(f){ if(!Array.isArray(r[f])) r[f] = []; });
+      if(!r.askv){ r.askv = 1; if(r.secs.indexOf("ask") < 0) r.secs.splice(r.secs.indexOf("timer") + 1, 0, "ask"); }
       if(r.canvas == null) r.canvas = ""; if(r.how == null) r.how = ""; if(r.why == null) r.why = "";
       delete r.pub; delete r.fname;
       if(r.done && typeof r.done.at === "string") r.done.at = new Date(r.done.at + "T12:00").getTime();
@@ -395,8 +422,8 @@ footer p{margin:6px 0}
   $("fPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return;
     if(b.dataset.more){ F.open = !F.open; drawForm(); return; }
     var i = F.sel.indexOf(b.dataset.k); if(i > -1) F.sel.splice(i, 1); else F.sel.push(b.dataset.k); drawForm(); });
-  function makeReset(key, name){ var t = T(key); return {id:uid(), key:key, g:t.g || "stop", mode:"stop", name:name || t.n, why:"", how:"", ways:[], start:Date.now(), end:null,
-    secs:SEC_DEFAULT.slice(), notes:[], learn:[], feel:[], words:[], canvas:"", best:0, done:null, made:Date.now()}; }
+  function makeReset(key, name){ var t = T(key); return {id:uid(), key:key, g:t.g || "stop", mode:t.less ? "less" : "stop", name:name || t.n, why:"", how:"", ways:[], start:Date.now(), end:null,
+    secs:SEC_DEFAULT.slice(), notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", best:0, done:null, made:Date.now()}; }
   $("rf").addEventListener("submit", function(e){ e.preventDefault();
     var typed = $("fName").value.trim(), keys = F.sel.slice();
     if(typed){ var match = TYPES.filter(function(t){ return t.n.toLowerCase() === typed.toLowerCase(); })[0]; if(match){ if(keys.indexOf(match.k) < 0) keys.push(match.k); typed = ""; } }
@@ -447,7 +474,7 @@ footer p{margin:6px 0}
     document.querySelector("#mine .saveSlot").innerHTML = saveBoxHTML();
     var live = P.resets.filter(function(r){ return !r.done; }), done = P.resets.filter(function(r){ return r.done; });
     $("cards").innerHTML = live.length ? live.map(function(r){ var c = counter(r);
-      return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + gOf(r).c + '"><div class="rkind">' + esc(kindOf(r)) + '</div><div class="rtop"><span class="rname">' + esc(r.name) + '</span><span class="rcount">' + esc(c.big) + "</span></div></button>"; }).join("")
+      return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + gOf(r).c + '"><div class="rkind">' + esc(kindOf(r)) + '</div><div class="rtop"><span class="rname">' + esc(r.name) + '</span><span class="rcount">' + esc(c.big) + "</span></div>" + (askWaiting(r) ? '<div class="small" style="margin-top:4px">● Today\'s question is waiting</div>' : "") + "</button>"; }).join("")
       : '<p class="empty">Nothing on the go. Add a reset below.</p>';
     $("doneBox").hidden = !done.length;
     $("doneList").innerHTML = done.map(function(r){ return '<div class="drow"><button type="button" class="name" data-id="' + r.id + '">' + esc(r.name) + ' – <b>' + days(r.done.days) + '</b></button><button type="button" class="ghost" data-reopen="' + r.id + '">Reopen</button></div>'; }).join("");
@@ -467,7 +494,41 @@ footer p{margin:6px 0}
     list.slice().sort(function(a, b){ return b.ts - a.ts; }).forEach(function(n){ var k = ds(n.ts); if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(n); });
     return order.map(function(k){ var ms = groups[k][0].ts, label = k === tday ? "Today" : k === yday ? "Yesterday" : nice(ms), dd = dayNo(ms) - dayNo(r.start) + 1;
       return '<details class="jday"' + (k === tday ? " open" : "") + '><summary>' + label + (dd > 0 ? ' <span class="dn">· Day ' + dd + "</span>" : "") + ' <span class="dn">· ' + groups[k].length + '</span></summary>' + groups[k].map(rowFn).join("") + "</details>"; }).join(""); }
+  // Weight: stored in kg, shown in the unit you pick (kg, lb, or stones and pounds)
+  var LB = 0.45359237;
+  function unit(){ return (P && P.unit) || "kg"; }
+  function inUnit(kg){ return unit() === "kg" ? kg : kg / LB; }
+  function fmtW(kg){ var u = unit(); if(u === "kg") return kg.toFixed(1) + " kg"; var lb = kg / LB;
+    if(u === "lb") return lb.toFixed(1) + " lb"; var st = Math.floor(lb / 14), r = Math.round((lb - st * 14) * 10) / 10; if(r >= 14){ st++; r = 0; } return st + " st " + r + " lb"; }
+  function fmtDiff(kg){ var v = unit() === "kg" ? kg : kg / LB, u = unit() === "kg" ? " kg" : " lb"; return (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v).toFixed(1) + u; }
+  function sortedW(r){ return r.weight.slice().sort(function(a, b){ return a.d < b.d ? -1 : 1; }); }
+  function wChart(r, list){ if(list.length < 2) return "";
+    var W = 320, H = 130, L = 46, R = 10, Tp = 12, B = 22, xs = list.map(function(w){ return dayNo(new Date(w.d + "T12:00").getTime()); }), ys = list.map(function(w){ return inUnit(w.kg); });
+    var x0 = xs[0], x1 = xs[xs.length - 1], lo = Math.min.apply(null, ys), hi = Math.max.apply(null, ys); if(hi - lo < 1){ lo -= .5; hi += .5; }
+    var X = function(x){ return L + (x1 === x0 ? (W - L - R) / 2 : (x - x0) / (x1 - x0) * (W - L - R)); }, Y = function(y){ return Tp + (hi - y) / (hi - lo) * (H - Tp - B); };
+    var c = gOf(r).c, pts = xs.map(function(x, i){ return X(x).toFixed(1) + "," + Y(ys[i]).toFixed(1); }).join(" ");
+    var lbl = function(v){ return unit() === "st" ? (Math.floor(v / 14) + "st " + Math.round(v % 14) + "") : v.toFixed(1); };
+    return '<svg class="wchart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Weight from ' + esc(nice(new Date(list[0].d + "T12:00").getTime())) + " to " + esc(nice(new Date(list[list.length - 1].d + "T12:00").getTime())) + '">'
+      + '<line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(hi) + '" y2="' + Y(hi) + '"/><line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(lo) + '" y2="' + Y(lo) + '"/>'
+      + '<text x="' + (L - 6) + '" y="' + (Y(hi) + 4) + '" text-anchor="end">' + lbl(hi) + '</text><text x="' + (L - 6) + '" y="' + (Y(lo) + 4) + '" text-anchor="end">' + lbl(lo) + "</text>"
+      + '<text x="' + L + '" y="' + (H - 5) + '">' + esc(nice(new Date(list[0].d + "T12:00").getTime())) + '</text><text x="' + (W - R) + '" y="' + (H - 5) + '" text-anchor="end">' + esc(nice(new Date(list[list.length - 1].d + "T12:00").getTime())) + "</text>"
+      + '<polyline points="' + pts + '" fill="none" stroke="' + c + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
+      + list.map(function(w, i){ return '<circle cx="' + X(xs[i]).toFixed(1) + '" cy="' + Y(ys[i]).toFixed(1) + '" r="' + (i === list.length - 1 ? 5.5 : 4) + '" fill="' + c + '"><title>' + esc(nice(new Date(w.d + "T12:00").getTime())) + ": " + esc(fmtW(w.kg)) + "</title></circle>"; }).join("") + "</svg>"; }
+  var wAll = {}, planDays = {}, planOpen = "", askEdit = {};
+  // Today's question: asked once a day, answers kept so you can see how they change
+  function question(r){ return r.g === "stop" ? "Why do you think it's hard to " + (r.mode === "less" ? "cut down" : "stop") + "?" : r.g === "start" ? "Why do you think it's hard to keep going?" : r.g === "without" ? "Why do you think it's hard to go without?" : "Why do you think this is hard to do?"; }
+  function askToday(r){ var t = ds(Date.now()); return r.asks.filter(function(a){ return a.d === t; })[0]; }
+  function askWaiting(r){ return !r.done && r.secs.indexOf("ask") > -1 && !askToday(r) && Date.now() >= r.start; }
+  function askDay(r, a){ var n = dayNo(new Date(a.d + "T12:00").getTime()) - dayNo(r.start) + 1; return n > 0 ? "Day " + n : nice(new Date(a.d + "T12:00").getTime()); }
   var SECTION = {
+    ask: function(r){ var q = question(r), today = askToday(r), list = r.asks.slice().sort(function(a, b){ return a.d < b.d ? 1 : -1; }), first = list[list.length - 1];
+      var h = '<p class="words" style="font-size:1.3rem">' + esc(q) + "</p>";
+      if(!today || askEdit[r.id]) h += '<div class="jin"><textarea class="field" id="qIn" rows="2" maxlength="1000" placeholder="In a line or two – there\'s no right answer">' + (today ? esc(today.t) : "") + '</textarea><button type="button" class="ghost" data-a="addask">Save</button></div>';
+      else h += '<div class="litem" style="border-top:0"><p><b>Today:</b> ' + esc(today.t) + '</p><button type="button" class="link" data-a="editask">Change</button></div>';
+      if(list.length > 1 && first !== list[0]) h += '<div class="book" style="margin-top:12px"><b>' + esc(askDay(r, first)) + ' you said:</b> ' + esc(first.t) + (list[0] === today ? "" : '<br><b>' + esc(askDay(r, list[0])) + ' you said:</b> ' + esc(list[0].t)) + "</div>";
+      var past = list.filter(function(a){ return a !== today; });
+      if(past.length) h += '<details class="jday"><summary>All your answers <span class="dn">· ' + list.length + "</span></summary>" + list.map(function(a){ return '<div class="jnote"><time style="width:56px">' + esc(askDay(r, a)) + '</time><p>' + esc(a.t) + "</p></div>"; }).join("") + "</details>";
+      return h; },
     timer: function(r){ var c = counter(r);
       return '<div class="big" data-live="big">' + esc(c.big) + '</div><div class="small" data-live="small">' + esc(c.small) + '</div><div class="live" data-live="live">' + esc(c.live) + "</div>"
         + (!r.done && !r.end && dayOf(r) > 1 ? '<div class="row" style="margin-top:12px"><button type="button" class="ghost" data-a="restart">Start the count again</button></div>' : ""); },
@@ -496,6 +557,27 @@ footer p{margin:6px 0}
       + '<div class="jin" style="margin-top:10px"><input class="field" id="fIn" maxlength="200" placeholder="Something else"><button type="button" class="ghost" data-a="addfeel">Log</button></div>'
       + byDay(r.feel, r, function(n){ return '<div class="jnote"><time>' + hm(n.ts) + '</time><p>' + esc(n.t) + '</p><button type="button" class="x" data-dfeel="' + n.id + '" aria-label="Delete">×</button></div>'; }); },
     canvas: function(r){ return '<textarea class="canvas" id="cIn" data-f="canvas" placeholder="Anything on your mind. This is just for you.">' + esc(r.canvas) + "</textarea>"; },
+    weight: function(r){ var list = sortedW(r), last = list[list.length - 1], first = list[0], u = unit(), shown = list.slice().reverse(), more = shown.length > 7 && !wAll[r.id];
+      return '<div class="chips" style="margin-bottom:12px">' + [["kg","kg"],["lb","lb"],["st","st & lb"]].map(function(x){ return '<button type="button" class="chip" data-unit="' + x[0] + '" aria-pressed="' + (u === x[0]) + '">' + x[1] + "</button>"; }).join("") + "</div>"
+        + (last ? '<div class="wbig">' + esc(fmtW(last.kg)) + '</div><div class="small">' + (list.length > 1 ? esc(fmtDiff(last.kg - first.kg)) + " since " + esc(nice(new Date(first.d + "T12:00").getTime())) : "Logged " + esc(nice(new Date(last.d + "T12:00").getTime()))) + "</div>" : "")
+        + wChart(r, list)
+        + '<div class="win" style="margin-top:12px"><input class="field" type="date" id="wDate" value="' + ds(Date.now()) + '" aria-label="Date">'
+        + (u === "st" ? '<input class="field" id="wSt" inputmode="numeric" placeholder="st" aria-label="Stones"><input class="field" id="wLb" inputmode="decimal" placeholder="lb" aria-label="Pounds">' : '<input class="field" id="wVal" inputmode="decimal" placeholder="' + u + '" aria-label="Weight in ' + u + '">')
+        + '<button type="button" class="ghost" data-a="addweight">Log</button></div>'
+        + (shown.length ? '<div style="margin-top:10px">' + (more ? shown.slice(0, 7) : shown).map(function(w){ return '<div class="wrow"><span>' + esc(nice(new Date(w.d + "T12:00").getTime())) + '</span><span><b>' + esc(fmtW(w.kg)) + '</b><button type="button" class="x" data-dweight="' + w.id + '" aria-label="Delete">×</button></span></div>'; }).join("")
+          + (more ? '<button type="button" class="more" data-a="wall">Show all ' + shown.length + "</button>" : "") + "</div>" : '<p class="empty">Log any day you like – one entry per day, logging again replaces it.</p>'); },
+    plan: function(r){ var t0 = dayNo(Date.now()), n = planDays[r.id] || 14, rows = "", item = function(it){ return '<div class="pitem' + (it.done ? " done" : "") + '"><button type="button" class="tick" data-ptick="' + it.id + '" aria-label="' + (it.done ? "Untick" : "Tick") + '">' + (it.done ? "✓" : "") + '</button><p>' + esc(it.t) + '</p><button type="button" class="x" data-dplan="' + it.id + '" aria-label="Delete">×</button></div>'; };
+      var byD = {}; r.plan.forEach(function(it){ (byD[it.d] = byD[it.d] || []).push(it); });
+      var dayRow = function(d, label){ var ms = new Date(d + "T12:00").getTime(), dn = dayNo(ms) - dayNo(r.start) + 1, isT = dayNo(ms) === t0;
+        return '<div class="pday' + (isT ? " today" : "") + '"><div class="pdate">' + (isT ? "Today" : esc(label || nice(ms))) + "<small>" + (isT ? esc(nice(ms)) : "") + (dn > 0 ? (isT ? " · " : "") + "Day " + dn : "") + '</small></div><div class="pitems">' + (byD[d] || []).map(item).join("") + '</div><button type="button" class="padd" data-padd="' + d + '" aria-label="Add to ' + esc(nice(ms)) + '">+</button>'
+          + (planOpen === d ? '<div class="pin"><input class="field" id="pIn" maxlength="200" placeholder="What\'s the plan?"><button type="button" class="ghost" data-a="addplan">Add</button></div>' : "") + "</div>"; };
+      var earlier = Object.keys(byD).filter(function(d){ return dayNo(new Date(d + "T12:00").getTime()) < t0; }).sort();
+      var later = Object.keys(byD).filter(function(d){ return dayNo(new Date(d + "T12:00").getTime()) >= t0 + n; }).sort();
+      if(earlier.length) rows += '<details class="jday"><summary>Earlier <span class="dn">· ' + earlier.length + (earlier.length === 1 ? " day" : " days") + "</span></summary>" + earlier.map(function(d){ return dayRow(d); }).join("") + "</details>";
+      for(var i = 0; i < n; i++) rows += dayRow(ds(Date.now() + i * DAY));
+      if(later.length) rows += '<div class="grp">Later</div>' + later.map(function(d){ return dayRow(d); }).join("");
+      return '<div class="win"><input class="field" type="date" id="pDate" value="' + ds(Date.now()) + '" aria-label="Date"><input class="field" id="pAny" maxlength="200" placeholder="Plan something" style="flex:2 1 160px"><button type="button" class="ghost" data-a="addplanany">Add</button></div>'
+        + '<div style="margin-top:8px">' + rows + '</div><button type="button" class="more" data-a="planmore">Show 2 more weeks</button>'; },
     learn: function(r){ return '<div class="jin"><input class="field" id="lIn" maxlength="300" placeholder="A fact or tip that keeps coming up"><button type="button" class="ghost" data-a="addlearn">Add</button></div>'
       + (r.learn.length ? r.learn.map(function(l){ return '<div class="litem"><p>' + esc(l.t) + '</p><button type="button" class="x" data-dlearn="' + l.id + '" aria-label="Delete">×</button></div>'; }).join("") : '<p class="empty">Nothing yet.</p>'); }
   };
@@ -516,6 +598,13 @@ footer p{margin:6px 0}
   function addTo(list, id, r){ var v = $(id).value.trim(); if(!v) return; list.push({id:uid(), ts:Date.now(), t:v}); save(); redraw(r, id); }
   function addLearn(r){ var v = $("lIn").value.trim(); if(!v) return; r.learn.unshift({id:uid(), t:v}); save(); redraw(r, "lIn"); }
   function addWord(r){ var w = $("wIn").value.trim(); if(!w) return; r.words.unshift(w); wordIx[r.id] = 0; save(); redraw(r); toast("Added to your words"); }
+  function addWeight(r){ var d = $("wDate").value || ds(Date.now()), kg;
+    if(unit() === "st"){ var st = parseFloat(($("wSt").value || "0").replace(",", ".")), lb = parseFloat(($("wLb").value || "0").replace(",", ".")); kg = ((st || 0) * 14 + (lb || 0)) * LB; }
+    else { var v = parseFloat(($("wVal").value || "").replace(",", ".")); kg = unit() === "kg" ? v : v * LB; }
+    if(!(kg > 20 && kg < 400)){ toast("Type your weight first"); return; }
+    r.weight = r.weight.filter(function(w){ return w.d !== d; }); r.weight.push({id:uid(), d:d, kg:Math.round(kg * 100) / 100}); save(); redraw(r); toast("Logged " + fmtW(kg)); }
+  function addAsk(r){ var v = $("qIn").value.trim(); if(!v) return; var t = ds(Date.now()); r.asks = r.asks.filter(function(a){ return a.d !== t; }); r.asks.push({id:uid(), d:t, t:v}); askEdit[r.id] = false; save(); redraw(r); toast("Saved – see you tomorrow"); }
+  function addPlan(r, d, inputId){ var v = $(inputId) && $(inputId).value.trim(); if(!v || !d) return; r.plan.push({id:uid(), d:d, t:v, done:false}); if(inputId === "pIn") planOpen = ""; save(); redraw(r, inputId === "pAny" ? "pAny" : null); }
   function reopen(r){ if(!r) return; r.done = null; save(); render(); toast("Reopened"); }
   function removeWithUndo(r, list, id, msg){ var i = list.findIndex(function(n){ return n.id === id; }); if(i < 0) return; var gone = list.splice(i, 1)[0]; save(); redraw(r);
     toast(msg, function(){ list.splice(i, 0, gone); save(); redraw(r); }); }
@@ -523,7 +612,11 @@ footer p{margin:6px 0}
     if(id === "jIn" && !e.shiftKey){ e.preventDefault(); addTo(r.notes, "jIn", r); }
     else if(id === "fIn"){ e.preventDefault(); addTo(r.feel, "fIn", r); }
     else if(id === "lIn"){ e.preventDefault(); addLearn(r); }
-    else if(id === "wIn"){ e.preventDefault(); addWord(r); } });
+    else if(id === "wIn"){ e.preventDefault(); addWord(r); }
+    else if(id === "wVal" || id === "wSt" || id === "wLb"){ e.preventDefault(); addWeight(r); }
+    else if(id === "pIn"){ e.preventDefault(); addPlan(r, planOpen, "pIn"); }
+    else if(id === "qIn" && !e.shiftKey){ e.preventDefault(); addAsk(r); }
+    else if(id === "pAny"){ e.preventDefault(); addPlan(r, $("pDate").value, "pAny"); } });
   // Typing in "All about my reset" and "My thoughts" saves as you go
   $("detail").addEventListener("input", function(e){ var r = current(), f = e.target.dataset.f; if(!r || !f) return;
     r[f] = f === "name" ? (e.target.value.trim() || tOf(r).n || "My reset") : e.target.value; saveSoon();
@@ -542,6 +635,11 @@ footer p{margin:6px 0}
     if(d.dnote) return removeWithUndo(r, r.notes, d.dnote, "Note deleted");
     if(d.dfeel) return removeWithUndo(r, r.feel, d.dfeel, "Deleted");
     if(d.dlearn) return removeWithUndo(r, r.learn, d.dlearn, "Deleted");
+    if(d.unit){ P.unit = d.unit; save(); return redraw(r); }
+    if(d.dweight) return removeWithUndo(r, r.weight, d.dweight, "Deleted");
+    if(d.dplan) return removeWithUndo(r, r.plan, d.dplan, "Deleted");
+    if(d.ptick){ var pi = r.plan.filter(function(x){ return x.id === d.ptick; })[0]; if(pi){ pi.done = !pi.done; save(); redraw(r); } return; }
+    if(d.padd){ planOpen = planOpen === d.padd ? "" : d.padd; redraw(r, "pIn"); return; }
     if(d.dword != null){ var k = +d.dword, gw = r.words.splice(k, 1)[0]; save(); redraw(r); return toast("Deleted", function(){ r.words.splice(k, 0, gw); save(); redraw(r); }); }
     var a = d.a;
     if(a === "back") go("#p=" + CODE);
@@ -550,6 +648,13 @@ footer p{margin:6px 0}
     else if(a === "addlearn") addLearn(r);
     else if(a === "nextword"){ wordIx[r.id] = (wordIx[r.id] || 0) + 1; redraw(r); }
     else if(a === "addword") addWord(r);
+    else if(a === "addweight") addWeight(r);
+    else if(a === "addask") addAsk(r);
+    else if(a === "editask"){ askEdit[r.id] = true; redraw(r, "qIn"); }
+    else if(a === "wall"){ wAll[r.id] = true; redraw(r); }
+    else if(a === "addplan") addPlan(r, planOpen, "pIn");
+    else if(a === "addplanany") addPlan(r, $("pDate").value, "pAny");
+    else if(a === "planmore"){ planDays[r.id] = (planDays[r.id] || 14) + 14; redraw(r); }
     else if(a === "noend"){ r.end = null; save(); redraw(r); }
     else if(a === "reopen") reopen(r);
     else if(a === "finish"){ r.done = {at:Date.now(), days:reached(r)}; save(); go("#p=" + CODE); toast(r.name + " – moved to Done", function(){ r.done = null; save(); render(); }); }
