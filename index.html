@@ -1,4 +1,4 @@
-<!-- DueAReset v7 -->
+<!-- DueAReset v8 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -184,6 +184,11 @@ textarea.field{resize:vertical;min-height:80px}
 #askBox{max-width:420px;width:100%;margin:0}
 #askMsg{margin:0 0 16px}
 #askYes{background:var(--accent)}
+#signin{position:fixed;inset:0;background:rgba(20,25,35,.45);z-index:24;overflow-y:auto;padding:40px 16px}
+#siBox{max-width:440px;margin:0 auto;position:relative}
+#siBox h2{font-size:1.45rem;margin-bottom:8px;padding-right:30px}
+#siX{position:absolute;right:10px;top:10px;font-size:1.5rem}
+.netState{margin:10px 0 0}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:12px;padding:11px 16px;display:flex;gap:14px;align-items:center;z-index:30;max-width:calc(100% - 32px);font-size:.95rem}
 #toast button{border:0;background:none;color:#ffd9c7;font-weight:700;padding:0}
 footer{margin:36px 0 30px;font-size:.85rem;color:var(--muted)}
@@ -196,7 +201,7 @@ footer p{margin:6px 0}
 <div class="wrap">
   <header class="top">
     <a class="brand" href="#">DueAReset</a>
-    <button class="pill" id="myBtn" type="button" hidden>My page</button>
+    <span class="row"><button class="pill" id="signBtn" type="button" hidden>Sign in</button><button class="pill" id="myBtn" type="button" hidden>My page</button></span>
   </header>
 
   <!-- ===== Front page ===== -->
@@ -266,15 +271,7 @@ footer p{margin:6px 0}
     <div id="cards"></div>
     <button class="add" id="addBtn" type="button">+ Add another reset</button>
     <section class="card done" id="doneBox" hidden><h2>Done</h2><div id="doneList"></div></section>
-    <section class="card">
-      <h2 style="font-size:1.2rem;margin-bottom:6px">Your link</h2>
-      <p class="small" style="margin:0 0 10px">Keep it to yourself – anyone with it can open your page.</p>
-      <div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>
-      <p class="small homeHow" hidden style="margin:10px 0 0">iPhone: tap the Share button, then "Add to Home Screen". Android: tap the ⋮ menu, then "Add to Home screen".</p>
-      <input class="field linkShow" id="linkShow" readonly hidden aria-label="Your link" style="margin-top:10px">
-      <p class="small" style="margin:12px 0 0">For now your page is saved on this phone only. Opening it on another phone comes next.</p>
-      <button class="link danger" id="delPage" type="button" style="margin-top:8px">Delete my page</button>
-    </section>
+    <section class="card" id="acct"></section>
   </main>
 
   <!-- ===== One reset ===== -->
@@ -282,12 +279,19 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account, no tracking, no ads. <span class="ver">v7</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v8</span></p>
   </footer>
 </div>
 
 <div id="sheet" hidden><div class="card" id="sheetBox"><button class="x" id="sheetX" type="button" aria-label="Close">×</button><h2 id="sheetTitle">Add a reset</h2><div id="sheetSlot"></div></div></div>
 <div id="ask" hidden role="dialog" aria-modal="true" aria-labelledby="askMsg"><div class="card" id="askBox"><p id="askMsg"></p><div class="row"><button class="btn" id="askYes" type="button">Yes</button><button class="ghost" id="askNo" type="button">Cancel</button></div></div></div>
+<div id="signin" hidden role="dialog" aria-modal="true" aria-labelledby="siTitle"><div class="card" id="siBox"><button class="x" id="siX" type="button" aria-label="Close">×</button>
+  <h2 id="siTitle">Keep your page safe</h2>
+  <p id="siMsg" style="margin:0 0 4px">Sign in with your email and your page is saved to your account. Open it on any phone, and never lose it.</p>
+  <div id="siStep1"><label class="lbl" for="siEmail">Your email</label><input class="field" id="siEmail" type="email" autocomplete="email" inputmode="email" maxlength="200"><button class="btn wide" id="siSend" type="button" style="margin-top:12px">Email me a code</button></div>
+  <div id="siStep2" hidden><p style="margin:10px 0 0">We've sent a code to <b id="siTo"></b>. It can take a minute – check your junk folder too.</p><label class="lbl" for="siCode">The code from the email</label><input class="field" id="siCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10"><button class="btn wide" id="siGo" type="button" style="margin-top:12px">Sign in</button><button class="link" id="siBack" type="button">Use a different email</button></div>
+  <p class="small" style="margin:14px 0 0">No password. We only use your email to sign you in – never for anything else.</p>
+</div></div>
 <div id="toast" hidden role="status"><span id="toastMsg"></span><button id="toastUndo" type="button" hidden>Undo</button></div>
 
 <script>
@@ -424,7 +428,8 @@ footer p{margin:6px 0}
       if(r.done && typeof r.done.at === "string") r.done.at = new Date(r.done.at + "T12:00").getTime();
     }); p.v = 3; return p; }
   function loadPage(code){ try{ var j = localStorage.getItem(PKEY + code); return j ? fix(JSON.parse(j)) : null; }catch(e){ return null; } }
-  function save(){ if(!CODE || !P) return; P.t = Date.now(); try{ localStorage.setItem(PKEY + CODE, JSON.stringify(P)); localStorage.setItem(CKEY, CODE); }catch(e){} }
+  function store(){ try{ localStorage.setItem(PKEY + CODE, JSON.stringify(P)); localStorage.setItem(CKEY, CODE); }catch(e){} }
+  function save(){ if(!CODE || !P) return; P.t = Date.now(); store(); schedulePush(); }
   var saveT; function saveSoon(){ clearTimeout(saveT); saveT = setTimeout(save, 400); }
   try{ CODE = localStorage.getItem(CKEY) || ""; }catch(e){}
   if(CODE) P = loadPage(CODE);
@@ -432,6 +437,105 @@ footer p{margin:6px 0}
   var BASE = /(^|\.)dueareset\.com$|workers\.dev$|^localhost$|^127\./.test(location.hostname) ? location.origin + "/" : "https://dueareset.com/";
   function pageUrl(){ return BASE + "#p=" + CODE; }
   function find(id){ if(!P) return null; for(var i = 0; i < P.resets.length; i++) if(P.resets[i].id === id) return P.resets[i]; return null; }
+
+  // ---------- Saving online (Supabase) ----------
+  // Not signed in: the page is saved online under its secret code – whoever has the link has the page.
+  // Signed in: the page belongs to your account and only you can open it, on any phone.
+  var SB_URL = "https://nlbeqaoffratriysazrx.supabase.co", SB_KEY = "sb_publishable_HjyFCCwqTjqeAIV1bh28ww_li-Rw7CZ";
+  var sb = null, sbFailed = false, USER = null, sbWait = [], pushT = null, dirty = false, NET = "local";
+  function whenSb(fn){ if(sb || sbFailed) fn(); else sbWait.push(fn); }
+  function sbGiveUp(){ if(sb) return; sbFailed = true; var w = sbWait; sbWait = []; w.forEach(function(f){ f(); }); }
+  (function loadSb(){ var sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
+    sc.onload = function(){ try{
+      sb = supabase.createClient(SB_URL, SB_KEY, {auth:{persistSession:true, autoRefreshToken:true, storageKey:"dueareset-auth", detectSessionInUrl:false}});
+      sb.auth.onAuthStateChange(function(ev, sess){ USER = sess ? sess.user : null; });
+      sb.auth.getSession().then(function(res){ USER = res.data && res.data.session ? res.data.session.user : null; }).catch(function(){}).then(function(){
+        var w = sbWait; sbWait = []; w.forEach(function(f){ f(); }); sync(); refresh(); });
+    }catch(e){} };
+    sc.onerror = sbGiveUp; setTimeout(sbGiveUp, 10000);
+    document.head.appendChild(sc); })();
+  function rpc(fn, args){ return sb.rpc(fn, args || {}).then(function(res){ if(res.error) throw res.error; return res.data; }); }
+  function netText(){ return NET === "saved" ? (USER ? "✓ Saved to your account" : "✓ Saved online") : NET === "saving" ? "Saving…" : NET === "offline" ? "Saved on this phone – it'll save online when you're connected" : "Saved on this phone"; }
+  function setNet(s){ NET = s; document.querySelectorAll(".netState").forEach(function(x){ x.textContent = netText(); }); }
+  function schedulePush(){ dirty = true; clearTimeout(pushT); pushT = setTimeout(push, 1200); }
+  function push(){ clearTimeout(pushT); if(!sb || !CODE || !P) return Promise.resolve(); setNet("saving");
+    return rpc("dar_save", {p_code:CODE, p_data:P}).then(function(){ dirty = false; setNet("saved"); },
+      function(e){ dirty = true; setNet("offline"); if(/locked/.test((e && e.message) || "")) locked(); }); }
+  function merge(a, b){ // two copies of a page meet: keep every reset from both, the newer copy wins where they overlap
+    var newer = (a.t || 0) >= (b.t || 0) ? a : b, older = newer === a ? b : a, out = JSON.parse(JSON.stringify(newer));
+    (older.resets || []).forEach(function(r){ if(!out.resets.some(function(x){ return x.id === r.id; })) out.resets.push(r); });
+    out.t = Date.now(); return fix(out); }
+  function adopt(code, data){ var d = fix(data), old = CODE;
+    if(P && old && old !== code && P.resets.length) d = merge(d, P);
+    CODE = code; P = d; if(old && old !== code) try{ localStorage.removeItem(PKEY + old); }catch(e){}
+    store(); }
+  function refresh(){ var a = document.activeElement; if(a && /INPUT|TEXTAREA/.test(a.tagName) && a.id !== "haveIn") return; var y = window.scrollY; render(); window.scrollTo(0, y); }
+  function locked(){ openSignin("This page is protected. Sign in with the email it belongs to."); }
+  // Bring this phone and the online copy together
+  function sync(){ if(!sb) return Promise.resolve();
+    if(USER) return rpc("dar_mine").then(function(res){
+        if(res && res.code){ var oldCode = CODE, other = oldCode && oldCode !== res.code && P && P.resets.length;
+          if(other || !P || res.code !== CODE || (res.data.t || 0) > (P.t || 0)){ adopt(res.code, res.data); refresh(); }
+          if(other) rpc("dar_delete", {p_code:oldCode}).catch(function(){});
+          if(other || dirty || (P.t || 0) > (res.data.t || 0)) return push();
+          setNet("saved"); return; }
+        if(CODE && P) return push().then(function(){ return rpc("dar_claim", {p_code:CODE}); }).then(function(){ setNet("saved"); refresh(); });
+      }).catch(function(){ setNet("offline"); });
+    if(!CODE) return Promise.resolve();
+    return rpc("dar_get", {p_code:CODE}).then(function(res){
+      if(res && res.locked) return locked();
+      var remote = res && res.data;
+      if(remote && (remote.t || 0) > (P.t || 0)){ adopt(CODE, remote); refresh(); setNet("saved"); }
+      else if(!remote || dirty || (P.t || 0) > (remote.t || 0)) return push();
+      else setNet("saved");
+    }).catch(function(){ setNet("offline"); }); }
+  // Opening a link to a page that isn't on this phone yet
+  function fetchPage(code){ show("mine"); $("cards").innerHTML = '<p class="empty">Opening your page…</p>';
+    whenSb(function(){ if(!sb){ go("#"); toast("Can't reach DueAReset just now – try again in a minute"); return; }
+      rpc("dar_get", {p_code:code}).then(function(res){
+      if(res && res.locked){ go("#"); return locked(); }
+      if(res && res.data){ if(P && CODE) store(); CODE = code; P = fix(res.data); store(); setNet("saved"); route(true); return; }
+      go("#"); toast("Can't find that page – check the link");
+    }).catch(function(){ go("#"); toast("Can't reach DueAReset just now – try again in a minute"); }); }); }
+  window.addEventListener("online", function(){ if(dirty) push(); else sync(); });
+
+  // ---------- Sign in (optional): email, then a 6-digit code ----------
+  var siEmail = "";
+  function openSignin(msg){ $("siMsg").textContent = msg || "Sign in with your email and your page is saved to your account. Open it on any phone, and never lose it.";
+    $("siStep1").hidden = false; $("siStep2").hidden = true; $("signin").hidden = false; setTimeout(function(){ $("siEmail").focus(); }, 50); }
+  function closeSignin(){ $("signin").hidden = true; }
+  $("siX").addEventListener("click", closeSignin);
+  $("signin").addEventListener("click", function(e){ if(e.target === this) closeSignin(); });
+  $("siBack").addEventListener("click", function(){ $("siStep1").hidden = false; $("siStep2").hidden = true; $("siEmail").focus(); });
+  function siSend(){ var em = $("siEmail").value.trim().toLowerCase();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ toast("Type your email address"); return; }
+    if(!sb){ toast("Can't reach DueAReset just now – try again in a minute"); return; }
+    $("siSend").disabled = true;
+    sb.auth.signInWithOtp({email:em, options:{shouldCreateUser:true}}).then(function(res){ $("siSend").disabled = false;
+      if(res.error){ toast(/rate|seconds/i.test(res.error.message) ? "Please wait a minute before asking for another code" : "Couldn't send the code – check the email and try again"); return; }
+      siEmail = em; $("siTo").textContent = em; $("siStep1").hidden = true; $("siStep2").hidden = false; $("siCode").value = ""; $("siCode").focus();
+    }, function(){ $("siSend").disabled = false; toast("Can't reach DueAReset just now – try again in a minute"); }); }
+  function siVerify(){ var code = $("siCode").value.replace(/\D/g, ""); if(code.length < 6){ toast("Type the code from the email"); return; }
+    $("siGo").disabled = true;
+    sb.auth.verifyOtp({email:siEmail, token:code, type:"email"}).then(function(res){ $("siGo").disabled = false;
+      if(res.error){ toast("That code didn't work – check it, or send a new one"); return; }
+      USER = res.data.user; closeSignin();
+      sync().then(function(){ refresh(); if(!P) toast("Signed in – start your first reset below"); else { toast("Signed in – your page is saved to your account"); if(!location.hash.match(/p=/)) go("#p=" + CODE); } });
+    }, function(){ $("siGo").disabled = false; toast("Can't reach DueAReset just now – try again in a minute"); }); }
+  $("siSend").addEventListener("click", siSend);
+  $("siGo").addEventListener("click", siVerify);
+  $("siEmail").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); siSend(); } });
+  $("siCode").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); siVerify(); } });
+  $("signBtn").addEventListener("click", function(){ openSignin("Sign in to open your page on this phone."); });
+  function clearLocal(){ try{ if(CODE) localStorage.removeItem(PKEY + CODE); localStorage.removeItem(CKEY); }catch(e){} CODE = ""; P = null; dirty = false; setNet("local"); }
+  function signOut(){ ask("Sign out? Your page stays safe in your account and is taken off this phone.", "Sign out", function(){
+    var done = function(){ clearLocal(); USER = null; resetForm(); go("#"); toast("Signed out"); };
+    (dirty ? push() : Promise.resolve()).then(function(){ return sb.auth.signOut(); }).then(done, done); }); }
+  function deletePage(){
+    ask(USER ? "Delete your page, everything on it and your sign-in? This can't be undone." : "Delete your page and everything on it? This can't be undone.", "Delete my page", function(){
+      var done = function(){ clearLocal(); if(USER){ USER = null; try{ sb.auth.signOut(); }catch(e){} } resetForm(); go("#"); toast("Your page has been deleted"); };
+      if(!sb) return done();
+      (USER ? rpc("dar_delete_account") : rpc("dar_delete", {p_code:CODE})).then(done, function(){ toast("Can't reach DueAReset just now, so nothing was deleted – try again in a minute"); }); }); }
 
   // ---------- Toast with undo, and our own "are you sure?" box ----------
   var toastT;
@@ -506,7 +610,7 @@ footer p{margin:6px 0}
   function closeSheet(){ if($("sheet").hidden) return; $("sheet").hidden = true; document.body.style.overflow = ""; $("formSlot").appendChild($("rf")); resetForm(); }
   $("sheetX").addEventListener("click", closeSheet);
   $("sheet").addEventListener("click", function(e){ if(e.target === this) closeSheet(); });
-  document.addEventListener("keydown", function(e){ if(e.key === "Escape"){ if(!$("ask").hidden) askClose(); else closeSheet(); } });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape"){ if(!$("ask").hidden) askClose(); else if(!$("signin").hidden) closeSignin(); else closeSheet(); } });
 
   // ---------- Front page: the public list of common resets and ways ----------
   var L = {sel:"smoking", open:false};
@@ -523,22 +627,34 @@ footer p{margin:6px 0}
     if(!m){ toast("That doesn't look like a DueAReset link or code"); return; } $("haveIn").value = ""; go("#p=" + m[1]); });
 
   // ---------- Save-your-link box (shown until they say they've saved it) ----------
-  function saveBoxHTML(){ return P && !P.ack ? '<section class="card save"><h2>Save this link</h2><p style="margin:0">It\'s the only way back to your page. There\'s no account, so if you lose it, nobody can find it for you.</p>'
-    + '<div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>'
+  var LINK_BTNS = '<div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>'
     + '<p class="small homeHow" hidden style="margin:10px 0 0">iPhone: tap the Share button, then "Add to Home Screen". Android: tap the ⋮ menu, then "Add to Home screen".</p>'
-    + '<input class="field linkShow" readonly hidden aria-label="Your link" style="margin-top:10px"><div class="row"><button class="btn" type="button" data-act="ack" style="padding:9px 16px;font-size:.95rem">I\'ve saved it</button></div></section>' : ""; }
+    + '<input class="field linkShow" readonly hidden aria-label="Your link" style="margin-top:10px">';
+  function saveBoxHTML(){ return P && !P.ack && !USER ? '<section class="card save"><h2>Keep your page safe</h2><p style="margin:0">Sign in with your email and your page is saved to your account – open it on any phone and never lose it. No password.</p>'
+    + '<div class="row"><button class="btn" type="button" data-act="signin" style="padding:10px 18px;font-size:.98rem">Sign in with email</button></div>'
+    + '<p class="small" style="margin:14px 0 0">Rather not give your email? Then save this link – it\'s the only way back to your page.</p>' + LINK_BTNS
+    + '<div class="row"><button class="link" type="button" data-act="ack">I\'ve saved the link – hide this</button></div></section>' : ""; }
+  function acctHTML(){ return USER
+    ? '<h2 style="font-size:1.2rem;margin-bottom:6px">Your account</h2><p class="small" style="margin:0">Signed in as <b>' + esc(USER.email || "") + '</b>. Your page is saved to your account – sign in on any phone to open it. Only you can see it.</p>'
+      + '<p class="small netState">' + netText() + '</p><div class="foot"><button class="ghost" type="button" data-act="signout">Sign out</button><button class="link danger" type="button" data-act="delpage">Delete my page</button></div>'
+    : '<h2 style="font-size:1.2rem;margin-bottom:6px">Your link</h2><p class="small" style="margin:0 0 10px">Keep it to yourself – anyone with it can open your page. Or sign in with your email so only you can.</p>'
+      + LINK_BTNS + '<p class="small netState">' + netText() + '</p><div class="foot"><button class="ghost" type="button" data-act="signin">Sign in with email</button><button class="link danger" type="button" data-act="delpage">Delete my page</button></div>'; }
   function copyLink(){ var u = pageUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function(){ toast("Link copied"); }, function(){ document.querySelectorAll(".linkShow").forEach(function(x){ x.value = u; x.hidden = false; }); toast("Select the link and copy it"); }); }
   function sendLink(){ var u = pageUrl(); if(navigator.share){ navigator.share({title:"My DueAReset page", text:"My DueAReset page – keep this link:", url:u}).catch(function(){}); return; }
     location.href = "mailto:?subject=" + encodeURIComponent("My DueAReset page") + "&body=" + encodeURIComponent("Keep this link – it's the only way back to my page:\n" + u); }
   function linkActs(e){ var b = e.target.closest("[data-act]"); if(!b) return; var a = b.dataset.act;
     if(a === "copy") copyLink(); else if(a === "send") sendLink();
     else if(a === "home"){ var h = b.closest("section").querySelector(".homeHow"); h.hidden = !h.hidden; }
-    else if(a === "ack"){ P.ack = true; save(); b.closest("section").remove(); } }
+    else if(a === "ack"){ P.ack = true; save(); b.closest("section").remove(); }
+    else if(a === "signin") openSignin();
+    else if(a === "signout") signOut();
+    else if(a === "delpage") deletePage(); }
   $("mine").addEventListener("click", linkActs);
 
   // ---------- My resets ----------
   function renderMine(){
     document.querySelector("#mine .saveSlot").innerHTML = saveBoxHTML();
+    $("acct").innerHTML = acctHTML();
     var live = P.resets.filter(function(r){ return !r.done; }), done = P.resets.filter(function(r){ return r.done; });
     $("cards").innerHTML = live.length ? live.map(function(r){ var c = counter(r);
       return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + gOf(r).c + '"><div class="rkind">' + esc(kindOf(r)) + '</div><div class="rtop"><span class="rname">' + esc(r.name) + '</span><span class="rcount">' + esc(c.big) + "</span></div>" + (askWaiting(r) ? '<div class="small" style="margin-top:4px">● Today\'s question is waiting</div>' : "") + "</button>"; }).join("")
@@ -549,11 +665,6 @@ footer p{margin:6px 0}
   $("cards").addEventListener("click", function(e){ var b = e.target.closest(".rcard"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
   $("doneList").addEventListener("click", function(e){ var b = e.target.closest("[data-reopen]"); if(b){ reopen(find(b.dataset.reopen)); return; } b = e.target.closest("[data-id]"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
   $("addBtn").addEventListener("click", openSheet);
-  $("delPage").addEventListener("click", function(){
-    ask("Delete your page and everything on it? This can't be undone.", "Delete my page", function(){
-      try{ localStorage.removeItem(PKEY + CODE); localStorage.removeItem(CKEY); }catch(e){}
-      CODE = ""; P = null; resetForm(); go("#"); toast("Your page has been deleted"); }); });
-
   // ---------- One reset: a page built from sections ----------
   var wordIx = {};
   function wordsFor(r){ return r.words.concat(WORDS); }
@@ -741,9 +852,10 @@ footer p{margin:6px 0}
   function route(keepScroll){
     var m = location.hash.match(/p=([a-z0-9]{12})/), rm = location.hash.match(/r=([a-z0-9]+)/);
     if(m && m[1] !== CODE){ var other = loadPage(m[1]);
-      if(other){ CODE = m[1]; P = other; save(); }
-      else { toast("That page isn't on this phone. Opening it on another phone comes next."); history.replaceState(null, "", location.pathname); m = null; } }
+      if(other){ CODE = m[1]; P = other; store(); sync(); }
+      else { $("myBtn").hidden = $("signBtn").hidden = true; return fetchPage(m[1]); } }
     $("myBtn").hidden = !P || !!m;
+    $("signBtn").hidden = !!USER || !!P;
     if(m && P){ var r = rm && find(rm[1]);
       if(r){ show("detail"); renderDetail(r); } else { show("mine"); renderMine(); }
     } else { show("front"); if($("sheet").hidden) drawForm(); drawList(); }
@@ -751,8 +863,8 @@ footer p{margin:6px 0}
   }
   window.addEventListener("hashchange", function(){ closeSheet(); route(); });
   // Coming back to the page (maybe on a new day): refresh the counters, but don't disturb typing
-  document.addEventListener("visibilitychange", function(){ if(!document.hidden && $("sheet").hidden && !(document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName))){ var y = window.scrollY; render(); window.scrollTo(0, y); } });
-  if(P) save();
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden) sync(); if(!document.hidden && $("sheet").hidden && !(document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName))){ var y = window.scrollY; render(); window.scrollTo(0, y); } });
+  if(P) store();
   drawForm();
   route(true);
 })();
