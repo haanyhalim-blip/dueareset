@@ -1,4 +1,4 @@
-<!-- DueAReset v1 -->
+<!-- DueAReset v2 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -131,6 +131,11 @@ textarea.field{resize:vertical;min-height:80px}
 #sheet{position:fixed;inset:0;background:rgba(20,25,35,.45);z-index:20;overflow-y:auto;padding:20px 0}
 #sheetBox{max-width:600px;margin:0 auto;border-radius:18px;position:relative}
 #sheetX{position:absolute;right:10px;top:10px;font-size:1.5rem}
+#ask{position:fixed;inset:0;background:rgba(20,25,35,.45);z-index:25;display:flex;align-items:center;justify-content:center;padding:16px}
+#askBox{max-width:420px;width:100%;margin:0}
+#askMsg{margin:0 0 16px}
+#askYes{background:var(--accent)}
+#linkShow{margin-top:10px}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:12px;padding:11px 16px;display:flex;gap:14px;align-items:center;z-index:30;max-width:calc(100% - 32px);font-size:.95rem}
 #toast button{border:0;background:none;color:#ffd9c7;font-weight:700;padding:0}
 footer{margin:36px 0 30px;font-size:.85rem;color:var(--muted)}
@@ -214,6 +219,7 @@ footer p{margin:6px 0}
       <p class="small" style="margin:0 0 10px">Keep it to yourself – anyone with it can open your page.</p>
       <div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>
       <p class="small homeHow" hidden style="margin:10px 0 0">iPhone: tap the Share button, then "Add to Home Screen". Android: tap the ⋮ menu, then "Add to Home screen".</p>
+      <input class="field linkShow" id="linkShow" readonly hidden aria-label="Your link">
       <p class="small" style="margin:12px 0 0">For now your page is saved on this phone only. Opening it on another phone comes next.</p>
       <button class="link" id="delPage" type="button" style="color:var(--accent);margin-top:8px">Delete my page</button>
     </section>
@@ -224,11 +230,12 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account, no tracking, no ads. <span class="ver">v1</span></p>
+    <p>No account, no tracking, no ads. <span class="ver">v2</span></p>
   </footer>
 </div>
 
 <div id="sheet" hidden><div class="card" id="sheetBox"><button class="x" id="sheetX" type="button" aria-label="Close">×</button><h2 id="sheetTitle">Add a reset</h2><div id="sheetSlot"></div></div></div>
+<div id="ask" hidden role="dialog" aria-modal="true" aria-labelledby="askMsg"><div class="card" id="askBox"><p id="askMsg"></p><div class="row"><button class="btn" id="askYes" type="button">Yes</button><button class="ghost" id="askNo" type="button">Cancel</button></div></div></div>
 <div id="toast" hidden role="status"><span id="toastMsg"></span><button id="toastUndo" type="button" hidden>Undo</button></div>
 
 <script>
@@ -297,6 +304,14 @@ footer p{margin:6px 0}
   function toast(msg, undo){ $("toastMsg").textContent = msg; var u = $("toastUndo"); u.hidden = !undo; u.onclick = function(){ $("toast").hidden = true; if(undo) undo(); };
     $("toast").hidden = false; clearTimeout(toastT); toastT = setTimeout(function(){ $("toast").hidden = true; }, undo ? 6000 : 2600); }
 
+  // Our own "are you sure?" box (works everywhere, unlike the browser's pop-up)
+  var askCb = null;
+  function ask(msg, yes, cb){ $("askMsg").textContent = msg; $("askYes").textContent = yes; askCb = cb; $("ask").hidden = false; $("askNo").focus(); }
+  function askClose(){ $("ask").hidden = true; askCb = null; }
+  $("askNo").addEventListener("click", askClose);
+  $("ask").addEventListener("click", function(e){ if(e.target === this) askClose(); });
+  $("askYes").addEventListener("click", function(){ var cb = askCb; askClose(); if(cb) cb(); });
+
   // ---------- The reset form (used on the front page, and in a sheet for add/edit) ----------
   var F = {type:"", ways:[], editing:null};
   function drawTypes(){ $("fTypes").innerHTML = TYPES.map(function(t){ return '<button type="button" class="chip" data-k="' + t.k + '" aria-pressed="' + (F.type === t.k) + '">' + esc(t.n) + '</button>'; }).join(""); }
@@ -326,15 +341,15 @@ footer p{margin:6px 0}
     if(fresh) go("#p=" + CODE); else { go("#p=" + CODE); toast("Added"); }
   });
   $("fDel").addEventListener("click", function(){ var r = find(F.editing); if(!r) return;
-    if(!confirm("Delete \"" + r.name + "\" and all its notes? To keep it, use Finish instead.")) return;
-    P.resets = P.resets.filter(function(x){ return x !== r; }); save(); closeSheet(); go("#p=" + CODE); toast("Deleted"); });
+    ask("Delete \"" + r.name + "\" and all its notes? To keep it, use Finish instead.", "Delete", function(){
+      P.resets = P.resets.filter(function(x){ return x !== r; }); save(); closeSheet(); go("#p=" + CODE); toast("Deleted"); }); });
 
   // Sheet: the same form, moved into a pop-up
   function openSheet(r){ fillForm(r); $("sheetTitle").textContent = r ? "Edit" : "Add a reset"; $("sheetSlot").appendChild($("rf")); $("sheet").hidden = false; document.body.style.overflow = "hidden"; $("sheet").scrollTop = 0; }
   function closeSheet(){ if($("sheet").hidden) return; $("sheet").hidden = true; document.body.style.overflow = ""; $("formSlot").appendChild($("rf")); fillForm(null); }
   $("sheetX").addEventListener("click", closeSheet);
   $("sheet").addEventListener("click", function(e){ if(e.target === this) closeSheet(); });
-  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeSheet(); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape"){ if(!$("ask").hidden) askClose(); else closeSheet(); } });
 
   // ---------- Front page: the public list ----------
   var LSEL = "smoking";
@@ -369,15 +384,15 @@ footer p{margin:6px 0}
   $("doneList").addEventListener("click", function(e){ var b = e.target.closest("[data-reopen]"); if(b){ reopen(find(b.dataset.reopen)); return; } b = e.target.closest("[data-id]"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
   $("addBtn").addEventListener("click", function(){ openSheet(null); });
   $("saveOk").addEventListener("click", function(){ P.ack = true; save(); renderMine(); });
-  function copyLink(){ var u = pageUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function(){ toast("Link copied"); }, function(){ prompt("Copy your link:", u); }); }
+  function copyLink(){ var u = pageUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function(){ toast("Link copied"); }, function(){ document.querySelectorAll(".linkShow").forEach(function(x){ x.value = u; x.hidden = false; }); toast("Select the link and copy it"); }); }
   function sendLink(){ var u = pageUrl(); if(navigator.share){ navigator.share({title:"My DueAReset page", text:"My DueAReset page – keep this link:", url:u}).catch(function(){}); return; }
     location.href = "mailto:?subject=" + encodeURIComponent("My DueAReset page") + "&body=" + encodeURIComponent("Keep this link – it's the only way back to my page:\n" + u); }
   $("mine").addEventListener("click", function(e){ var b = e.target.closest("[data-act]"); if(!b) return; var a = b.dataset.act;
     if(a === "copy") copyLink(); else if(a === "send") sendLink(); else if(a === "home"){ var h = b.closest("section").querySelector(".homeHow"); h.hidden = !h.hidden; } });
   $("delPage").addEventListener("click", function(){
-    if(!confirm("Delete your page and everything on it? This can't be undone.")) return;
-    try{ localStorage.removeItem(PKEY + CODE); localStorage.removeItem(CKEY); }catch(e){}
-    CODE = ""; P = null; fillForm(null); go("#"); toast("Your page has been deleted"); });
+    ask("Delete your page and everything on it? This can't be undone.", "Delete my page", function(){
+      try{ localStorage.removeItem(PKEY + CODE); localStorage.removeItem(CKEY); }catch(e){}
+      CODE = ""; P = null; fillForm(null); go("#"); toast("Your page has been deleted"); }); });
 
   // ---------- One reset ----------
   function fmtTime(ts){ var d = new Date(ts); return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
@@ -427,8 +442,8 @@ footer p{margin:6px 0}
     else if(a === "reopen") reopen(r);
     else if(a === "finish"){ r.done = {at:today(), days:reached(r)}; save(); go("#p=" + CODE); toast(r.name + " – moved to Done", function(){ r.done = null; save(); render(); }); }
     else if(a === "restart"){ var was = dayOf(r);
-      if(!confirm("Start the count again from today? Your notes stay, and your best run is kept.")) return;
-      r.best = Math.max(r.best || 0, was); r.start = today(); r.notes.push({id:uid(), ts:Date.now(), t:"Started the count again (was on Day " + was + ")."}); save(); renderDetail(r); }
+      ask("Start the count again from today? Your notes stay, and your best run is kept.", "Start again", function(){
+        r.best = Math.max(r.best || 0, was); r.start = today(); r.notes.push({id:uid(), ts:Date.now(), t:"Started the count again (was on Day " + was + ")."}); save(); renderDetail(r); }); }
   });
 
   // ---------- Which screen to show ----------
