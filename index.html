@@ -1,18 +1,18 @@
-<!-- DueAReset v2 -->
+<!-- DueAReset v3 -->
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="color-scheme" content="light">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DueAReset – count the days on a reset: quit smoking or vaping, cut sugar, drink less</title>
-<meta name="description" content="A free private page for anyone resetting something – quitting smoking or vaping, cutting sugar, less screen time, a fast, drinking less. Say why, count the days, write down what you notice. No account.">
+<title>DueAReset – count the days on a reset: quit smoking or vaping, cut sugar, drink less, or an adventure</title>
+<meta name="description" content="A free private page for anyone resetting something – quitting smoking or vaping, cutting sugar, less screen time, a fast, drinking less, or a big adventure. Build your own page: a timer, tips, a journal, words to keep you going. No account.">
 <meta name="theme-color" content="#2c4a6e">
 <link rel="canonical" href="https://dueareset.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="DueAReset">
 <meta property="og:title" content="Due a reset?">
-<meta property="og:description" content="Stop something, start something, or go without for a few days. Say why, count the days, write down what you notice. Free, private, no account.">
+<meta property="og:description" content="Cut something down, stop it, start something, or take on an adventure. Build your own private page to get you through it. Free, no account.">
 <meta property="og:url" content="https://dueareset.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232c4a6e'/%3E%3Cpath d='M44 22a16 16 0 1 0 4 12' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M46 12v12H34' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -24,15 +24,16 @@
 :root{
   color-scheme:light;
   --bg:#f1f0ec; --card:#fff; --line:#dedad0; --ink:#1f2328; --muted:#5f6670; --faint:#9aa0a8;
-  --brand:#2c4a6e; --brand-deep:#1e3552; --brand-wash:#e3eaf3; --accent:#c8552b; --accent-wash:#f7e3da; --ok:#2f6b45; --ok-wash:#e2efe5;
+  --brand:#2c4a6e; --brand-deep:#1e3552; --brand-wash:#e3eaf3; --accent:#c8552b; --accent-wash:#f7e3da;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif}
-h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;margin:0}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;margin:0;text-wrap:balance}
 a{color:var(--brand)}
 button{font:inherit;color:inherit;cursor:pointer}
 input,textarea{font:inherit;color:var(--ink)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 [hidden]{display:none!important}
 .wrap{max-width:640px;margin:0 auto;padding:0 16px}
 .top{display:flex;align-items:center;justify-content:space-between;padding:14px 0 6px}
@@ -54,7 +55,7 @@ input,textarea{font:inherit;color:var(--ink)}
 .hero .btn{margin-top:6px}
 .quiet{font-size:.92rem;color:var(--muted);margin:16px 0 0}
 
-/* form */
+/* form and chips */
 #formSlot h2,#sheetBox h2{font-size:1.45rem;margin-bottom:12px}
 .lbl{display:block;font-weight:700;margin:16px 0 6px}
 .lbl span{font-weight:400;color:var(--muted);font-size:.9rem}
@@ -64,55 +65,59 @@ textarea.field{resize:vertical;min-height:80px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .two>div{min-width:0}
 .two input{min-width:0;-webkit-appearance:none;appearance:none;min-height:46px}
-.two .lbl{margin-top:16px}
-.hint{font-size:.85rem;color:var(--muted);margin:6px 0 0}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;font-size:.93rem}
+.hint{font-size:.88rem;color:var(--muted);margin:12px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:.9rem}
 .chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
-.tick{display:flex;gap:10px;align-items:flex-start;margin:18px 0 16px;font-weight:700}
-.tick input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--brand);flex:none}
-.tick small{display:block;font-weight:400;color:var(--muted);font-size:.87rem}
+.grp{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 7px;font-weight:700}
+.more{border:0;background:none;color:var(--brand);font-weight:700;font-size:.9rem;padding:8px 2px;margin-top:4px}
+#fGo{margin-top:18px}
 .note{background:var(--accent-wash);border-radius:10px;padding:10px 12px;font-size:.9rem;margin:12px 0 0}
-#fDel{margin-top:14px;color:var(--accent)}
+.book{background:var(--brand-wash);border-radius:10px;padding:10px 12px;font-size:.9rem;margin:12px 0 0}
 
-/* list */
+/* public list */
 #list h2{font-size:1.6rem;margin:30px 0 6px;color:var(--brand-deep)}
-.rank{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.ways{margin:14px 0 0;padding:0;list-style:none}
-.ways li{padding:10px 0;border-top:1px solid var(--line)}
+.ways{margin:10px 0 0;padding:0;list-style:none}
+.ways li{padding:9px 0;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;justify-content:space-between}
 .ways li:first-child{border-top:0}
-.ways h3{font-size:1.2rem;margin:0 0 6px}
 .nhs{display:inline-block;margin-top:10px;font-weight:700}
 
-/* my page */
-.pagehead{display:flex;align-items:center;justify-content:space-between;margin:18px 0 4px}
+/* my resets */
+.pagehead{margin:18px 0 4px}
 .pagehead h1{font-size:1.9rem;color:var(--brand-deep)}
 .save{background:var(--brand-wash);border:0}
 .save h2{font-size:1.2rem;margin-bottom:6px}
 .save .row{margin-top:12px}
-.rcard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c,var(--brand));border-radius:14px;padding:14px 16px;margin:10px 0}
+.rcard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0}
 .rtop{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
 .rname{font-weight:700;font-size:1.1rem}
+.rkind{font-size:.8rem;color:var(--c);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
 .rcount{font-family:Fraunces,Georgia,serif;font-size:1.3rem;color:var(--brand-deep);white-space:nowrap}
-.rwhy{color:var(--muted);font-size:.93rem;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .add{display:block;width:100%;border:2px dashed var(--line);background:transparent;border-radius:14px;padding:14px;font-weight:700;color:var(--brand);margin:10px 0}
 .done h2{font-size:1.2rem;margin-bottom:6px}
 .drow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--line);gap:10px}
 .drow:first-of-type{border-top:0}
 .drow button.name{border:0;background:none;padding:0;text-align:left;font-size:1rem}
 
-/* detail */
+/* one reset: a page built from sections */
 .back{border:0;background:none;color:var(--brand);font-weight:700;padding:14px 0 4px;font-size:1rem}
-.dtype{font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:8px}
+.dkind{font-size:.85rem;color:var(--c);text-transform:uppercase;letter-spacing:.06em;margin-top:8px;font-weight:700}
 .dname{font-size:1.9rem;color:var(--brand-deep)}
-.big{font-family:Fraunces,Georgia,serif;font-size:3.2rem;line-height:1.05;color:var(--c,var(--brand));margin:14px 0 2px}
-.acts{margin-top:14px}
-.card h2{font-size:1.25rem;margin-bottom:8px}
-.why{white-space:pre-wrap}
+.shead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.shead h2{font-size:1.2rem}
+.sctl{display:flex;gap:2px;flex:none}
+.sctl button{border:0;background:none;color:var(--faint);padding:4px 8px;font-size:.95rem;border-radius:8px}
+.sctl button:hover{background:var(--bg);color:var(--ink)}
+.big{font-family:Fraunces,Georgia,serif;font-size:3.2rem;line-height:1.05;color:var(--c,var(--brand))}
+.live{font-variant-numeric:tabular-nums;color:var(--ink);margin-top:6px}
+.words{font-family:Fraunces,Georgia,serif;font-size:1.5rem;line-height:1.3;color:var(--brand-deep);margin:4px 0 12px}
 .hchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .hchip{background:var(--brand-wash);border-radius:999px;padding:4px 11px;font-size:.9rem}
+.doing{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:4px 11px;font-size:.82rem;flex:none;font-weight:700}
+.doing[aria-pressed="true"]{background:var(--brand-wash);border-color:var(--brand-wash);color:var(--brand-deep)}
 .jin{display:flex;gap:8px;align-items:flex-end}
 .jin textarea{min-height:48px;flex:1}
+.jin input{flex:1;min-width:0}
 .jday{margin-top:14px}
 .jday summary{cursor:pointer;font-weight:700;padding:6px 0;list-style:none}
 .jday summary::-webkit-details-marker{display:none}
@@ -120,14 +125,20 @@ textarea.field{resize:vertical;min-height:80px}
 .jday[open] summary::before{content:"▾ "}
 .jday .dn{font-weight:400;color:var(--muted);font-size:.88rem}
 .jnote,.litem{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid #efece5}
-.jnote time{color:var(--faint);font-size:.85rem;flex:none;width:44px;padding-top:2px}
+.jnote time{color:var(--faint);font-size:.85rem;flex:none;width:44px;padding-top:2px;font-variant-numeric:tabular-nums}
 .jnote p,.litem p{margin:0;flex:1;white-space:pre-wrap;word-break:break-word}
 .x{border:0;background:none;color:var(--faint);font-size:1.2rem;line-height:1;padding:2px 6px;flex:none}
 .empty{color:var(--faint);font-size:.92rem;margin:10px 0 0}
-.switch{display:flex;gap:12px;align-items:flex-start}
-.switch input{width:22px;height:22px;accent-color:var(--brand);flex:none;margin-top:2px}
+.canvas{min-height:220px;border:0;background:#fbfaf8;border-radius:10px;padding:14px;width:100%;resize:vertical;line-height:1.6}
+.canvas:focus{outline:2px solid var(--brand);outline-offset:-1px}
+.addsec{display:grid;gap:8px;margin-top:6px}
+.addsec button{text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 14px}
+.addsec b{display:block}
+.addsec span{font-size:.88rem;color:var(--muted)}
+.foot{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:6px 0 0}
+.danger{color:var(--accent)!important}
 
-/* sheet, toast, footer */
+/* sheet, confirm, toast, footer */
 #sheet{position:fixed;inset:0;background:rgba(20,25,35,.45);z-index:20;overflow-y:auto;padding:20px 0}
 #sheetBox{max-width:600px;margin:0 auto;border-radius:18px;position:relative}
 #sheetX{position:absolute;right:10px;top:10px;font-size:1.5rem}
@@ -135,7 +146,6 @@ textarea.field{resize:vertical;min-height:80px}
 #askBox{max-width:420px;width:100%;margin:0}
 #askMsg{margin:0 0 16px}
 #askYes{background:var(--accent)}
-#linkShow{margin-top:10px}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:12px;padding:11px 16px;display:flex;gap:14px;align-items:center;z-index:30;max-width:calc(100% - 32px);font-size:.95rem}
 #toast button{border:0;background:none;color:#ffd9c7;font-weight:700;padding:0}
 footer{margin:36px 0 30px;font-size:.85rem;color:var(--muted)}
@@ -155,32 +165,19 @@ footer p{margin:6px 0}
   <main id="front">
     <section class="hero">
       <h1>Due a reset?</h1>
-      <p>Most of us run on habits we never chose. Every so often it's worth picking one and drawing a line – stop something, start something, or go without for a few days just to see what happens. It doesn't have to be big. It has to be on purpose. That's a reset.</p>
-      <p>Say what you're resetting and why, count the days, write down what you notice. Nobody sees your page but you, unless you want them to. And the list below shows what everyone else is resetting right now, so you know you're not the only one.</p>
+      <p>Most of us run on habits we never chose. Every so often it's worth drawing a line. Cut something down, stop it, start something new, go without for a few days – or take on an adventure: something hard and a bit scary, with a real chance you won't manage it. It doesn't have to be big. It has to be on purpose. That's a reset.</p>
+      <p>Say what you're resetting, then build your own page to get you through it: a timer, tips, a journal, words to keep you going. Nobody sees your page but you. And the list below shows what people commonly reset and how they go about it, so you know you're not the only one.</p>
       <a class="btn" href="#start" id="heroGo">Start one</a>
-      <p class="quiet">People use it for quitting smoking or vaping, cutting sugar, less screen time, a fast or drinking less – or anything else they want to change.</p>
+      <p class="quiet">People use it for quitting smoking or vaping, cutting sugar, less screen time, a fast, drinking less, walking every day – or a misogi, the big yearly challenge from Michael Easter's book The Comfort Crisis.</p>
     </section>
 
     <section class="card" id="formSlot">
       <h2 id="start">What are you resetting?</h2>
       <form id="rf" novalidate autocomplete="off">
-        <div class="chips" id="fTypes" role="group" aria-label="Type of reset"></div>
-        <label class="lbl" for="fName">In your words <span>(optional)</span></label>
-        <input class="field" id="fName" maxlength="40" placeholder="e.g. Smoking, or No wine on weeknights">
-        <label class="lbl" for="fWhy">Why? <span>(optional – as little or as much as you like)</span></label>
-        <textarea class="field" id="fWhy" maxlength="2000"></textarea>
-        <div class="two">
-          <div><label class="lbl" for="fStart">Start</label><input class="field" type="date" id="fStart"></div>
-          <div><label class="lbl" for="fEnd">Ends <span>(optional)</span></label><input class="field" type="date" id="fEnd"></div>
-        </div>
-        <p class="hint">Leave "Ends" blank to count up. Give it a date to count down – a fast or a dry month has an end, a quit doesn't. <button type="button" class="link" id="fEndClear" hidden>Clear end date</button></p>
-        <label class="lbl" for="fHow">How are you doing it? <span>(optional)</span></label>
-        <div class="chips" id="fWays" role="group" aria-label="Ways"></div>
-        <input class="field" id="fHow" maxlength="80" placeholder="Or in your own words" style="margin-top:10px">
-        <p class="note" id="fGp" hidden>If you have a health condition or take medication, check with your GP before a fast.</p>
-        <label class="tick"><input type="checkbox" id="fPub"><span>Count me in on the public list<small>Only the type of reset and how you're doing it. Never your why, your notes or your link.</small></span></label>
+        <input class="field" id="fName" maxlength="40" placeholder="In your words, e.g. Smoking" aria-label="In your words">
+        <p class="hint">Or tap as many as you like – each one gets its own page.</p>
+        <div id="fPick"></div>
         <button class="btn wide" id="fGo" type="submit">Start one</button>
-        <button class="link" id="fDel" type="button" hidden>Delete this reset</button>
       </form>
     </section>
 
@@ -190,9 +187,9 @@ footer p{margin:6px 0}
     </section>
 
     <section id="list">
-      <h2>What people are resetting</h2>
-      <p class="small">To start with, this list comes from common advice online. As people use DueAReset it will fill up with what people here are actually doing.</p>
-      <ol class="rank" id="rank"></ol>
+      <h2>What people reset, and how</h2>
+      <p class="small">To start with, this comes from common advice online. Tap one to see the ways people go about it.</p>
+      <div id="lPick"></div>
       <div class="card" id="waysBox"></div>
       <div class="card">
         <h3 style="font-size:1.2rem;margin-bottom:6px">Whatever the reset, people say these help</h3>
@@ -201,27 +198,21 @@ footer p{margin:6px 0}
     </section>
   </main>
 
-  <!-- ===== My page ===== -->
+  <!-- ===== My resets ===== -->
   <main id="mine" hidden>
     <div class="pagehead"><h1>My resets</h1></div>
-    <section class="card save" id="saveBox">
-      <h2>Save this link</h2>
-      <p style="margin:0">It's the only way back to your page. There's no account, so if you lose it, nobody can find it for you.</p>
-      <div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>
-      <p class="small homeHow" hidden style="margin:10px 0 0">iPhone: tap the Share button, then "Add to Home Screen". Android: tap the ⋮ menu, then "Add to Home screen".</p>
-      <div class="row"><button class="btn" type="button" id="saveOk" style="padding:9px 16px;font-size:.95rem">I've saved it</button></div>
-    </section>
+    <div class="saveSlot"></div>
     <div id="cards"></div>
     <button class="add" id="addBtn" type="button">+ Add another reset</button>
     <section class="card done" id="doneBox" hidden><h2>Done</h2><div id="doneList"></div></section>
     <section class="card">
-      <h2>Your link</h2>
+      <h2 style="font-size:1.2rem;margin-bottom:6px">Your link</h2>
       <p class="small" style="margin:0 0 10px">Keep it to yourself – anyone with it can open your page.</p>
       <div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>
       <p class="small homeHow" hidden style="margin:10px 0 0">iPhone: tap the Share button, then "Add to Home Screen". Android: tap the ⋮ menu, then "Add to Home screen".</p>
-      <input class="field linkShow" id="linkShow" readonly hidden aria-label="Your link">
+      <input class="field linkShow" id="linkShow" readonly hidden aria-label="Your link" style="margin-top:10px">
       <p class="small" style="margin:12px 0 0">For now your page is saved on this phone only. Opening it on another phone comes next.</p>
-      <button class="link" id="delPage" type="button" style="color:var(--accent);margin-top:8px">Delete my page</button>
+      <button class="link danger" id="delPage" type="button" style="margin-top:8px">Delete my page</button>
     </section>
   </main>
 
@@ -230,7 +221,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account, no tracking, no ads. <span class="ver">v2</span></p>
+    <p>No account, no tracking, no ads. <span class="ver">v3</span></p>
   </footer>
 </div>
 
@@ -245,53 +236,131 @@ footer p{margin:6px 0}
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
   function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 
-  // ---------- Types of reset, and ways people go about each (starter list from common advice online) ----------
-  var NHS_SMOKE = "https://www.nhs.uk/better-health/quit-smoking/", NHS_DRINK = "https://www.nhs.uk/live-well/alcohol-advice/";
+  // ---------- What people reset (starter list from common advice online) ----------
+  // g = group, pop = shown before "Show all", ways = ways people go about it
+  var GROUPS = {
+    stop: {n:"Stop or cut down", kind:"Stopping", c:"#b4532f", tips:["Know your triggers – the times, places and people","Plan what you'll do instead when the urge comes","Make it harder to get to","Pick a date and stop, or cut down in steps","Tell one person"]},
+    start: {n:"Start something", kind:"Starting", c:"#2f6b45", tips:["Start smaller than feels worthwhile","Same time every day","Tie it to something you already do","Get things ready the night before","Missing one day is fine – try not to miss two"]},
+    without: {n:"Go without for a while", kind:"Going without", c:"#9a6f1e", tips:["Pick the end date before you start","Plan for the hard moments","Tell the people you live with","Have something to replace it with","Plan how you'll finish"]},
+    adventure: {n:"An adventure", kind:"Adventure", c:"#5b4a8e", tips:["Pick something with a real chance you won't manage it","Put a date on it and tell someone","Prepare properly – kit, route, weather","Make sure someone knows where you are and when you'll be back","Write it down while it's fresh"],
+      book:"In The Comfort Crisis, Michael Easter calls this a misogi: one big, hard challenge a year, taken on on purpose. It has two rules – make it really hard, and don't die."}
+  };
   var TYPES = [
-    {k:"drinking", n:"Drinking less", c:"#8b3a52", ways:["Drink-free days","Alcohol-free drinks instead","Smaller glasses","Not keeping it at home","A dry month","Only at weekends","Counting units"]},
-    {k:"smoking", n:"Smoking", c:"#7a5c45", ways:["Cold turkey on a set date","Nicotine patches","Nicotine gum or lozenges","Switching to a vape","Local stop smoking service","Changing the routine around it","Telling people I'm stopping"]},
-    {k:"sugar", n:"Sugar", c:"#c8552b", ways:["Cutting sugary drinks first","Reading labels","Nothing sweet in the house","Fruit instead of pudding","Cutting down bit by bit","Cold turkey"]},
-    {k:"screen", n:"Screen time", c:"#3d6f8e", ways:["Phone out of the bedroom","A real alarm clock","App time limits","Deleting one app","Greyscale mode","No phone at meals"]},
-    {k:"vaping", n:"Vaping", c:"#6b5a8e", ways:["Cold turkey on a set date","Lowering the strength bit by bit","Nicotine patches or gum","Leaving the vape at home","Local stop smoking service","Noticing what sets it off"]},
-    {k:"fast", n:"A fast", c:"#b8862b", ways:["Plenty of water","A shorter fast first","Keeping busy","Planning how to break it","Lighter, restful days"]},
-    {k:"exercise", n:"Moving more", c:"#2f6b45", ways:["A walk at the same time daily","Starting small","A walking buddy","Kit ready the night before","Counting days, not distance"]},
-    {k:"sleep", n:"Sleep", c:"#34466e", ways:["Same bedtime every night","Phone out of the bedroom","No caffeine after lunch","A wind-down routine","Daylight first thing"]},
-    {k:"other", n:"Something else", c:"#5f6670", ways:["Writing down why","Telling one person","Starting small","Counting the days"]}
+    {k:"smoking", n:"Smoking", g:"stop", pop:1, ways:["Cold turkey on a set date","Nicotine patches","Nicotine gum or lozenges","Switching to a vape","Local stop smoking service","Changing the routine around it","Telling people I'm stopping"]},
+    {k:"vaping", n:"Vaping", g:"stop", pop:1, ways:["Cold turkey on a set date","Lowering the strength bit by bit","Nicotine patches or gum","Leaving the vape at home","Local stop smoking service","Noticing what sets it off"]},
+    {k:"drinking", n:"Drinking", g:"stop", pop:1, ways:["Drink-free days","Alcohol-free drinks instead","Smaller glasses","Not keeping it at home","Only at weekends","Counting units"]},
+    {k:"sugar", n:"Sugar", g:"stop", pop:1, ways:["Cutting sugary drinks first","Reading labels","Nothing sweet in the house","Fruit instead of pudding","Cutting down bit by bit","Cold turkey"]},
+    {k:"eating", n:"Eating less", g:"stop", pop:1, ways:["Smaller plates","Eating slowly","No eating in front of a screen","A set time to stop eating in the evening","Planning meals ahead","A glass of water first"]},
+    {k:"snacking", n:"Snacking", g:"stop", ways:["No snacks in the house","Three proper meals","A glass of water first","Snacks only at the table"]},
+    {k:"junk", n:"Junk food", g:"stop"},
+    {k:"takeaways", n:"Takeaways", g:"stop", ways:["Delete the delivery apps","A few easy meals I can cook","Batch cooking at the weekend","Takeaway once a week only"]},
+    {k:"caffeine", n:"Caffeine", g:"stop", ways:["Cutting down one cup at a time","Half-caf first","None after lunch","Herbal tea instead"]},
+    {k:"screen", n:"Screen time", g:"stop", pop:1, ways:["Phone out of the bedroom","A real alarm clock","App time limits","Deleting one app","Greyscale mode","No phone at meals"]},
+    {k:"social", n:"Social media", g:"stop", ways:["Deleting the apps from my phone","Logging out every time","Set times only","Turning off notifications"]},
+    {k:"phonebed", n:"Phone in bed", g:"stop", ways:["Charging it in another room","A real alarm clock","A book by the bed","A set time the phone goes away"]},
+    {k:"spending", n:"Spending", g:"stop", ways:["Deleting saved cards","A 24-hour wait before buying","Unsubscribing from shop emails","A weekly amount in cash"]},
+    {k:"gambling", n:"Gambling", g:"stop", ways:["Blocking gambling sites and apps","Telling someone I trust","Self-exclusion schemes","Handing over control of money for a while"]},
+    {k:"nails", n:"Nail biting", g:"stop"},
+    {k:"walking", n:"Walking daily", g:"start", pop:1, ways:["Same time every day","Starting with ten minutes","A walking buddy","Shoes by the door","Counting days, not distance"]},
+    {k:"exercise", n:"Moving more", g:"start", ways:["Starting small","Kit ready the night before","A class with a friend","Short bursts through the day"]},
+    {k:"sleep", n:"Sleeping earlier", g:"start", pop:1, ways:["Same bedtime every night","Phone out of the bedroom","No caffeine after lunch","A wind-down routine","Daylight first thing"]},
+    {k:"eatwell", n:"Eating better", g:"start", ways:["One more vegetable a day","Planning the week's meals","Cooking more at home","Fruit where I can see it"]},
+    {k:"water", n:"Drinking more water", g:"start", ways:["A bottle always with me","A glass with every meal","A glass first thing"]},
+    {k:"reading", n:"Reading", g:"start", ways:["Ten pages before bed","A book in my bag","Phone away while I read"]},
+    {k:"meditation", n:"Meditation", g:"start", ways:["Five minutes to start","Same time and place","A guided app"]},
+    {k:"mornings", n:"Early mornings", g:"start"},
+    {k:"cooking", n:"Cooking at home", g:"start"},
+    {k:"outside", n:"Getting outside", g:"start"},
+    {k:"fast", n:"A fast", g:"without", pop:1, ways:["Plenty of water","A shorter fast first","Keeping busy","Planning how to break it","Lighter, restful days"]},
+    {k:"dry", n:"A dry month", g:"without", ways:["Alcohol-free drinks in the fridge","Telling friends up front","Plans that aren't about drinking","Crossing off the days"]},
+    {k:"detox", n:"A digital detox", g:"without", ways:["Telling people I'll be offline","Deleting the apps for the time","A basic phone for calls","Plans away from screens"]},
+    {k:"nospend", n:"A no-spend month", g:"without"},
+    {k:"challenge", n:"A misogi – a big challenge", g:"adventure", pop:1, ways:["Pick something with a real chance I won't manage it","A date in the diary","Training for it","Telling people so I can't back out"]},
+    {k:"trek", n:"A long walk or trek", g:"adventure", ways:["Planning the route","Breaking in boots first","Building up the distance","Someone knows my route"]},
+    {k:"trip", n:"A trip somewhere new", g:"adventure"},
+    {k:"solo", n:"Something on my own", g:"adventure"},
+    {k:"learn", n:"Learning something from scratch", g:"adventure"},
+    {k:"camping", n:"Wild camping", g:"adventure"},
+    {k:"timeout", n:"Time out from work", g:"adventure"}
   ];
   var GENERAL = ["Write down why, and read it when it's hard","Tell one person","Count the days","Know your hard moments and plan for them","Start small","If you slip, start the count again – the days you did still count"];
-  function T(k){ for(var i = 0; i < TYPES.length; i++) if(TYPES[i].k === k) return TYPES[i]; return TYPES[TYPES.length - 1]; }
-  function looks(r, re, types){ return types.indexOf(r.type) > -1 || re.test(r.name || ""); }
-  function isSmoke(r){ return looks(r, /smok|cig|vap|nicotin|tobacco|roll.?up/i, ["smoking", "vaping"]); }
-  function isDrink(r){ return looks(r, /drink|alcohol|booze|wine|beer|lager|spirits|dry (jan|month)|sober/i, ["drinking"]); }
+  var WORDS = ["One day at a time.","I don't have to do this forever. Just today.","I've done hard things before.","The urge will pass whether I give in or not.","A slip is not a fall. Start the count again.","I'm doing this on purpose.","Notice it, name it, let it go by.","Every day counts, even the hard ones.","Future me is going to be glad.","Small steps still move me forward.","Hard is not the same as wrong.","I chose this."];
+  var FEEL = ["Craving","Irritable","Restless","Tired","Hungry","Headache","Low mood","Anxious","Can't sleep","Can't focus","Feeling good","Proud"];
+  var SECS = {
+    timer: {n:"Timer", d:"Counts the days and hours since you started, or down to the end."},
+    words: {n:"Words to keep me strong", d:"A line to read when it's hard. Add your own."},
+    about: {n:"All about my reset", d:"Why, how, and when it started and ends."},
+    tips: {n:"Tips", d:"Ways people go about this. Tick the ones you're trying."},
+    journal: {n:"Journal", d:"Quick notes, stamped with the time and filed by day."},
+    feel: {n:"Symptoms I'm noticing", d:"Log cravings, moods and symptoms with one tap."},
+    canvas: {n:"My thoughts", d:"A blank page to write whatever's on your mind."},
+    learn: {n:"Things I keep learning", d:"Facts and tips that keep coming up."}
+  };
+  var SEC_ORDER = ["timer","words","about","tips","journal","feel","canvas","learn"], SEC_DEFAULT = ["timer","words","about","tips","journal"];
+  var NHS_SMOKE = "https://www.nhs.uk/better-health/quit-smoking/", NHS_DRINK = "https://www.nhs.uk/live-well/alcohol-advice/";
+  var OWN = {k:"own", n:"", g:"stop"};
+  function T(k){ for(var i = 0; i < TYPES.length; i++) if(TYPES[i].k === k) return TYPES[i]; return OWN; }
+  function tOf(r){ return T(r.key); }
+  function gOf(r){ return GROUPS[r.g] || GROUPS.stop; }
+  function waysOf(t){ return t.ways || GROUPS[t.g].tips; }
+  function isSmoke(r){ return ["smoking","vaping"].indexOf(r.key) > -1 || /smok|cig|vap|nicotin|tobacco|roll.?up/i.test(r.name || ""); }
+  function isDrink(r){ return ["drinking","dry"].indexOf(r.key) > -1 || /drink|alcohol|booze|wine|beer|lager|spirits|sober/i.test(r.name || ""); }
+  function kindOf(r){ return r.g === "stop" ? (r.mode === "less" ? "Cutting down" : "Stopping") : gOf(r).kind; }
+  function extras(r){ var g = GROUPS[r.g] || {};
+    return (isSmoke(r) ? '<a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a>' : "")
+      + (isDrink(r) ? '<a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a>' : "")
+      + (r.key === "fast" ? '<p class="note">If you have a health condition or take medication, check with your GP before a fast.</p>' : "")
+      + (g.book ? '<p class="book">' + esc(g.book) + "</p>" : "")
+      + (r.g === "adventure" ? '<p class="note">Make sure someone knows where you are and when you\'ll be back.</p>' : ""); }
 
-  // ---------- Dates ----------
+  // ---------- Time ----------
+  var DAY = 864e5, MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], WD = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   function pad(n){ return (n < 10 ? "0" : "") + n; }
-  function ds(d){ return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
-  function today(){ return ds(new Date()); }
-  function dn(s){ var a = s.split("-"); return Math.round(Date.UTC(+a[0], a[1] - 1, +a[2]) / 864e5); }
-  var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], WD = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  function nice(s){ var a = s.split("-"), d = new Date(+a[0], a[1] - 1, +a[2]); return WD[d.getDay()] + " " + d.getDate() + " " + MON[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : ""); }
+  function ds(ms){ var d = new Date(ms); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function dayNo(ms){ var d = new Date(ms); return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY); }
+  function nice(ms){ var d = new Date(ms); return WD[d.getDay()] + " " + d.getDate() + " " + MON[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : ""); }
+  function hm(ms){ var d = new Date(ms); return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+  function toInput(ms){ var d = new Date(ms); return ds(ms) + "T" + pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+  function fromInput(v){ var t = v ? new Date(v).getTime() : NaN; return isNaN(t) ? null : t; }
   function days(n){ return n + (n === 1 ? " day" : " days"); }
-  function dayOf(r){ return dn(today()) - dn(r.start) + 1; }
-  // What the counter says: big line and small line
+  function dur(ms){ ms = Math.max(0, ms); var s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+    return (d ? days(d) + " " : "") + h + " hrs " + pad(m) + " min " + pad(x) + " sec"; }
+  function dayOf(r){ return dayNo(Date.now()) - dayNo(r.start) + 1; }
+  function totalDays(r){ return dayNo(r.end) - dayNo(r.start) + 1; }
+  function reached(r){ var d = Math.max(0, dayOf(r)); return r.end ? Math.min(d, totalDays(r)) : d; }
+  // The counter: big line, small line, and a live line that ticks
   function counter(r){
-    if(r.done) return {big: days(r.done.days), small: "Finished " + nice(r.done.at)};
-    var t = dn(today()), s = dn(r.start), d = t - s + 1;
-    if(t < s) return {big: "Starts in " + days(s - t), small: nice(r.start)};
-    if(r.end){ var e = dn(r.end), total = e - s + 1;
-      if(t > e) return {big: "Done – " + days(total), small: "Ended " + nice(r.end) + ". Tap Finish to fold it away."};
-      if(t === e) return {big: "Last day", small: "Day " + d + " of " + total};
-      return {big: days(e - t) + " to go", small: "Day " + d + " of " + total}; }
-    return {big: "Day " + d, small: "Since " + nice(r.start) + (r.best ? " · Best run: Day " + r.best : "")};
+    var now = Date.now();
+    if(r.done) return {big: days(r.done.days), small: "Finished " + nice(r.done.at), live: ""};
+    if(now < r.start) return {big: "Starts in " + days(dayNo(r.start) - dayNo(now)), small: nice(r.start) + " at " + hm(r.start), live: dur(r.start - now) + " to go"};
+    var d = dayOf(r);
+    if(r.end){
+      if(now >= r.end) return {big: "Done – " + days(totalDays(r)), small: "Ended " + nice(r.end) + ". Tap Finish to fold it away.", live: ""};
+      return {big: dayNo(r.end) === dayNo(now) ? "Last day" : days(dayNo(r.end) - dayNo(now)) + " to go", small: "Day " + d + " of " + totalDays(r), live: dur(r.end - now) + " left"};
+    }
+    return {big: "Day " + d, small: "Since " + nice(r.start) + " at " + hm(r.start) + (r.best ? " · Best run: Day " + r.best : ""), live: dur(now - r.start)};
   }
-  function reached(r){ var d = Math.max(0, dayOf(r)); if(r.end) d = Math.min(d, dn(r.end) - dn(r.start) + 1); return d; }
 
   // ---------- Saving (on this phone) ----------
   // A page has a random code. The code is the only key: whoever has the link has the page.
   var CKEY = "dueareset-code-v1", PKEY = "dueareset-p-", CODE = "", P = null;
   function newCode(){ var a = "abcdefghjkmnpqrstuvwxyz23456789", o = "", c = new Uint32Array(12); crypto.getRandomValues(c); for(var i = 0; i < 12; i++) o += a[c[i] % a.length]; return o; }
-  function loadPage(code){ try{ var j = localStorage.getItem(PKEY + code); return j ? JSON.parse(j) : null; }catch(e){ return null; } }
+  function fix(p){ // bring pages saved by earlier versions up to date
+    p.resets = p.resets || [];
+    p.resets.forEach(function(r){
+      if(typeof r.start === "string") r.start = new Date(r.start + "T00:00").getTime();
+      if(typeof r.end === "string") r.end = r.end ? new Date(r.end + "T23:59").getTime() : null;
+      if(r.type && !r.key){ r.key = r.type === "other" ? "own" : r.type; delete r.type; }
+      if(!r.g) r.g = T(r.key).g || "stop";
+      if(!r.secs) r.secs = SEC_DEFAULT.slice();
+      ["notes","learn","feel","words","ways"].forEach(function(f){ if(!Array.isArray(r[f])) r[f] = []; });
+      if(r.canvas == null) r.canvas = ""; if(r.how == null) r.how = ""; if(r.why == null) r.why = "";
+      delete r.pub; delete r.fname;
+      if(r.done && typeof r.done.at === "string") r.done.at = new Date(r.done.at + "T12:00").getTime();
+    }); p.v = 3; return p; }
+  function loadPage(code){ try{ var j = localStorage.getItem(PKEY + code); return j ? fix(JSON.parse(j)) : null; }catch(e){ return null; } }
   function save(){ if(!CODE || !P) return; P.t = Date.now(); try{ localStorage.setItem(PKEY + CODE, JSON.stringify(P)); localStorage.setItem(CKEY, CODE); }catch(e){} }
+  var saveT; function saveSoon(){ clearTimeout(saveT); saveT = setTimeout(save, 400); }
   try{ CODE = localStorage.getItem(CKEY) || ""; }catch(e){}
   if(CODE) P = loadPage(CODE);
   if(!P) CODE = "";
@@ -299,12 +368,10 @@ footer p{margin:6px 0}
   function pageUrl(){ return BASE + "#p=" + CODE; }
   function find(id){ if(!P) return null; for(var i = 0; i < P.resets.length; i++) if(P.resets[i].id === id) return P.resets[i]; return null; }
 
-  // ---------- Toast with undo ----------
+  // ---------- Toast with undo, and our own "are you sure?" box ----------
   var toastT;
   function toast(msg, undo){ $("toastMsg").textContent = msg; var u = $("toastUndo"); u.hidden = !undo; u.onclick = function(){ $("toast").hidden = true; if(undo) undo(); };
     $("toast").hidden = false; clearTimeout(toastT); toastT = setTimeout(function(){ $("toast").hidden = true; }, undo ? 6000 : 2600); }
-
-  // Our own "are you sure?" box (works everywhere, unlike the browser's pop-up)
   var askCb = null;
   function ask(msg, yes, cb){ $("askMsg").textContent = msg; $("askYes").textContent = yes; askCb = cb; $("ask").hidden = false; $("askNo").focus(); }
   function askClose(){ $("ask").hidden = true; askCb = null; }
@@ -312,139 +379,188 @@ footer p{margin:6px 0}
   $("ask").addEventListener("click", function(e){ if(e.target === this) askClose(); });
   $("askYes").addEventListener("click", function(){ var cb = askCb; askClose(); if(cb) cb(); });
 
-  // ---------- The reset form (used on the front page, and in a sheet for add/edit) ----------
-  var F = {type:"", ways:[], editing:null};
-  function drawTypes(){ $("fTypes").innerHTML = TYPES.map(function(t){ return '<button type="button" class="chip" data-k="' + t.k + '" aria-pressed="' + (F.type === t.k) + '">' + esc(t.n) + '</button>'; }).join(""); }
-  function drawWays(){ var list = T(F.type || "other").ways.slice();
-    F.ways.forEach(function(w){ if(list.indexOf(w) < 0) list.push(w); });
-    $("fWays").innerHTML = list.map(function(w){ return '<button type="button" class="chip" data-w="' + esc(w) + '" aria-pressed="' + (F.ways.indexOf(w) > -1) + '">' + esc(w) + '</button>'; }).join("");
-    $("fGp").hidden = F.type !== "fast"; }
-  function fillForm(r){ F.editing = r ? r.id : null; F.type = r ? r.type : ""; F.ways = r ? (r.ways || []).slice() : [];
-    $("fName").value = r ? r.name : ""; $("fWhy").value = r ? r.why : ""; $("fStart").value = r ? r.start : today(); $("fEnd").value = r ? (r.end || "") : ""; $("fHow").value = r ? r.how : ""; $("fPub").checked = r ? !!r.pub : false;
-    $("fGo").textContent = r ? "Save" : (P ? "Add it" : "Start one"); $("fDel").hidden = !r; $("fEndClear").hidden = !$("fEnd").value;
-    drawTypes(); drawWays(); }
-  $("fTypes").addEventListener("click", function(e){ var b = e.target.closest(".chip"); if(!b) return; F.type = F.type === b.dataset.k ? "" : b.dataset.k; drawTypes(); drawWays(); });
-  $("fWays").addEventListener("click", function(e){ var b = e.target.closest(".chip"); if(!b) return; var w = b.dataset.w, i = F.ways.indexOf(w); if(i > -1) F.ways.splice(i, 1); else F.ways.push(w); drawWays(); });
-  $("fEnd").addEventListener("input", function(){ $("fEndClear").hidden = !this.value; });
-  $("fEndClear").addEventListener("click", function(){ $("fEnd").value = ""; this.hidden = true; });
-  $("rf").addEventListener("submit", function(e){ e.preventDefault();
-    var name = $("fName").value.trim(), type = F.type || (name ? "other" : "");
-    if(!type){ toast("Pick what you're resetting first"); $("fTypes").scrollIntoView({block:"center", behavior:"smooth"}); return; }
-    var start = $("fStart").value || today(), end = $("fEnd").value || "";
-    if(end && dn(end) < dn(start)){ toast("The end date is before the start"); return; }
-    var data = {type:type, name:name || T(type).n, why:$("fWhy").value.trim(), start:start, end:end, how:$("fHow").value.trim().replace(/https?:\/\/\S+|www\.\S+/gi, "").replace(/\s+/g, " ").trim().slice(0, 80), ways:F.ways.slice(), pub:$("fPub").checked};
-    if(F.editing){ var r = find(F.editing); if(r) Object.assign(r, data); save(); closeSheet(); render(); toast("Saved"); return; }
-    var fresh = !P;
-    if(fresh){ CODE = newCode(); P = {v:1, resets:[], ack:false}; }
-    var nr = Object.assign({id:uid(), notes:[], learn:[], best:0, done:null, made:Date.now()}, data);
-    P.resets.push(nr); save(); closeSheet(); fillForm(null);
-    if(fresh) go("#p=" + CODE); else { go("#p=" + CODE); toast("Added"); }
-  });
-  $("fDel").addEventListener("click", function(){ var r = find(F.editing); if(!r) return;
-    ask("Delete \"" + r.name + "\" and all its notes? To keep it, use Finish instead.", "Delete", function(){
-      P.resets = P.resets.filter(function(x){ return x !== r; }); save(); closeSheet(); go("#p=" + CODE); toast("Deleted"); }); });
+  // ---------- Chip pickers: a few popular ones, "Show all" opens the long list by group ----------
+  function picker(sel, open){
+    var chip = function(t){ return '<button type="button" class="chip" data-k="' + t.k + '" aria-pressed="' + (sel.indexOf(t.k) > -1) + '">' + esc(t.n) + "</button>"; };
+    var h = open
+      ? Object.keys(GROUPS).map(function(g){ return '<div class="grp">' + esc(GROUPS[g].n) + '</div><div class="chips">' + TYPES.filter(function(t){ return t.g === g; }).map(chip).join("") + "</div>"; }).join("")
+      : '<div class="chips">' + TYPES.filter(function(t){ return t.pop || sel.indexOf(t.k) > -1; }).map(chip).join("") + "</div>";
+    return h + '<button type="button" class="more" data-more="1">' + (open ? "Show fewer" : "Show all " + TYPES.length + " →") + "</button>";
+  }
 
-  // Sheet: the same form, moved into a pop-up
-  function openSheet(r){ fillForm(r); $("sheetTitle").textContent = r ? "Edit" : "Add a reset"; $("sheetSlot").appendChild($("rf")); $("sheet").hidden = false; document.body.style.overflow = "hidden"; $("sheet").scrollTop = 0; }
-  function closeSheet(){ if($("sheet").hidden) return; $("sheet").hidden = true; document.body.style.overflow = ""; $("formSlot").appendChild($("rf")); fillForm(null); }
+  // ---------- The start form: in your words, or tap as many as you like ----------
+  var F = {sel:[], open:false};
+  function drawForm(){ $("fPick").innerHTML = picker(F.sel, F.open); $("fGo").textContent = P ? "Add " + (F.sel.length > 1 ? "them" : "it") : "Start one"; }
+  function resetForm(){ F.sel = []; F.open = false; $("fName").value = ""; drawForm(); }
+  $("fPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return;
+    if(b.dataset.more){ F.open = !F.open; drawForm(); return; }
+    var i = F.sel.indexOf(b.dataset.k); if(i > -1) F.sel.splice(i, 1); else F.sel.push(b.dataset.k); drawForm(); });
+  function makeReset(key, name){ var t = T(key); return {id:uid(), key:key, g:t.g || "stop", mode:"stop", name:name || t.n, why:"", how:"", ways:[], start:Date.now(), end:null,
+    secs:SEC_DEFAULT.slice(), notes:[], learn:[], feel:[], words:[], canvas:"", best:0, done:null, made:Date.now()}; }
+  $("rf").addEventListener("submit", function(e){ e.preventDefault();
+    var typed = $("fName").value.trim(), keys = F.sel.slice();
+    if(typed){ var match = TYPES.filter(function(t){ return t.n.toLowerCase() === typed.toLowerCase(); })[0]; if(match){ if(keys.indexOf(match.k) < 0) keys.push(match.k); typed = ""; } }
+    if(!typed && !keys.length){ toast("Type what you're resetting, or tap one below"); $("fName").focus(); return; }
+    var fresh = !P; if(fresh){ CODE = newCode(); P = {v:3, resets:[], ack:false}; }
+    var made = keys.map(function(k){ return makeReset(k); }); if(typed) made.push(makeReset("own", typed));
+    made.forEach(function(r){ P.resets.push(r); }); save(); closeSheet(); resetForm();
+    go(made.length === 1 ? "#p=" + CODE + "&r=" + made[0].id : "#p=" + CODE);
+    if(!fresh) toast(made.length === 1 ? "Added" : made.length + " added"); });
+
+  // The same form pops up on your page for "Add another reset"
+  function openSheet(){ resetForm(); $("sheetSlot").appendChild($("rf")); $("sheet").hidden = false; document.body.style.overflow = "hidden"; $("sheet").scrollTop = 0; }
+  function closeSheet(){ if($("sheet").hidden) return; $("sheet").hidden = true; document.body.style.overflow = ""; $("formSlot").appendChild($("rf")); resetForm(); }
   $("sheetX").addEventListener("click", closeSheet);
   $("sheet").addEventListener("click", function(e){ if(e.target === this) closeSheet(); });
   document.addEventListener("keydown", function(e){ if(e.key === "Escape"){ if(!$("ask").hidden) askClose(); else closeSheet(); } });
 
-  // ---------- Front page: the public list ----------
-  var LSEL = "smoking";
+  // ---------- Front page: the public list of common resets and ways ----------
+  var L = {sel:"smoking", open:false};
   function drawList(){
-    $("rank").innerHTML = TYPES.filter(function(t){ return t.k !== "other"; }).map(function(t){ return '<li><button type="button" class="chip" data-k="' + t.k + '" aria-pressed="' + (LSEL === t.k) + '">' + esc(t.n) + '</button></li>'; }).join("");
-    var t = T(LSEL), r = {type:t.k, name:""};
-    $("waysBox").innerHTML = '<h3 style="font-size:1.2rem;margin-bottom:4px">' + esc(t.n) + ' – ways people go about it</h3><ul class="ways">' + t.ways.map(function(w){ return "<li>" + esc(w) + "</li>"; }).join("") + "</ul>"
-      + (isSmoke(r) ? '<a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a>' : "")
-      + (isDrink(r) ? '<a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a>' : "")
-      + (t.k === "fast" ? '<p class="note">If you have a health condition or take medication, check with your GP before a fast.</p>' : "");
+    $("lPick").innerHTML = picker([L.sel], L.open);
+    var t = T(L.sel);
+    $("waysBox").innerHTML = '<h3 style="font-size:1.2rem;margin-bottom:4px">' + esc(t.n) + ' – ' + (t.ways ? "ways people go about it" : "what often helps") + '</h3><ul class="ways">' + waysOf(t).map(function(w){ return "<li>" + esc(w) + "</li>"; }).join("") + "</ul>" + extras({key:t.k, g:t.g, name:""});
     $("general").innerHTML = GENERAL.map(function(g){ return "<li>" + esc(g) + "</li>"; }).join("");
   }
-  $("rank").addEventListener("click", function(e){ var b = e.target.closest(".chip"); if(!b) return; LSEL = b.dataset.k; drawList(); });
-
+  $("lPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; if(b.dataset.more) L.open = !L.open; else L.sel = b.dataset.k; drawList(); });
   $("heroGo").addEventListener("click", function(e){ e.preventDefault(); $("formSlot").scrollIntoView({behavior:"smooth", block:"start"}); });
   $("myBtn").addEventListener("click", function(){ go("#p=" + CODE); });
   $("haveGo").addEventListener("click", function(){ var v = $("haveIn").value.trim().toLowerCase(), m = v.match(/p=([a-z0-9]{12})/) || v.match(/^([a-z0-9]{12})$/);
     if(!m){ toast("That doesn't look like a DueAReset link or code"); return; } $("haveIn").value = ""; go("#p=" + m[1]); });
 
-  // ---------- My page ----------
-  function cardHTML(r){ var c = counter(r);
-    return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + T(r.type).c + '"><div class="rtop"><span class="rname">' + esc(r.name) + '</span><span class="rcount">' + esc(c.big) + '</span></div>'
-      + (r.why ? '<div class="rwhy">' + esc(r.why) + "</div>" : "") + "</button>"; }
+  // ---------- Save-your-link box (shown until they say they've saved it) ----------
+  function saveBoxHTML(){ return P && !P.ack ? '<section class="card save"><h2>Save this link</h2><p style="margin:0">It\'s the only way back to your page. There\'s no account, so if you lose it, nobody can find it for you.</p>'
+    + '<div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>'
+    + '<p class="small homeHow" hidden style="margin:10px 0 0">iPhone: tap the Share button, then "Add to Home Screen". Android: tap the ⋮ menu, then "Add to Home screen".</p>'
+    + '<input class="field linkShow" readonly hidden aria-label="Your link" style="margin-top:10px"><div class="row"><button class="btn" type="button" data-act="ack" style="padding:9px 16px;font-size:.95rem">I\'ve saved it</button></div></section>' : ""; }
+  function copyLink(){ var u = pageUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function(){ toast("Link copied"); }, function(){ document.querySelectorAll(".linkShow").forEach(function(x){ x.value = u; x.hidden = false; }); toast("Select the link and copy it"); }); }
+  function sendLink(){ var u = pageUrl(); if(navigator.share){ navigator.share({title:"My DueAReset page", text:"My DueAReset page – keep this link:", url:u}).catch(function(){}); return; }
+    location.href = "mailto:?subject=" + encodeURIComponent("My DueAReset page") + "&body=" + encodeURIComponent("Keep this link – it's the only way back to my page:\n" + u); }
+  function linkActs(e){ var b = e.target.closest("[data-act]"); if(!b) return; var a = b.dataset.act;
+    if(a === "copy") copyLink(); else if(a === "send") sendLink();
+    else if(a === "home"){ var h = b.closest("section").querySelector(".homeHow"); h.hidden = !h.hidden; }
+    else if(a === "ack"){ P.ack = true; save(); b.closest("section").remove(); } }
+  $("mine").addEventListener("click", linkActs);
+
+  // ---------- My resets ----------
   function renderMine(){
-    $("saveBox").hidden = !!P.ack;
+    document.querySelector("#mine .saveSlot").innerHTML = saveBoxHTML();
     var live = P.resets.filter(function(r){ return !r.done; }), done = P.resets.filter(function(r){ return r.done; });
-    $("cards").innerHTML = live.length ? live.map(cardHTML).join("") : '<p class="empty">Nothing on the go. Add a reset below.</p>';
+    $("cards").innerHTML = live.length ? live.map(function(r){ var c = counter(r);
+      return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + gOf(r).c + '"><div class="rkind">' + esc(kindOf(r)) + '</div><div class="rtop"><span class="rname">' + esc(r.name) + '</span><span class="rcount">' + esc(c.big) + "</span></div></button>"; }).join("")
+      : '<p class="empty">Nothing on the go. Add a reset below.</p>';
     $("doneBox").hidden = !done.length;
     $("doneList").innerHTML = done.map(function(r){ return '<div class="drow"><button type="button" class="name" data-id="' + r.id + '">' + esc(r.name) + ' – <b>' + days(r.done.days) + '</b></button><button type="button" class="ghost" data-reopen="' + r.id + '">Reopen</button></div>'; }).join("");
   }
   $("cards").addEventListener("click", function(e){ var b = e.target.closest(".rcard"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
   $("doneList").addEventListener("click", function(e){ var b = e.target.closest("[data-reopen]"); if(b){ reopen(find(b.dataset.reopen)); return; } b = e.target.closest("[data-id]"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
-  $("addBtn").addEventListener("click", function(){ openSheet(null); });
-  $("saveOk").addEventListener("click", function(){ P.ack = true; save(); renderMine(); });
-  function copyLink(){ var u = pageUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function(){ toast("Link copied"); }, function(){ document.querySelectorAll(".linkShow").forEach(function(x){ x.value = u; x.hidden = false; }); toast("Select the link and copy it"); }); }
-  function sendLink(){ var u = pageUrl(); if(navigator.share){ navigator.share({title:"My DueAReset page", text:"My DueAReset page – keep this link:", url:u}).catch(function(){}); return; }
-    location.href = "mailto:?subject=" + encodeURIComponent("My DueAReset page") + "&body=" + encodeURIComponent("Keep this link – it's the only way back to my page:\n" + u); }
-  $("mine").addEventListener("click", function(e){ var b = e.target.closest("[data-act]"); if(!b) return; var a = b.dataset.act;
-    if(a === "copy") copyLink(); else if(a === "send") sendLink(); else if(a === "home"){ var h = b.closest("section").querySelector(".homeHow"); h.hidden = !h.hidden; } });
+  $("addBtn").addEventListener("click", openSheet);
   $("delPage").addEventListener("click", function(){
     ask("Delete your page and everything on it? This can't be undone.", "Delete my page", function(){
       try{ localStorage.removeItem(PKEY + CODE); localStorage.removeItem(CKEY); }catch(e){}
-      CODE = ""; P = null; fillForm(null); go("#"); toast("Your page has been deleted"); }); });
+      CODE = ""; P = null; resetForm(); go("#"); toast("Your page has been deleted"); }); });
 
-  // ---------- One reset ----------
-  function fmtTime(ts){ var d = new Date(ts); return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+  // ---------- One reset: a page built from sections ----------
+  var wordIx = {};
+  function wordsFor(r){ return r.words.concat(WORDS); }
+  function byDay(list, r, rowFn){ var groups = {}, order = [], tday = ds(Date.now()), yday = ds(Date.now() - DAY);
+    list.slice().sort(function(a, b){ return b.ts - a.ts; }).forEach(function(n){ var k = ds(n.ts); if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(n); });
+    return order.map(function(k){ var ms = groups[k][0].ts, label = k === tday ? "Today" : k === yday ? "Yesterday" : nice(ms), dd = dayNo(ms) - dayNo(r.start) + 1;
+      return '<details class="jday"' + (k === tday ? " open" : "") + '><summary>' + label + (dd > 0 ? ' <span class="dn">· Day ' + dd + "</span>" : "") + ' <span class="dn">· ' + groups[k].length + '</span></summary>' + groups[k].map(rowFn).join("") + "</details>"; }).join(""); }
+  var SECTION = {
+    timer: function(r){ var c = counter(r);
+      return '<div class="big" data-live="big">' + esc(c.big) + '</div><div class="small" data-live="small">' + esc(c.small) + '</div><div class="live" data-live="live">' + esc(c.live) + "</div>"
+        + (!r.done && !r.end && dayOf(r) > 1 ? '<div class="row" style="margin-top:12px"><button type="button" class="ghost" data-a="restart">Start the count again</button></div>' : ""); },
+    words: function(r){ var all = wordsFor(r), i = (wordIx[r.id] || 0) % all.length;
+      return '<p class="words">' + esc(all[i]) + '</p><div class="row"><button type="button" class="ghost" data-a="nextword">Another one</button></div>'
+        + '<div class="jin" style="margin-top:14px"><input class="field" id="wIn" maxlength="140" placeholder="Add my own words"><button type="button" class="ghost" data-a="addword">Add</button></div>'
+        + r.words.map(function(w, j){ return '<div class="litem"><p>' + esc(w) + '</p><button type="button" class="x" data-dword="' + j + '" aria-label="Delete">×</button></div>'; }).join(""); },
+    about: function(r){
+      return '<label class="lbl" for="aName" style="margin-top:0">Name</label><input class="field" id="aName" data-f="name" maxlength="40" value="' + esc(r.name) + '">'
+        + (r.g === "stop" ? '<div class="lbl">Stopping or cutting down?</div><div class="chips"><button type="button" class="chip" data-mode="stop" aria-pressed="' + (r.mode !== "less") + '">Stopping</button><button type="button" class="chip" data-mode="less" aria-pressed="' + (r.mode === "less") + '">Cutting down</button></div>' : "")
+        + '<label class="lbl" for="aWhy">Why? <span>(as little or as much as you like)</span></label><textarea class="field" id="aWhy" data-f="why" maxlength="4000">' + esc(r.why) + "</textarea>"
+        + '<label class="lbl" for="aHow">How I\'m doing it</label>'
+        + (r.ways.length ? '<div class="hchips" style="margin-bottom:8px">' + r.ways.map(function(w){ return '<span class="hchip">' + esc(w) + "</span>"; }).join("") + "</div>" : "")
+        + '<input class="field" id="aHow" data-f="how" maxlength="120" placeholder="' + (r.ways.length ? "Anything else" : "Cold turkey, patches, only at weekends…") + '" value="' + esc(r.how) + '">'
+        + (r.ways.length ? "" : '<p class="small" style="margin:6px 0 0">Or tap "I\'m trying this" on any of the Tips.</p>')
+        + '<div class="two"><div><label class="lbl" for="aStart">Started</label><input class="field" type="datetime-local" id="aStart" value="' + toInput(r.start) + '"></div>'
+        + '<div><label class="lbl" for="aEnd">Ends <span>(optional)</span></label><input class="field" type="datetime-local" id="aEnd" value="' + (r.end ? toInput(r.end) : "") + '"></div></div>'
+        + '<p class="small" style="margin:6px 0 0">Leave "Ends" blank to count up. Give it an end to count down – a fast or a dry month has an end, a quit doesn\'t.' + (r.end ? ' <button type="button" class="link" data-a="noend">Clear end</button>' : "") + "</p>"; },
+    tips: function(r){ var t = tOf(r), list = (t.ways || []).concat(gOf(r).tips);
+      list = list.filter(function(w, i){ return list.indexOf(w) === i; });
+      return '<ul class="ways">' + list.map(function(w){ var on = r.ways.indexOf(w) > -1; return '<li><span>' + esc(w) + '</span><button type="button" class="doing" data-way="' + esc(w) + '" aria-pressed="' + on + '">' + (on ? "Trying ✓" : "I'm trying this") + "</button></li>"; }).join("") + "</ul>" + extras(r); },
+    journal: function(r){ return '<div class="jin"><textarea class="field" id="jIn" rows="2" maxlength="2000" placeholder="A thought, a craving, a good moment…"></textarea><button type="button" class="ghost" data-a="addnote">Add</button></div>'
+      + (byDay(r.notes, r, function(n){ return '<div class="jnote"><time>' + hm(n.ts) + '</time><p>' + esc(n.t) + '</p><button type="button" class="x" data-dnote="' + n.id + '" aria-label="Delete note">×</button></div>'; })
+        || '<p class="empty">Nothing yet. Type and press Enter – it\'s stamped with the time and filed under today.</p>'); },
+    feel: function(r){ return '<p class="small" style="margin:0 0 8px">Tap to log it now:</p><div class="chips">' + FEEL.map(function(f){ return '<button type="button" class="chip" data-feel="' + esc(f) + '">' + esc(f) + "</button>"; }).join("") + "</div>"
+      + '<div class="jin" style="margin-top:10px"><input class="field" id="fIn" maxlength="200" placeholder="Something else"><button type="button" class="ghost" data-a="addfeel">Log</button></div>'
+      + byDay(r.feel, r, function(n){ return '<div class="jnote"><time>' + hm(n.ts) + '</time><p>' + esc(n.t) + '</p><button type="button" class="x" data-dfeel="' + n.id + '" aria-label="Delete">×</button></div>'; }); },
+    canvas: function(r){ return '<textarea class="canvas" id="cIn" data-f="canvas" placeholder="Anything on your mind. This is just for you.">' + esc(r.canvas) + "</textarea>"; },
+    learn: function(r){ return '<div class="jin"><input class="field" id="lIn" maxlength="300" placeholder="A fact or tip that keeps coming up"><button type="button" class="ghost" data-a="addlearn">Add</button></div>'
+      + (r.learn.length ? r.learn.map(function(l){ return '<div class="litem"><p>' + esc(l.t) + '</p><button type="button" class="x" data-dlearn="' + l.id + '" aria-label="Delete">×</button></div>'; }).join("") : '<p class="empty">Nothing yet.</p>'); }
+  };
   function renderDetail(r){
-    var c = counter(r), t = T(r.type), tday = today(), groups = {}, order = [];
-    r.notes.slice().sort(function(a, b){ return b.ts - a.ts; }).forEach(function(n){ var k = ds(new Date(n.ts)); if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(n); });
-    var yday = ds(new Date(Date.now() - 864e5));
-    var journal = order.map(function(k){ var label = k === tday ? "Today" : k === yday ? "Yesterday" : nice(k), dd = dn(k) - dn(r.start) + 1;
-      return '<details class="jday"' + (k === tday ? " open" : "") + '><summary>' + label + (dd > 0 ? ' <span class="dn">· Day ' + dd + "</span>" : "") + ' <span class="dn">· ' + groups[k].length + '</span></summary>'
-        + groups[k].map(function(n){ return '<div class="jnote"><time>' + fmtTime(n.ts) + '</time><p>' + esc(n.t) + '</p><button type="button" class="x" data-dnote="' + n.id + '" aria-label="Delete note">×</button></div>'; }).join("") + "</details>"; }).join("");
-    var h = '<button type="button" class="back" data-go="mine">← My resets</button>'
-      + (r.name !== t.n ? '<div class="dtype">' + esc(t.n) + "</div>" : '<div class="dtype">&nbsp;</div>')
-      + '<h1 class="dname">' + esc(r.name) + "</h1>"
-      + '<div class="big" style="--c:' + t.c + '">' + esc(c.big) + '</div><div class="small">' + esc(c.small) + "</div>"
-      + '<div class="row acts">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>'
-        : '<button type="button" class="ghost" data-a="edit">Edit</button>' + (!r.end && dayOf(r) > 1 ? '<button type="button" class="ghost" data-a="restart">Start the count again</button>' : "") + '<button type="button" class="ghost" data-a="finish">Finish</button>') + "</div>";
-    if(r.why) h += '<section class="card"><h2>Why</h2><div class="why">' + esc(r.why) + "</div></section>";
-    if((r.ways && r.ways.length) || r.how) h += '<section class="card"><h2>How I\'m doing it</h2><div class="hchips">' + (r.ways || []).map(function(w){ return '<span class="hchip">' + esc(w) + "</span>"; }).join("") + "</div>" + (r.how ? '<p style="margin:8px 0 0">' + esc(r.how) + "</p>" : "") + "</section>";
-    if(isSmoke(r)) h += '<p><a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a></p>';
-    if(isDrink(r)) h += '<p><a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a></p>';
-    if(r.type === "fast" && !r.done) h += '<p class="note">If you have a health condition or take medication, check with your GP before a fast.</p>';
-    h += '<section class="card"><h2>Journal</h2><div class="jin"><textarea class="field" id="jIn" rows="2" maxlength="2000" placeholder="A thought, a craving, a good moment…"></textarea><button type="button" class="ghost" id="jAdd">Add</button></div>'
-      + (journal || '<p class="empty">Nothing yet. Anything you notice goes here – cravings, how you slept, a good moment.</p>') + "</section>";
-    h += '<section class="card"><h2>Things I keep learning</h2><div class="jin"><input class="field" id="lIn" maxlength="300" placeholder="A fact or tip that keeps coming up"><button type="button" class="ghost" id="lAdd">Add</button></div>'
-      + (r.learn.length ? r.learn.map(function(l){ return '<div class="litem"><p>' + esc(l.t) + '</p><button type="button" class="x" data-dlearn="' + l.id + '" aria-label="Delete">×</button></div>'; }).join("") : '<p class="empty">Nothing yet.</p>') + "</section>";
-    h += '<section class="card"><label class="switch"><input type="checkbox" id="pubSw"' + (r.pub ? " checked" : "") + '><span><b>Count me in on the public list</b><br><span class="small">Only the type of reset and how you\'re doing it. Never your why, your notes or your link.</span></span></label></section>';
+    var g = gOf(r), secs = r.secs.filter(function(s){ return SECTION[s]; }), hidden = SEC_ORDER.filter(function(s){ return secs.indexOf(s) < 0; });
+    var h = '<button type="button" class="back" data-a="back">← My resets</button>' + saveBoxHTML()
+      + '<div class="dkind" style="--c:' + g.c + '">' + esc(kindOf(r)) + '</div><h1 class="dname">' + esc(r.name) + "</h1>";
+    secs.forEach(function(s, i){
+      h += '<section class="card" data-sec="' + s + '" style="--c:' + g.c + '"><div class="shead"><h2>' + esc(SECS[s].n) + '</h2><div class="sctl">'
+        + (i > 0 ? '<button type="button" data-up="' + s + '" aria-label="Move up">↑</button>' : "") + (i < secs.length - 1 ? '<button type="button" data-down="' + s + '" aria-label="Move down">↓</button>' : "")
+        + '<button type="button" data-hide="' + s + '" aria-label="Take off my page">×</button></div></div>' + SECTION[s](r) + "</section>"; });
+    if(hidden.length) h += '<section class="card"><h2 style="font-size:1.2rem;margin-bottom:4px">Add to my page</h2><div class="addsec">' + hidden.map(function(s){ return '<button type="button" data-show="' + s + '"><b>+ ' + esc(SECS[s].n) + "</b><span>" + esc(SECS[s].d) + "</span></button>"; }).join("") + "</div></section>";
+    h += '<div class="foot">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>' : '<button type="button" class="ghost" data-a="finish">Finish this reset</button>') + '<button type="button" class="link danger" data-a="delete">Delete this reset</button></div>';
     var m = $("detail"); m.innerHTML = h; m.dataset.id = r.id;
   }
   function current(){ return find($("detail").dataset.id); }
-  function addNote(){ var r = current(), v = $("jIn").value.trim(); if(!r || !v) return; r.notes.push({id:uid(), ts:Date.now(), t:v}); save(); renderDetail(r); $("jIn").focus(); }
-  function addLearn(){ var r = current(), v = $("lIn").value.trim(); if(!r || !v) return; r.learn.unshift({id:uid(), t:v}); save(); renderDetail(r); $("lIn").focus(); }
+  function redraw(r, focusId){ var y = window.scrollY; renderDetail(r); window.scrollTo(0, y); if(focusId && $(focusId)) $(focusId).focus(); }
+  function addTo(list, id, r){ var v = $(id).value.trim(); if(!v) return; list.push({id:uid(), ts:Date.now(), t:v}); save(); redraw(r, id); }
+  function addLearn(r){ var v = $("lIn").value.trim(); if(!v) return; r.learn.unshift({id:uid(), t:v}); save(); redraw(r, "lIn"); }
+  function addWord(r){ var w = $("wIn").value.trim(); if(!w) return; r.words.unshift(w); wordIx[r.id] = 0; save(); redraw(r); toast("Added to your words"); }
   function reopen(r){ if(!r) return; r.done = null; save(); render(); toast("Reopened"); }
-  $("detail").addEventListener("keydown", function(e){
-    if(e.target.id === "jIn" && e.key === "Enter" && !e.shiftKey){ e.preventDefault(); addNote(); }
-    if(e.target.id === "lIn" && e.key === "Enter"){ e.preventDefault(); addLearn(); } });
-  $("detail").addEventListener("change", function(e){ if(e.target.id === "pubSw"){ var r = current(); r.pub = e.target.checked; save(); toast(r.pub ? "Counted in on the public list" : "Taken off the public list"); } });
-  $("detail").addEventListener("click", function(e){ var r = current(), b = e.target.closest("button"); if(!r || !b) return;
-    if(b.id === "jAdd") return addNote();
-    if(b.id === "lAdd") return addLearn();
-    if(b.dataset.go) return go("#p=" + CODE);
-    if(b.dataset.dnote){ var i = r.notes.findIndex(function(n){ return n.id === b.dataset.dnote; }), gone = r.notes.splice(i, 1)[0]; save(); renderDetail(r);
-      return toast("Note deleted", function(){ r.notes.push(gone); save(); renderDetail(r); }); }
-    if(b.dataset.dlearn){ var j = r.learn.findIndex(function(n){ return n.id === b.dataset.dlearn; }), lg = r.learn.splice(j, 1)[0]; save(); renderDetail(r);
-      return toast("Deleted", function(){ r.learn.splice(j, 0, lg); save(); renderDetail(r); }); }
-    var a = b.dataset.a;
-    if(a === "edit") openSheet(r);
+  function removeWithUndo(r, list, id, msg){ var i = list.findIndex(function(n){ return n.id === id; }); if(i < 0) return; var gone = list.splice(i, 1)[0]; save(); redraw(r);
+    toast(msg, function(){ list.splice(i, 0, gone); save(); redraw(r); }); }
+  $("detail").addEventListener("keydown", function(e){ var r = current(); if(!r || e.key !== "Enter") return; var id = e.target.id;
+    if(id === "jIn" && !e.shiftKey){ e.preventDefault(); addTo(r.notes, "jIn", r); }
+    else if(id === "fIn"){ e.preventDefault(); addTo(r.feel, "fIn", r); }
+    else if(id === "lIn"){ e.preventDefault(); addLearn(r); }
+    else if(id === "wIn"){ e.preventDefault(); addWord(r); } });
+  // Typing in "All about my reset" and "My thoughts" saves as you go
+  $("detail").addEventListener("input", function(e){ var r = current(), f = e.target.dataset.f; if(!r || !f) return;
+    r[f] = f === "name" ? (e.target.value.trim() || tOf(r).n || "My reset") : e.target.value; saveSoon();
+    if(f === "name") document.querySelector("#detail .dname").textContent = r.name; });
+  $("detail").addEventListener("change", function(e){ var r = current(); if(!r) return;
+    if(e.target.id === "aStart"){ var s = fromInput(e.target.value); if(s == null) return; if(r.end && s >= r.end){ toast("The start has to be before the end"); e.target.value = toInput(r.start); return; } r.start = s; save(); redraw(r); }
+    if(e.target.id === "aEnd"){ var en = fromInput(e.target.value); if(en != null && en <= r.start){ toast("The end has to be after the start"); e.target.value = r.end ? toInput(r.end) : ""; return; } r.end = en; save(); redraw(r); } });
+  $("detail").addEventListener("click", function(e){ var r = current(), b = e.target.closest("button"); if(!r || !b) return; var d = b.dataset;
+    if(d.act) return linkActs(e);
+    if(d.up || d.down){ var s = d.up || d.down, i = r.secs.indexOf(s), j = d.up ? i - 1 : i + 1; r.secs.splice(i, 1); r.secs.splice(j, 0, s); save(); return redraw(r); }
+    if(d.hide){ var at = r.secs.indexOf(d.hide), hs = d.hide; r.secs.splice(at, 1); save(); redraw(r); return toast(SECS[hs].n + " taken off – what you wrote is kept", function(){ r.secs.splice(at, 0, hs); save(); redraw(r); }); }
+    if(d.show){ r.secs.push(d.show); save(); redraw(r); var el = document.querySelector('[data-sec="' + d.show + '"]'); if(el) el.scrollIntoView({behavior:"smooth", block:"center"}); return; }
+    if(d.mode){ r.mode = d.mode; save(); return redraw(r); }
+    if(d.way){ var wi = r.ways.indexOf(d.way); if(wi > -1) r.ways.splice(wi, 1); else r.ways.push(d.way); save(); return redraw(r); }
+    if(d.feel){ r.feel.push({id:uid(), ts:Date.now(), t:d.feel}); save(); redraw(r); return toast(d.feel + " – logged at " + hm(Date.now())); }
+    if(d.dnote) return removeWithUndo(r, r.notes, d.dnote, "Note deleted");
+    if(d.dfeel) return removeWithUndo(r, r.feel, d.dfeel, "Deleted");
+    if(d.dlearn) return removeWithUndo(r, r.learn, d.dlearn, "Deleted");
+    if(d.dword != null){ var k = +d.dword, gw = r.words.splice(k, 1)[0]; save(); redraw(r); return toast("Deleted", function(){ r.words.splice(k, 0, gw); save(); redraw(r); }); }
+    var a = d.a;
+    if(a === "back") go("#p=" + CODE);
+    else if(a === "addnote") addTo(r.notes, "jIn", r);
+    else if(a === "addfeel") addTo(r.feel, "fIn", r);
+    else if(a === "addlearn") addLearn(r);
+    else if(a === "nextword"){ wordIx[r.id] = (wordIx[r.id] || 0) + 1; redraw(r); }
+    else if(a === "addword") addWord(r);
+    else if(a === "noend"){ r.end = null; save(); redraw(r); }
     else if(a === "reopen") reopen(r);
-    else if(a === "finish"){ r.done = {at:today(), days:reached(r)}; save(); go("#p=" + CODE); toast(r.name + " – moved to Done", function(){ r.done = null; save(); render(); }); }
+    else if(a === "finish"){ r.done = {at:Date.now(), days:reached(r)}; save(); go("#p=" + CODE); toast(r.name + " – moved to Done", function(){ r.done = null; save(); render(); }); }
+    else if(a === "delete") ask("Delete \"" + r.name + "\" and everything on its page? To keep it, use Finish instead.", "Delete", function(){ P.resets = P.resets.filter(function(x){ return x !== r; }); save(); go("#p=" + CODE); toast("Deleted"); });
     else if(a === "restart"){ var was = dayOf(r);
-      ask("Start the count again from today? Your notes stay, and your best run is kept.", "Start again", function(){
-        r.best = Math.max(r.best || 0, was); r.start = today(); r.notes.push({id:uid(), ts:Date.now(), t:"Started the count again (was on Day " + was + ")."}); save(); renderDetail(r); }); }
+      ask("Start the count again from now? Your notes stay, and your best run is kept.", "Start again", function(){
+        r.best = Math.max(r.best || 0, was); r.start = Date.now(); r.notes.push({id:uid(), ts:Date.now(), t:"Started the count again (was on Day " + was + ")."}); save(); redraw(r); }); }
   });
+  // The timer ticks every second
+  setInterval(function(){ if($("detail").hidden) return; var r = current(); if(!r) return; var c = counter(r);
+    document.querySelectorAll("#detail [data-live]").forEach(function(el){ var v = c[el.dataset.live]; if(el.textContent !== v) el.textContent = v; }); }, 1000);
 
   // ---------- Which screen to show ----------
   function go(h){ if(location.hash === h) route(); else location.hash = h; }
@@ -456,17 +572,16 @@ footer p{margin:6px 0}
       if(other){ CODE = m[1]; P = other; save(); }
       else { toast("That page isn't on this phone. Opening it on another phone comes next."); history.replaceState(null, "", location.pathname); m = null; } }
     $("myBtn").hidden = !P || !!m;
-    if(m && P){
-      var r = rm && find(rm[1]);
-      if(r){ show("detail"); renderDetail(r); }
-      else { show("mine"); renderMine(); }
-    } else { show("front"); if($("sheet").hidden) fillForm(null); drawList(); }
+    if(m && P){ var r = rm && find(rm[1]);
+      if(r){ show("detail"); renderDetail(r); } else { show("mine"); renderMine(); }
+    } else { show("front"); if($("sheet").hidden) drawForm(); drawList(); }
     if(keepScroll !== true) window.scrollTo(0, 0);
   }
   window.addEventListener("hashchange", function(){ closeSheet(); route(); });
-  // A new day while the page is open: refresh the counters
-  document.addEventListener("visibilitychange", function(){ if(!document.hidden && $("sheet").hidden) render(); });
-  fillForm(null);
+  // Coming back to the page (maybe on a new day): refresh the counters, but don't disturb typing
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden && $("sheet").hidden && !(document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName))){ var y = window.scrollY; render(); window.scrollTo(0, y); } });
+  if(P) save();
+  drawForm();
   route(true);
 })();
 </script>
