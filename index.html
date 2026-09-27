@@ -1,0 +1,459 @@
+<!-- DueAReset v1 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DueAReset – count the days on a reset: quit smoking or vaping, cut sugar, drink less</title>
+<meta name="description" content="A free private page for anyone resetting something – quitting smoking or vaping, cutting sugar, less screen time, a fast, drinking less. Say why, count the days, write down what you notice. No account.">
+<meta name="theme-color" content="#2c4a6e">
+<link rel="canonical" href="https://dueareset.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DueAReset">
+<meta property="og:title" content="Due a reset?">
+<meta property="og:description" content="Stop something, start something, or go without for a few days. Say why, count the days, write down what you notice. Free, private, no account.">
+<meta property="og:url" content="https://dueareset.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232c4a6e'/%3E%3Cpath d='M44 22a16 16 0 1 0 4 12' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M46 12v12H34' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DueAReset">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f1f0ec; --card:#fff; --line:#dedad0; --ink:#1f2328; --muted:#5f6670; --faint:#9aa0a8;
+  --brand:#2c4a6e; --brand-deep:#1e3552; --brand-wash:#e3eaf3; --accent:#c8552b; --accent-wash:#f7e3da; --ok:#2f6b45; --ok-wash:#e2efe5;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;margin:0}
+a{color:var(--brand)}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea{font:inherit;color:var(--ink)}
+[hidden]{display:none!important}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:14px 0 6px}
+.brand{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.15rem;color:var(--brand-deep);text-decoration:none}
+.pill{border:1.5px solid var(--brand);background:transparent;color:var(--brand);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}
+.btn{display:inline-block;border:0;background:var(--brand);color:#fff;border-radius:12px;padding:13px 22px;font-weight:700;font-size:1.05rem;text-decoration:none;text-align:center}
+.btn:active{background:var(--brand-deep)}
+.btn.wide{display:block;width:100%}
+.ghost{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:9px 14px;font-weight:700;font-size:.92rem}
+.link{border:0;background:none;color:var(--brand);text-decoration:underline;padding:4px 0;font-size:.92rem}
+.small{font-size:.9rem;color:var(--muted)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* front */
+.hero{padding:26px 0 6px}
+.hero h1{font-size:2.5rem;color:var(--brand-deep);margin-bottom:14px}
+.hero p{margin:0 0 12px}
+.hero .btn{margin-top:6px}
+.quiet{font-size:.92rem;color:var(--muted);margin:16px 0 0}
+
+/* form */
+#formSlot h2,#sheetBox h2{font-size:1.45rem;margin-bottom:12px}
+.lbl{display:block;font-weight:700;margin:16px 0 6px}
+.lbl span{font-weight:400;color:var(--muted);font-size:.9rem}
+.field{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fbfaf8}
+.field:focus{outline:2px solid var(--brand);outline-offset:-1px;border-color:transparent}
+textarea.field{resize:vertical;min-height:80px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two>div{min-width:0}
+.two input{min-width:0;-webkit-appearance:none;appearance:none;min-height:46px}
+.two .lbl{margin-top:16px}
+.hint{font-size:.85rem;color:var(--muted);margin:6px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;font-size:.93rem}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.tick{display:flex;gap:10px;align-items:flex-start;margin:18px 0 16px;font-weight:700}
+.tick input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--brand);flex:none}
+.tick small{display:block;font-weight:400;color:var(--muted);font-size:.87rem}
+.note{background:var(--accent-wash);border-radius:10px;padding:10px 12px;font-size:.9rem;margin:12px 0 0}
+#fDel{margin-top:14px;color:var(--accent)}
+
+/* list */
+#list h2{font-size:1.6rem;margin:30px 0 6px;color:var(--brand-deep)}
+.rank{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.ways{margin:14px 0 0;padding:0;list-style:none}
+.ways li{padding:10px 0;border-top:1px solid var(--line)}
+.ways li:first-child{border-top:0}
+.ways h3{font-size:1.2rem;margin:0 0 6px}
+.nhs{display:inline-block;margin-top:10px;font-weight:700}
+
+/* my page */
+.pagehead{display:flex;align-items:center;justify-content:space-between;margin:18px 0 4px}
+.pagehead h1{font-size:1.9rem;color:var(--brand-deep)}
+.save{background:var(--brand-wash);border:0}
+.save h2{font-size:1.2rem;margin-bottom:6px}
+.save .row{margin-top:12px}
+.rcard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c,var(--brand));border-radius:14px;padding:14px 16px;margin:10px 0}
+.rtop{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.rname{font-weight:700;font-size:1.1rem}
+.rcount{font-family:Fraunces,Georgia,serif;font-size:1.3rem;color:var(--brand-deep);white-space:nowrap}
+.rwhy{color:var(--muted);font-size:.93rem;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.add{display:block;width:100%;border:2px dashed var(--line);background:transparent;border-radius:14px;padding:14px;font-weight:700;color:var(--brand);margin:10px 0}
+.done h2{font-size:1.2rem;margin-bottom:6px}
+.drow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--line);gap:10px}
+.drow:first-of-type{border-top:0}
+.drow button.name{border:0;background:none;padding:0;text-align:left;font-size:1rem}
+
+/* detail */
+.back{border:0;background:none;color:var(--brand);font-weight:700;padding:14px 0 4px;font-size:1rem}
+.dtype{font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:8px}
+.dname{font-size:1.9rem;color:var(--brand-deep)}
+.big{font-family:Fraunces,Georgia,serif;font-size:3.2rem;line-height:1.05;color:var(--c,var(--brand));margin:14px 0 2px}
+.acts{margin-top:14px}
+.card h2{font-size:1.25rem;margin-bottom:8px}
+.why{white-space:pre-wrap}
+.hchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.hchip{background:var(--brand-wash);border-radius:999px;padding:4px 11px;font-size:.9rem}
+.jin{display:flex;gap:8px;align-items:flex-end}
+.jin textarea{min-height:48px;flex:1}
+.jday{margin-top:14px}
+.jday summary{cursor:pointer;font-weight:700;padding:6px 0;list-style:none}
+.jday summary::-webkit-details-marker{display:none}
+.jday summary::before{content:"▸ ";color:var(--faint)}
+.jday[open] summary::before{content:"▾ "}
+.jday .dn{font-weight:400;color:var(--muted);font-size:.88rem}
+.jnote,.litem{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid #efece5}
+.jnote time{color:var(--faint);font-size:.85rem;flex:none;width:44px;padding-top:2px}
+.jnote p,.litem p{margin:0;flex:1;white-space:pre-wrap;word-break:break-word}
+.x{border:0;background:none;color:var(--faint);font-size:1.2rem;line-height:1;padding:2px 6px;flex:none}
+.empty{color:var(--faint);font-size:.92rem;margin:10px 0 0}
+.switch{display:flex;gap:12px;align-items:flex-start}
+.switch input{width:22px;height:22px;accent-color:var(--brand);flex:none;margin-top:2px}
+
+/* sheet, toast, footer */
+#sheet{position:fixed;inset:0;background:rgba(20,25,35,.45);z-index:20;overflow-y:auto;padding:20px 0}
+#sheetBox{max-width:600px;margin:0 auto;border-radius:18px;position:relative}
+#sheetX{position:absolute;right:10px;top:10px;font-size:1.5rem}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:12px;padding:11px 16px;display:flex;gap:14px;align-items:center;z-index:30;max-width:calc(100% - 32px);font-size:.95rem}
+#toast button{border:0;background:none;color:#ffd9c7;font-weight:700;padding:0}
+footer{margin:36px 0 30px;font-size:.85rem;color:var(--muted)}
+footer p{margin:6px 0}
+.ver{color:var(--faint)}
+@media (min-width:700px){ .hero h1{font-size:3rem} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#">DueAReset</a>
+    <button class="pill" id="myBtn" type="button" hidden>My page</button>
+  </header>
+
+  <!-- ===== Front page ===== -->
+  <main id="front">
+    <section class="hero">
+      <h1>Due a reset?</h1>
+      <p>Most of us run on habits we never chose. Every so often it's worth picking one and drawing a line – stop something, start something, or go without for a few days just to see what happens. It doesn't have to be big. It has to be on purpose. That's a reset.</p>
+      <p>Say what you're resetting and why, count the days, write down what you notice. Nobody sees your page but you, unless you want them to. And the list below shows what everyone else is resetting right now, so you know you're not the only one.</p>
+      <a class="btn" href="#start" id="heroGo">Start one</a>
+      <p class="quiet">People use it for quitting smoking or vaping, cutting sugar, less screen time, a fast or drinking less – or anything else they want to change.</p>
+    </section>
+
+    <section class="card" id="formSlot">
+      <h2 id="start">What are you resetting?</h2>
+      <form id="rf" novalidate autocomplete="off">
+        <div class="chips" id="fTypes" role="group" aria-label="Type of reset"></div>
+        <label class="lbl" for="fName">In your words <span>(optional)</span></label>
+        <input class="field" id="fName" maxlength="40" placeholder="e.g. Smoking, or No wine on weeknights">
+        <label class="lbl" for="fWhy">Why? <span>(optional – as little or as much as you like)</span></label>
+        <textarea class="field" id="fWhy" maxlength="2000"></textarea>
+        <div class="two">
+          <div><label class="lbl" for="fStart">Start</label><input class="field" type="date" id="fStart"></div>
+          <div><label class="lbl" for="fEnd">Ends <span>(optional)</span></label><input class="field" type="date" id="fEnd"></div>
+        </div>
+        <p class="hint">Leave "Ends" blank to count up. Give it a date to count down – a fast or a dry month has an end, a quit doesn't. <button type="button" class="link" id="fEndClear" hidden>Clear end date</button></p>
+        <label class="lbl" for="fHow">How are you doing it? <span>(optional)</span></label>
+        <div class="chips" id="fWays" role="group" aria-label="Ways"></div>
+        <input class="field" id="fHow" maxlength="80" placeholder="Or in your own words" style="margin-top:10px">
+        <p class="note" id="fGp" hidden>If you have a health condition or take medication, check with your GP before a fast.</p>
+        <label class="tick"><input type="checkbox" id="fPub"><span>Count me in on the public list<small>Only the type of reset and how you're doing it. Never your why, your notes or your link.</small></span></label>
+        <button class="btn wide" id="fGo" type="submit">Start one</button>
+        <button class="link" id="fDel" type="button" hidden>Delete this reset</button>
+      </form>
+    </section>
+
+    <section class="card" id="haveBox">
+      <label class="lbl" for="haveIn" style="margin-top:0">Have a page already? Paste your link or code</label>
+      <div class="row"><input class="field" id="haveIn" style="flex:1;min-width:0" placeholder="dueareset.com/#p=…"><button class="ghost" id="haveGo" type="button">Open</button></div>
+    </section>
+
+    <section id="list">
+      <h2>What people are resetting</h2>
+      <p class="small">To start with, this list comes from common advice online. As people use DueAReset it will fill up with what people here are actually doing.</p>
+      <ol class="rank" id="rank"></ol>
+      <div class="card" id="waysBox"></div>
+      <div class="card">
+        <h3 style="font-size:1.2rem;margin-bottom:6px">Whatever the reset, people say these help</h3>
+        <ul class="ways" id="general"></ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== My page ===== -->
+  <main id="mine" hidden>
+    <div class="pagehead"><h1>My resets</h1></div>
+    <section class="card save" id="saveBox">
+      <h2>Save this link</h2>
+      <p style="margin:0">It's the only way back to your page. There's no account, so if you lose it, nobody can find it for you.</p>
+      <div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>
+      <p class="small homeHow" hidden style="margin:10px 0 0">iPhone: tap the Share button, then "Add to Home Screen". Android: tap the ⋮ menu, then "Add to Home screen".</p>
+      <div class="row"><button class="btn" type="button" id="saveOk" style="padding:9px 16px;font-size:.95rem">I've saved it</button></div>
+    </section>
+    <div id="cards"></div>
+    <button class="add" id="addBtn" type="button">+ Add another reset</button>
+    <section class="card done" id="doneBox" hidden><h2>Done</h2><div id="doneList"></div></section>
+    <section class="card">
+      <h2>Your link</h2>
+      <p class="small" style="margin:0 0 10px">Keep it to yourself – anyone with it can open your page.</p>
+      <div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>
+      <p class="small homeHow" hidden style="margin:10px 0 0">iPhone: tap the Share button, then "Add to Home Screen". Android: tap the ⋮ menu, then "Add to Home screen".</p>
+      <p class="small" style="margin:12px 0 0">For now your page is saved on this phone only. Opening it on another phone comes next.</p>
+      <button class="link" id="delPage" type="button" style="color:var(--accent);margin-top:8px">Delete my page</button>
+    </section>
+  </main>
+
+  <!-- ===== One reset ===== -->
+  <main id="detail" hidden></main>
+
+  <footer>
+    <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
+    <p>No account, no tracking, no ads. <span class="ver">v1</span></p>
+  </footer>
+</div>
+
+<div id="sheet" hidden><div class="card" id="sheetBox"><button class="x" id="sheetX" type="button" aria-label="Close">×</button><h2 id="sheetTitle">Add a reset</h2><div id="sheetSlot"></div></div></div>
+<div id="toast" hidden role="status"><span id="toastMsg"></span><button id="toastUndo" type="button" hidden>Undo</button></div>
+
+<script>
+(function(){
+  "use strict";
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  // ---------- Types of reset, and ways people go about each (starter list from common advice online) ----------
+  var NHS_SMOKE = "https://www.nhs.uk/better-health/quit-smoking/", NHS_DRINK = "https://www.nhs.uk/live-well/alcohol-advice/";
+  var TYPES = [
+    {k:"drinking", n:"Drinking less", c:"#8b3a52", ways:["Drink-free days","Alcohol-free drinks instead","Smaller glasses","Not keeping it at home","A dry month","Only at weekends","Counting units"]},
+    {k:"smoking", n:"Smoking", c:"#7a5c45", ways:["Cold turkey on a set date","Nicotine patches","Nicotine gum or lozenges","Switching to a vape","Local stop smoking service","Changing the routine around it","Telling people I'm stopping"]},
+    {k:"sugar", n:"Sugar", c:"#c8552b", ways:["Cutting sugary drinks first","Reading labels","Nothing sweet in the house","Fruit instead of pudding","Cutting down bit by bit","Cold turkey"]},
+    {k:"screen", n:"Screen time", c:"#3d6f8e", ways:["Phone out of the bedroom","A real alarm clock","App time limits","Deleting one app","Greyscale mode","No phone at meals"]},
+    {k:"vaping", n:"Vaping", c:"#6b5a8e", ways:["Cold turkey on a set date","Lowering the strength bit by bit","Nicotine patches or gum","Leaving the vape at home","Local stop smoking service","Noticing what sets it off"]},
+    {k:"fast", n:"A fast", c:"#b8862b", ways:["Plenty of water","A shorter fast first","Keeping busy","Planning how to break it","Lighter, restful days"]},
+    {k:"exercise", n:"Moving more", c:"#2f6b45", ways:["A walk at the same time daily","Starting small","A walking buddy","Kit ready the night before","Counting days, not distance"]},
+    {k:"sleep", n:"Sleep", c:"#34466e", ways:["Same bedtime every night","Phone out of the bedroom","No caffeine after lunch","A wind-down routine","Daylight first thing"]},
+    {k:"other", n:"Something else", c:"#5f6670", ways:["Writing down why","Telling one person","Starting small","Counting the days"]}
+  ];
+  var GENERAL = ["Write down why, and read it when it's hard","Tell one person","Count the days","Know your hard moments and plan for them","Start small","If you slip, start the count again – the days you did still count"];
+  function T(k){ for(var i = 0; i < TYPES.length; i++) if(TYPES[i].k === k) return TYPES[i]; return TYPES[TYPES.length - 1]; }
+  function looks(r, re, types){ return types.indexOf(r.type) > -1 || re.test(r.name || ""); }
+  function isSmoke(r){ return looks(r, /smok|cig|vap|nicotin|tobacco|roll.?up/i, ["smoking", "vaping"]); }
+  function isDrink(r){ return looks(r, /drink|alcohol|booze|wine|beer|lager|spirits|dry (jan|month)|sober/i, ["drinking"]); }
+
+  // ---------- Dates ----------
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function ds(d){ return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function today(){ return ds(new Date()); }
+  function dn(s){ var a = s.split("-"); return Math.round(Date.UTC(+a[0], a[1] - 1, +a[2]) / 864e5); }
+  var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], WD = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  function nice(s){ var a = s.split("-"), d = new Date(+a[0], a[1] - 1, +a[2]); return WD[d.getDay()] + " " + d.getDate() + " " + MON[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : ""); }
+  function days(n){ return n + (n === 1 ? " day" : " days"); }
+  function dayOf(r){ return dn(today()) - dn(r.start) + 1; }
+  // What the counter says: big line and small line
+  function counter(r){
+    if(r.done) return {big: days(r.done.days), small: "Finished " + nice(r.done.at)};
+    var t = dn(today()), s = dn(r.start), d = t - s + 1;
+    if(t < s) return {big: "Starts in " + days(s - t), small: nice(r.start)};
+    if(r.end){ var e = dn(r.end), total = e - s + 1;
+      if(t > e) return {big: "Done – " + days(total), small: "Ended " + nice(r.end) + ". Tap Finish to fold it away."};
+      if(t === e) return {big: "Last day", small: "Day " + d + " of " + total};
+      return {big: days(e - t) + " to go", small: "Day " + d + " of " + total}; }
+    return {big: "Day " + d, small: "Since " + nice(r.start) + (r.best ? " · Best run: Day " + r.best : "")};
+  }
+  function reached(r){ var d = Math.max(0, dayOf(r)); if(r.end) d = Math.min(d, dn(r.end) - dn(r.start) + 1); return d; }
+
+  // ---------- Saving (on this phone) ----------
+  // A page has a random code. The code is the only key: whoever has the link has the page.
+  var CKEY = "dueareset-code-v1", PKEY = "dueareset-p-", CODE = "", P = null;
+  function newCode(){ var a = "abcdefghjkmnpqrstuvwxyz23456789", o = "", c = new Uint32Array(12); crypto.getRandomValues(c); for(var i = 0; i < 12; i++) o += a[c[i] % a.length]; return o; }
+  function loadPage(code){ try{ var j = localStorage.getItem(PKEY + code); return j ? JSON.parse(j) : null; }catch(e){ return null; } }
+  function save(){ if(!CODE || !P) return; P.t = Date.now(); try{ localStorage.setItem(PKEY + CODE, JSON.stringify(P)); localStorage.setItem(CKEY, CODE); }catch(e){} }
+  try{ CODE = localStorage.getItem(CKEY) || ""; }catch(e){}
+  if(CODE) P = loadPage(CODE);
+  if(!P) CODE = "";
+  var BASE = /(^|\.)dueareset\.com$|workers\.dev$|^localhost$|^127\./.test(location.hostname) ? location.origin + "/" : "https://dueareset.com/";
+  function pageUrl(){ return BASE + "#p=" + CODE; }
+  function find(id){ if(!P) return null; for(var i = 0; i < P.resets.length; i++) if(P.resets[i].id === id) return P.resets[i]; return null; }
+
+  // ---------- Toast with undo ----------
+  var toastT;
+  function toast(msg, undo){ $("toastMsg").textContent = msg; var u = $("toastUndo"); u.hidden = !undo; u.onclick = function(){ $("toast").hidden = true; if(undo) undo(); };
+    $("toast").hidden = false; clearTimeout(toastT); toastT = setTimeout(function(){ $("toast").hidden = true; }, undo ? 6000 : 2600); }
+
+  // ---------- The reset form (used on the front page, and in a sheet for add/edit) ----------
+  var F = {type:"", ways:[], editing:null};
+  function drawTypes(){ $("fTypes").innerHTML = TYPES.map(function(t){ return '<button type="button" class="chip" data-k="' + t.k + '" aria-pressed="' + (F.type === t.k) + '">' + esc(t.n) + '</button>'; }).join(""); }
+  function drawWays(){ var list = T(F.type || "other").ways.slice();
+    F.ways.forEach(function(w){ if(list.indexOf(w) < 0) list.push(w); });
+    $("fWays").innerHTML = list.map(function(w){ return '<button type="button" class="chip" data-w="' + esc(w) + '" aria-pressed="' + (F.ways.indexOf(w) > -1) + '">' + esc(w) + '</button>'; }).join("");
+    $("fGp").hidden = F.type !== "fast"; }
+  function fillForm(r){ F.editing = r ? r.id : null; F.type = r ? r.type : ""; F.ways = r ? (r.ways || []).slice() : [];
+    $("fName").value = r ? r.name : ""; $("fWhy").value = r ? r.why : ""; $("fStart").value = r ? r.start : today(); $("fEnd").value = r ? (r.end || "") : ""; $("fHow").value = r ? r.how : ""; $("fPub").checked = r ? !!r.pub : false;
+    $("fGo").textContent = r ? "Save" : (P ? "Add it" : "Start one"); $("fDel").hidden = !r; $("fEndClear").hidden = !$("fEnd").value;
+    drawTypes(); drawWays(); }
+  $("fTypes").addEventListener("click", function(e){ var b = e.target.closest(".chip"); if(!b) return; F.type = F.type === b.dataset.k ? "" : b.dataset.k; drawTypes(); drawWays(); });
+  $("fWays").addEventListener("click", function(e){ var b = e.target.closest(".chip"); if(!b) return; var w = b.dataset.w, i = F.ways.indexOf(w); if(i > -1) F.ways.splice(i, 1); else F.ways.push(w); drawWays(); });
+  $("fEnd").addEventListener("input", function(){ $("fEndClear").hidden = !this.value; });
+  $("fEndClear").addEventListener("click", function(){ $("fEnd").value = ""; this.hidden = true; });
+  $("rf").addEventListener("submit", function(e){ e.preventDefault();
+    var name = $("fName").value.trim(), type = F.type || (name ? "other" : "");
+    if(!type){ toast("Pick what you're resetting first"); $("fTypes").scrollIntoView({block:"center", behavior:"smooth"}); return; }
+    var start = $("fStart").value || today(), end = $("fEnd").value || "";
+    if(end && dn(end) < dn(start)){ toast("The end date is before the start"); return; }
+    var data = {type:type, name:name || T(type).n, why:$("fWhy").value.trim(), start:start, end:end, how:$("fHow").value.trim().replace(/https?:\/\/\S+|www\.\S+/gi, "").replace(/\s+/g, " ").trim().slice(0, 80), ways:F.ways.slice(), pub:$("fPub").checked};
+    if(F.editing){ var r = find(F.editing); if(r) Object.assign(r, data); save(); closeSheet(); render(); toast("Saved"); return; }
+    var fresh = !P;
+    if(fresh){ CODE = newCode(); P = {v:1, resets:[], ack:false}; }
+    var nr = Object.assign({id:uid(), notes:[], learn:[], best:0, done:null, made:Date.now()}, data);
+    P.resets.push(nr); save(); closeSheet(); fillForm(null);
+    if(fresh) go("#p=" + CODE); else { go("#p=" + CODE); toast("Added"); }
+  });
+  $("fDel").addEventListener("click", function(){ var r = find(F.editing); if(!r) return;
+    if(!confirm("Delete \"" + r.name + "\" and all its notes? To keep it, use Finish instead.")) return;
+    P.resets = P.resets.filter(function(x){ return x !== r; }); save(); closeSheet(); go("#p=" + CODE); toast("Deleted"); });
+
+  // Sheet: the same form, moved into a pop-up
+  function openSheet(r){ fillForm(r); $("sheetTitle").textContent = r ? "Edit" : "Add a reset"; $("sheetSlot").appendChild($("rf")); $("sheet").hidden = false; document.body.style.overflow = "hidden"; $("sheet").scrollTop = 0; }
+  function closeSheet(){ if($("sheet").hidden) return; $("sheet").hidden = true; document.body.style.overflow = ""; $("formSlot").appendChild($("rf")); fillForm(null); }
+  $("sheetX").addEventListener("click", closeSheet);
+  $("sheet").addEventListener("click", function(e){ if(e.target === this) closeSheet(); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeSheet(); });
+
+  // ---------- Front page: the public list ----------
+  var LSEL = "smoking";
+  function drawList(){
+    $("rank").innerHTML = TYPES.filter(function(t){ return t.k !== "other"; }).map(function(t){ return '<li><button type="button" class="chip" data-k="' + t.k + '" aria-pressed="' + (LSEL === t.k) + '">' + esc(t.n) + '</button></li>'; }).join("");
+    var t = T(LSEL), r = {type:t.k, name:""};
+    $("waysBox").innerHTML = '<h3 style="font-size:1.2rem;margin-bottom:4px">' + esc(t.n) + ' – ways people go about it</h3><ul class="ways">' + t.ways.map(function(w){ return "<li>" + esc(w) + "</li>"; }).join("") + "</ul>"
+      + (isSmoke(r) ? '<a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a>' : "")
+      + (isDrink(r) ? '<a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a>' : "")
+      + (t.k === "fast" ? '<p class="note">If you have a health condition or take medication, check with your GP before a fast.</p>' : "");
+    $("general").innerHTML = GENERAL.map(function(g){ return "<li>" + esc(g) + "</li>"; }).join("");
+  }
+  $("rank").addEventListener("click", function(e){ var b = e.target.closest(".chip"); if(!b) return; LSEL = b.dataset.k; drawList(); });
+
+  $("heroGo").addEventListener("click", function(e){ e.preventDefault(); $("formSlot").scrollIntoView({behavior:"smooth", block:"start"}); });
+  $("myBtn").addEventListener("click", function(){ go("#p=" + CODE); });
+  $("haveGo").addEventListener("click", function(){ var v = $("haveIn").value.trim().toLowerCase(), m = v.match(/p=([a-z0-9]{12})/) || v.match(/^([a-z0-9]{12})$/);
+    if(!m){ toast("That doesn't look like a DueAReset link or code"); return; } $("haveIn").value = ""; go("#p=" + m[1]); });
+
+  // ---------- My page ----------
+  function cardHTML(r){ var c = counter(r);
+    return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + T(r.type).c + '"><div class="rtop"><span class="rname">' + esc(r.name) + '</span><span class="rcount">' + esc(c.big) + '</span></div>'
+      + (r.why ? '<div class="rwhy">' + esc(r.why) + "</div>" : "") + "</button>"; }
+  function renderMine(){
+    $("saveBox").hidden = !!P.ack;
+    var live = P.resets.filter(function(r){ return !r.done; }), done = P.resets.filter(function(r){ return r.done; });
+    $("cards").innerHTML = live.length ? live.map(cardHTML).join("") : '<p class="empty">Nothing on the go. Add a reset below.</p>';
+    $("doneBox").hidden = !done.length;
+    $("doneList").innerHTML = done.map(function(r){ return '<div class="drow"><button type="button" class="name" data-id="' + r.id + '">' + esc(r.name) + ' – <b>' + days(r.done.days) + '</b></button><button type="button" class="ghost" data-reopen="' + r.id + '">Reopen</button></div>'; }).join("");
+  }
+  $("cards").addEventListener("click", function(e){ var b = e.target.closest(".rcard"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
+  $("doneList").addEventListener("click", function(e){ var b = e.target.closest("[data-reopen]"); if(b){ reopen(find(b.dataset.reopen)); return; } b = e.target.closest("[data-id]"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
+  $("addBtn").addEventListener("click", function(){ openSheet(null); });
+  $("saveOk").addEventListener("click", function(){ P.ack = true; save(); renderMine(); });
+  function copyLink(){ var u = pageUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function(){ toast("Link copied"); }, function(){ prompt("Copy your link:", u); }); }
+  function sendLink(){ var u = pageUrl(); if(navigator.share){ navigator.share({title:"My DueAReset page", text:"My DueAReset page – keep this link:", url:u}).catch(function(){}); return; }
+    location.href = "mailto:?subject=" + encodeURIComponent("My DueAReset page") + "&body=" + encodeURIComponent("Keep this link – it's the only way back to my page:\n" + u); }
+  $("mine").addEventListener("click", function(e){ var b = e.target.closest("[data-act]"); if(!b) return; var a = b.dataset.act;
+    if(a === "copy") copyLink(); else if(a === "send") sendLink(); else if(a === "home"){ var h = b.closest("section").querySelector(".homeHow"); h.hidden = !h.hidden; } });
+  $("delPage").addEventListener("click", function(){
+    if(!confirm("Delete your page and everything on it? This can't be undone.")) return;
+    try{ localStorage.removeItem(PKEY + CODE); localStorage.removeItem(CKEY); }catch(e){}
+    CODE = ""; P = null; fillForm(null); go("#"); toast("Your page has been deleted"); });
+
+  // ---------- One reset ----------
+  function fmtTime(ts){ var d = new Date(ts); return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+  function renderDetail(r){
+    var c = counter(r), t = T(r.type), tday = today(), groups = {}, order = [];
+    r.notes.slice().sort(function(a, b){ return b.ts - a.ts; }).forEach(function(n){ var k = ds(new Date(n.ts)); if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(n); });
+    var yday = ds(new Date(Date.now() - 864e5));
+    var journal = order.map(function(k){ var label = k === tday ? "Today" : k === yday ? "Yesterday" : nice(k), dd = dn(k) - dn(r.start) + 1;
+      return '<details class="jday"' + (k === tday ? " open" : "") + '><summary>' + label + (dd > 0 ? ' <span class="dn">· Day ' + dd + "</span>" : "") + ' <span class="dn">· ' + groups[k].length + '</span></summary>'
+        + groups[k].map(function(n){ return '<div class="jnote"><time>' + fmtTime(n.ts) + '</time><p>' + esc(n.t) + '</p><button type="button" class="x" data-dnote="' + n.id + '" aria-label="Delete note">×</button></div>'; }).join("") + "</details>"; }).join("");
+    var h = '<button type="button" class="back" data-go="mine">← My resets</button>'
+      + (r.name !== t.n ? '<div class="dtype">' + esc(t.n) + "</div>" : '<div class="dtype">&nbsp;</div>')
+      + '<h1 class="dname">' + esc(r.name) + "</h1>"
+      + '<div class="big" style="--c:' + t.c + '">' + esc(c.big) + '</div><div class="small">' + esc(c.small) + "</div>"
+      + '<div class="row acts">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>'
+        : '<button type="button" class="ghost" data-a="edit">Edit</button>' + (!r.end && dayOf(r) > 1 ? '<button type="button" class="ghost" data-a="restart">Start the count again</button>' : "") + '<button type="button" class="ghost" data-a="finish">Finish</button>') + "</div>";
+    if(r.why) h += '<section class="card"><h2>Why</h2><div class="why">' + esc(r.why) + "</div></section>";
+    if((r.ways && r.ways.length) || r.how) h += '<section class="card"><h2>How I\'m doing it</h2><div class="hchips">' + (r.ways || []).map(function(w){ return '<span class="hchip">' + esc(w) + "</span>"; }).join("") + "</div>" + (r.how ? '<p style="margin:8px 0 0">' + esc(r.how) + "</p>" : "") + "</section>";
+    if(isSmoke(r)) h += '<p><a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a></p>';
+    if(isDrink(r)) h += '<p><a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a></p>';
+    if(r.type === "fast" && !r.done) h += '<p class="note">If you have a health condition or take medication, check with your GP before a fast.</p>';
+    h += '<section class="card"><h2>Journal</h2><div class="jin"><textarea class="field" id="jIn" rows="2" maxlength="2000" placeholder="A thought, a craving, a good moment…"></textarea><button type="button" class="ghost" id="jAdd">Add</button></div>'
+      + (journal || '<p class="empty">Nothing yet. Anything you notice goes here – cravings, how you slept, a good moment.</p>') + "</section>";
+    h += '<section class="card"><h2>Things I keep learning</h2><div class="jin"><input class="field" id="lIn" maxlength="300" placeholder="A fact or tip that keeps coming up"><button type="button" class="ghost" id="lAdd">Add</button></div>'
+      + (r.learn.length ? r.learn.map(function(l){ return '<div class="litem"><p>' + esc(l.t) + '</p><button type="button" class="x" data-dlearn="' + l.id + '" aria-label="Delete">×</button></div>'; }).join("") : '<p class="empty">Nothing yet.</p>') + "</section>";
+    h += '<section class="card"><label class="switch"><input type="checkbox" id="pubSw"' + (r.pub ? " checked" : "") + '><span><b>Count me in on the public list</b><br><span class="small">Only the type of reset and how you\'re doing it. Never your why, your notes or your link.</span></span></label></section>';
+    var m = $("detail"); m.innerHTML = h; m.dataset.id = r.id;
+  }
+  function current(){ return find($("detail").dataset.id); }
+  function addNote(){ var r = current(), v = $("jIn").value.trim(); if(!r || !v) return; r.notes.push({id:uid(), ts:Date.now(), t:v}); save(); renderDetail(r); $("jIn").focus(); }
+  function addLearn(){ var r = current(), v = $("lIn").value.trim(); if(!r || !v) return; r.learn.unshift({id:uid(), t:v}); save(); renderDetail(r); $("lIn").focus(); }
+  function reopen(r){ if(!r) return; r.done = null; save(); render(); toast("Reopened"); }
+  $("detail").addEventListener("keydown", function(e){
+    if(e.target.id === "jIn" && e.key === "Enter" && !e.shiftKey){ e.preventDefault(); addNote(); }
+    if(e.target.id === "lIn" && e.key === "Enter"){ e.preventDefault(); addLearn(); } });
+  $("detail").addEventListener("change", function(e){ if(e.target.id === "pubSw"){ var r = current(); r.pub = e.target.checked; save(); toast(r.pub ? "Counted in on the public list" : "Taken off the public list"); } });
+  $("detail").addEventListener("click", function(e){ var r = current(), b = e.target.closest("button"); if(!r || !b) return;
+    if(b.id === "jAdd") return addNote();
+    if(b.id === "lAdd") return addLearn();
+    if(b.dataset.go) return go("#p=" + CODE);
+    if(b.dataset.dnote){ var i = r.notes.findIndex(function(n){ return n.id === b.dataset.dnote; }), gone = r.notes.splice(i, 1)[0]; save(); renderDetail(r);
+      return toast("Note deleted", function(){ r.notes.push(gone); save(); renderDetail(r); }); }
+    if(b.dataset.dlearn){ var j = r.learn.findIndex(function(n){ return n.id === b.dataset.dlearn; }), lg = r.learn.splice(j, 1)[0]; save(); renderDetail(r);
+      return toast("Deleted", function(){ r.learn.splice(j, 0, lg); save(); renderDetail(r); }); }
+    var a = b.dataset.a;
+    if(a === "edit") openSheet(r);
+    else if(a === "reopen") reopen(r);
+    else if(a === "finish"){ r.done = {at:today(), days:reached(r)}; save(); go("#p=" + CODE); toast(r.name + " – moved to Done", function(){ r.done = null; save(); render(); }); }
+    else if(a === "restart"){ var was = dayOf(r);
+      if(!confirm("Start the count again from today? Your notes stay, and your best run is kept.")) return;
+      r.best = Math.max(r.best || 0, was); r.start = today(); r.notes.push({id:uid(), ts:Date.now(), t:"Started the count again (was on Day " + was + ")."}); save(); renderDetail(r); }
+  });
+
+  // ---------- Which screen to show ----------
+  function go(h){ if(location.hash === h) route(); else location.hash = h; }
+  function show(id){ ["front", "mine", "detail"].forEach(function(x){ $(x).hidden = x !== id; }); }
+  function render(){ route(true); }
+  function route(keepScroll){
+    var m = location.hash.match(/p=([a-z0-9]{12})/), rm = location.hash.match(/r=([a-z0-9]+)/);
+    if(m && m[1] !== CODE){ var other = loadPage(m[1]);
+      if(other){ CODE = m[1]; P = other; save(); }
+      else { toast("That page isn't on this phone. Opening it on another phone comes next."); history.replaceState(null, "", location.pathname); m = null; } }
+    $("myBtn").hidden = !P || !!m;
+    if(m && P){
+      var r = rm && find(rm[1]);
+      if(r){ show("detail"); renderDetail(r); }
+      else { show("mine"); renderMine(); }
+    } else { show("front"); if($("sheet").hidden) fillForm(null); drawList(); }
+    if(keepScroll !== true) window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", function(){ closeSheet(); route(); });
+  // A new day while the page is open: refresh the counters
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden && $("sheet").hidden) render(); });
+  fillForm(null);
+  route(true);
+})();
+</script>
+</body>
+</html>
