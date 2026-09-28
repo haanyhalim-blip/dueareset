@@ -1,4 +1,4 @@
-<!-- DueAReset v29 -->
+<!-- DueAReset v30 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -320,7 +320,7 @@ footer p{margin:6px 0}
 <div class="wrap">
   <header class="top">
     <a class="brand" href="#">DueAReset</a>
-    <span class="row"><button class="pill quietpill" id="listBtn" type="button">Common resets</button><button class="pill who" id="whoBtn" type="button" hidden>✓ Signed in</button><button class="pill" id="signBtn" type="button" hidden>Sign in</button><button class="pill" id="myBtn" type="button" hidden>My page</button></span>
+    <span class="row"><button class="pill who" id="whoBtn" type="button" hidden>✓ Signed in</button><button class="pill" id="signBtn" type="button" hidden>Sign in</button><button class="pill" id="myBtn" type="button" hidden>My page</button></span>
   </header>
 
   <!-- ===== Front page ===== -->
@@ -376,7 +376,7 @@ footer p{margin:6px 0}
 
     <section id="list">
       <section class="card rotcard" id="waysCard">
-        <button type="button" class="rchead" aria-expanded="false" aria-controls="waysBody"><span class="rct">What people reset, and how</span><span class="rcl"><span class="rot" id="waysRot">Smoking · Nicotine patches</span></span><span class="chev" aria-hidden="true">›</span></button>
+        <button type="button" class="rchead" aria-expanded="false" aria-controls="waysBody"><span class="rct">Common resets</span><span class="rcl"><span class="rot" id="waysRot">Smoking · Nicotine patches</span></span><span class="chev" aria-hidden="true">›</span></button>
         <div class="rcbody" id="waysBody" hidden>
           <p class="small" style="margin:0 0 10px">To start with, this comes from common advice online. Tap one to see the ways people go about it.</p>
           <div id="lPick"></div>
@@ -384,7 +384,7 @@ footer p{margin:6px 0}
         </div>
       </section>
       <section class="card rotcard" id="helpCard">
-        <button type="button" class="rchead" aria-expanded="false" aria-controls="helpBody"><span class="rct">What helps, whatever the reset</span><span class="rcl"><span class="rot" id="helpRot">Tell one person</span></span><span class="chev" aria-hidden="true">›</span></button>
+        <button type="button" class="rchead" aria-expanded="false" aria-controls="helpBody"><span class="rct">What’s worked for others</span><span class="rcl"><span class="rot" id="helpRot">Tell one person</span></span><span class="chev" aria-hidden="true">›</span></button>
         <div class="rcbody" id="helpBody" hidden><ul class="ways" id="general"></ul></div>
       </section>
     </section>
@@ -406,7 +406,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v29</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v30</span></p>
   </footer>
 </div>
 
@@ -671,7 +671,6 @@ footer p{margin:6px 0}
   $("siGo").addEventListener("click", siVerify);
   $("siEmail").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); siSend(); } });
   $("siCode").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); siVerify(); } });
-  $("listBtn").addEventListener("click", function(){ go("#list"); });
   $("whoBtn").addEventListener("click", function(){
     if(!P){ toast("Signed in as " + (USER && USER.email || "")); return; }
     go("#p=" + CODE); setTimeout(function(){ var a = $("acct"); if(a) a.scrollIntoView({behavior:"smooth", block:"center"}); }, 120); });
