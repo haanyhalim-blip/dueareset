@@ -1,4 +1,4 @@
-<!-- DueAReset v13 -->
+<!-- DueAReset v14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -177,6 +177,29 @@ textarea.field{resize:vertical;min-height:80px}
 .padd{border:0;background:none;color:var(--brand);font-weight:700;font-size:1.2rem;padding:0 6px;line-height:1}
 .pin{grid-column:2 / 4;display:flex;gap:8px}
 .pin input{flex:1;min-width:0}
+.rthings{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:.93rem;color:var(--muted)}
+.rthings b{color:var(--brand-deep)}
+.tblock+.tblock{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
+.tname{font-weight:700}
+.tname span{font-weight:400;color:var(--muted);font-size:.85rem;margin-left:6px}
+.big.mid{font-size:2.4rem}
+.thing+.thing{border-top:1px solid var(--line);margin-top:16px;padding-top:4px}
+.dhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.editbtn{flex:none;padding:8px 14px;font-size:.92rem}
+.editnote{margin:12px 0 10px}
+.elist{display:grid;gap:8px}
+.erow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.erow b{display:block}
+.erow span{font-size:.85rem;color:var(--muted)}
+.ectl{display:flex;gap:6px;flex:none}
+.ectl button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;min-width:42px;height:42px;font-size:1.05rem}
+.ectl button:disabled{opacity:.3;cursor:default}
+.ectl .erem{color:var(--accent);font-size:.88rem;font-weight:700;padding:0 12px}
+.egal{font-size:1.3rem;margin:24px 0 10px;color:var(--brand-deep)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.gallery button{text-align:left;border:2px dashed var(--line);background:rgba(255,255,255,.88);border-radius:14px;padding:14px;min-height:96px}
+.gallery b{display:block;color:var(--brand);margin-bottom:4px}
+.gallery span{font-size:.85rem;color:var(--muted)}
 .foot{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:6px 0 0}
 .danger{color:var(--accent)!important}
 
@@ -278,6 +301,7 @@ footer p{margin:6px 0}
           <div id="fPick"></div>
         </div>
         <div class="picked" id="fPicked"></div>
+        <div id="fTogether" hidden><div class="lbl">Put them on…</div><div class="chips"><button type="button" class="chip" data-tog="1">One page</button><button type="button" class="chip" data-tog="0">A page each</button></div><p class="small" id="fTogHint" style="margin:6px 0 0"></p></div>
         <button class="btn wide" id="fGo" type="submit">Start one</button>
       </form>
     </section>
@@ -315,7 +339,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v13</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v14</span></p>
   </footer>
 </div>
 
@@ -410,12 +434,21 @@ footer p{margin:6px 0}
   function isSmoke(r){ return ["smoking","vaping"].indexOf(r.key) > -1 || /smok|cig|vap|nicotin|tobacco|roll.?up/i.test(r.name || ""); }
   function isDrink(r){ return ["drinking","dry"].indexOf(r.key) > -1 || /drink|alcohol|booze|wine|beer|lager|spirits|sober/i.test(r.name || ""); }
   function kindOf(r){ return r.g === "stop" ? (r.mode === "less" ? "Cutting down" : "Giving up") : gOf(r).kind; }
-  function extras(r){ var g = GROUPS[r.g] || {};
-    return (isSmoke(r) ? '<a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a>' : "")
-      + (isDrink(r) ? '<a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a>' : "")
-      + (r.key === "fast" ? '<p class="note">If you have a health condition or take medication, check with your GP before a fast.</p>' : "")
-      + (g.book ? '<p class="book">' + esc(g.book) + "</p>" : "")
-      + (r.g === "adventure" ? '<p class="note">Make sure someone knows where you are and when you\'ll be back.</p>' : ""); }
+  var MIXED = {c:"#2c4a6e", kind:"Mixed"};
+  function things(r){ return r.things || []; }
+  function thingById(r, id){ return things(r).filter(function(t){ return t.id === id; })[0]; }
+  function anyT(r, fn){ return things(r).some(fn); }
+  function pStart(r){ var ts = things(r).map(function(t){ return t.start; }); return ts.length ? Math.min.apply(null, ts) : Date.now(); }
+  function uniq(a){ return a.filter(function(x, i){ return a.indexOf(x) === i; }); }
+  function pKind(r){ var ks = uniq(things(r).map(kindOf)); return ks.length <= 2 ? ks.join(" · ") : "Mixed"; }
+  function pG(r){ var gs = uniq(things(r).map(function(t){ return t.g; })); return gs.length === 1 ? (GROUPS[gs[0]] || GROUPS.stop) : MIXED; }
+  function joinNames(ths){ var n = ths.map(function(t){ return t.name; }); return n.length > 1 ? n.slice(0, -1).join(", ") + " and " + n[n.length - 1] : (n[0] || "My reset"); }
+  function pName(r){ return r.title || joinNames(things(r)); }
+  function extras(r){
+    return (anyT(r, isSmoke) ? '<a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a>' : "")
+      + (anyT(r, isDrink) ? '<a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a>' : "")
+      + (anyT(r, function(t){ return t.key === "fast"; }) ? '<p class="note">If you have a health condition or take medication, check with your GP before a fast.</p>' : "")
+      + (anyT(r, function(t){ return t.g === "adventure"; }) ? '<p class="book">' + esc(GROUPS.adventure.book) + '</p><p class="note">Make sure someone knows where you are and when you\'ll be back.</p>' : ""); }
 
   // ---------- Time ----------
   var DAY = 864e5, MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"], WD = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -433,9 +466,9 @@ footer p{margin:6px 0}
   function totalDays(r){ return dayNo(r.end) - dayNo(r.start) + 1; }
   function reached(r){ var d = Math.max(0, dayOf(r)); return r.end ? Math.min(d, totalDays(r)) : d; }
   // The counter: big line, small line, and a live line that ticks
-  function counter(r){
+  function counter(r, pg){
     var now = Date.now();
-    if(r.done) return {big: days(r.done.days), small: "Finished " + nice(r.done.at), live: ""};
+    if(pg && pg.done) return {big: days(pg.done.days), small: "Finished " + nice(pg.done.at), live: ""};
     if(now < r.start) return {big: "Starts in " + days(dayNo(r.start) - dayNo(now)), small: nice(r.start) + " at " + hm(r.start), live: dur(r.start - now) + " to go"};
     var d = dayOf(r);
     if(r.end){
@@ -452,10 +485,15 @@ footer p{margin:6px 0}
   function fix(p){ // bring pages saved by earlier versions up to date
     p.resets = p.resets || [];
     p.resets.forEach(function(r){
-      if(typeof r.start === "string") r.start = new Date(r.start + "T00:00").getTime();
-      if(typeof r.end === "string") r.end = r.end ? new Date(r.end + "T23:59").getTime() : null;
-      if(r.type && !r.key){ r.key = r.type === "other" ? "own" : r.type; delete r.type; }
-      if(!r.g) r.g = T(r.key).g || "stop";
+      if(!r.things){
+        if(typeof r.start === "string") r.start = new Date(r.start + "T00:00").getTime();
+        if(typeof r.end === "string") r.end = r.end ? new Date(r.end + "T23:59").getTime() : null;
+        if(r.type && !r.key){ r.key = r.type === "other" ? "own" : r.type; delete r.type; }
+        if(!r.g) r.g = T(r.key).g || "stop";
+        r.things = [{id:uid(), key:r.key || "own", g:r.g, mode:r.mode || "stop", name:r.name || "My reset", start:r.start || Date.now(), end:r.end || null, best:r.best || 0}];
+        ["key","g","mode","name","start","end","best"].forEach(function(f){ delete r[f]; });
+      }
+      if(r.title == null) r.title = "";
       if(!r.secs) r.secs = SEC_DEFAULT.slice();
       ["notes","learn","feel","words","ways","weight","plan","asks"].forEach(function(f){ if(!Array.isArray(r[f])) r[f] = []; });
       if(!r.askv){ r.askv = 1; if(r.secs.indexOf("ask") < 0) r.secs.splice(r.secs.indexOf("timer") + 1, 0, "ask"); }
@@ -615,19 +653,27 @@ footer p{margin:6px 0}
   ];
   var KWORD = {giveup:"giving up", cutdown:"cutting down", more:"doing more", without:"going without", adventure:"adventure"};
   function K(k){ return KINDS.filter(function(x){ return x.k === k; })[0]; }
-  var F = {kind:"", sel:[], open:false};   // sel: [{k, kind}]
+  var F = {kind:"", sel:[], open:false, together:null, target:""};   // sel: [{k, kind}]; target: add to this page
+  function pickCount(){ return F.sel.length + ($("fName").value.trim() ? 1 : 0); }
+  function pickKinds(){ var ks = F.sel.map(function(x){ return x.kind; }); if($("fName").value.trim()) ks.push(F.kind); return uniq(ks); }
+  function together(){ return F.together != null ? F.together : pickKinds().length <= 1; }
+  function drawBottom(){ var n = pickCount(), tog = together();
+    $("fTogether").hidden = n < 2 || !!F.target;
+    document.querySelectorAll("#fTogether [data-tog]").forEach(function(b){ b.setAttribute("aria-pressed", String((b.dataset.tog === "1") === tog)); });
+    $("fTogHint").textContent = tog ? "One page, with a counter for each." : "Each one gets its own page.";
+    $("fGo").textContent = F.target ? "Add to this page" : P ? (n > 1 && !tog ? "Add them" : "Add it") : "Start one"; }
   function selKeys(){ return F.sel.filter(function(x){ return x.kind === F.kind; }).map(function(x){ return x.k; }); }
   function drawForm(){ var kd = K(F.kind);
     $("fKind").innerHTML = KINDS.map(function(x){ return '<button type="button" data-kind="' + x.k + '" aria-pressed="' + (F.kind === x.k) + '">' + esc(x.n) + "</button>"; }).join("");
     $("fStep2").hidden = !kd;
     if(kd){ $("fQ").textContent = kd.q; $("fName").placeholder = "In your words, " + kd.eg; $("fPick").innerHTML = picker(selKeys(), F.open, kd.g); }
     $("fPicked").innerHTML = F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "";
-    var n = F.sel.length + ($("fName").value.trim() ? 1 : 0);
-    $("fGo").textContent = P ? (n > 1 ? "Add them" : "Add it") : "Start one"; }
-  function resetForm(){ F.kind = ""; F.sel = []; F.open = false; $("fName").value = ""; drawForm(); }
+    drawBottom(); }
+  function resetForm(){ F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; $("fName").value = ""; drawForm(); }
+  $("fTogether").addEventListener("click", function(e){ var b = e.target.closest("[data-tog]"); if(!b) return; F.together = b.dataset.tog === "1"; drawBottom(); });
   function pickKind(k){ F.kind = k; F.open = false; drawForm(); }
   $("fKind").addEventListener("click", function(e){ var b = e.target.closest("[data-kind]"); if(b) pickKind(b.dataset.kind); });
-  $("fName").addEventListener("input", function(){ var n = F.sel.length + (this.value.trim() ? 1 : 0); $("fGo").textContent = P ? (n > 1 ? "Add them" : "Add it") : "Start one"; });
+  $("fName").addEventListener("input", drawBottom);
   $("fPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return;
     if(b.dataset.more){ F.open = !F.open; drawForm(); return; }
     var k = b.dataset.k, i = F.sel.findIndex(function(x){ return x.k === k; });
@@ -636,21 +682,24 @@ footer p{margin:6px 0}
   // Tapping a kind in the intro jumps to the form with it picked
   document.querySelector(".kinds").addEventListener("click", function(e){ var b = e.target.closest("[data-kind]"); if(!b) return; pickKind(b.dataset.kind);
     $("formSlot").scrollIntoView({behavior:"smooth", block:"start"}); });
-  function makeReset(key, name, kind){ var t = T(key), kd = K(kind) || {}; return {id:uid(), key:key, g:kd.g || t.g || "stop", mode:kd.mode || (t.less ? "less" : "stop"), name:name || t.n, why:"", how:"", ways:[], start:Date.now(), end:null,
-    secs:SEC_DEFAULT.slice(), notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", best:0, done:null, made:Date.now()}; }
+  function makeThing(key, name, kind){ var t = T(key), kd = K(kind) || {}; return {id:uid(), key:key, g:kd.g || t.g || "stop", mode:kd.mode || (t.less ? "less" : "stop"), name:name || t.n, start:Date.now(), end:null, best:0}; }
+  function makePage(ths){ return {id:uid(), things:ths, title:"", why:"", how:"", ways:[], secs:SEC_DEFAULT.slice(), notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", done:null, made:Date.now()}; }
   $("rf").addEventListener("submit", function(e){ e.preventDefault();
     var typed = $("fName").value.trim(), picks = F.sel.slice();
     if(!F.kind && !picks.length){ toast("First pick what kind of reset it is"); return; }
     if(typed){ var match = TYPES.filter(function(t){ return t.n.toLowerCase() === typed.toLowerCase(); })[0]; if(match){ if(!picks.some(function(x){ return x.k === match.k; })) picks.push({k:match.k, kind:F.kind}); typed = ""; } }
     if(!typed && !picks.length){ toast("Type what it is, or tap one of the buttons"); $("fName").focus(); return; }
-    var fresh = !P; if(fresh){ CODE = newCode(); P = {v:3, resets:[], ack:false}; }
-    var made = picks.map(function(x){ return makeReset(x.k, "", x.kind); }); if(typed) made.push(makeReset("own", typed, F.kind));
+    var ths = picks.map(function(x){ return makeThing(x.k, "", x.kind); }); if(typed) ths.push(makeThing("own", typed, F.kind));
+    var target = F.target && find(F.target);
+    if(target){ ths.forEach(function(t){ target.things.push(t); }); target.title = ""; save(); var tid = target.id; closeSheet(); go("#p=" + CODE + "&r=" + tid); render(); toast(joinNames(ths) + " added to this page"); return; }
+    var tog = together(), fresh = !P; if(fresh){ CODE = newCode(); P = {v:3, resets:[], ack:false}; }
+    var made = tog ? [makePage(ths)] : ths.map(function(t){ return makePage([t]); });
     made.forEach(function(r){ P.resets.push(r); }); save(); closeSheet(); resetForm();
     go(made.length === 1 ? "#p=" + CODE + "&r=" + made[0].id : "#p=" + CODE);
-    if(!fresh) toast(made.length === 1 ? "Added" : made.length + " added"); });
+    toast(made.length === 1 ? "This is your page – tap Edit page to add, move or remove boxes" : made.length + " pages added"); });
 
   // The same form pops up on your page for "Add another reset"
-  function openSheet(){ resetForm(); $("sheetSlot").appendChild($("rf")); $("sheet").hidden = false; document.body.style.overflow = "hidden"; $("sheet").scrollTop = 0; }
+  function openSheet(target){ resetForm(); F.target = typeof target === "string" ? target : ""; $("sheetTitle").textContent = F.target ? "Add to this page" : "Add a reset"; drawBottom(); $("sheetSlot").appendChild($("rf")); $("sheet").hidden = false; document.body.style.overflow = "hidden"; $("sheet").scrollTop = 0; }
   function closeSheet(){ if($("sheet").hidden) return; $("sheet").hidden = true; document.body.style.overflow = ""; $("formSlot").appendChild($("rf")); resetForm(); }
   $("sheetX").addEventListener("click", closeSheet);
   $("sheet").addEventListener("click", function(e){ if(e.target === this) closeSheet(); });
@@ -661,7 +710,7 @@ footer p{margin:6px 0}
   function drawList(){
     $("lPick").innerHTML = picker([L.sel], L.open);
     var t = T(L.sel);
-    $("waysBox").innerHTML = '<h3 style="font-size:1.2rem;margin-bottom:4px">' + esc(t.n) + ' – ' + (t.ways ? "ways people go about it" : "what often helps") + '</h3><ul class="ways">' + waysOf(t).map(function(w){ return "<li>" + esc(w) + "</li>"; }).join("") + "</ul>" + extras({key:t.k, g:t.g, name:""});
+    $("waysBox").innerHTML = '<h3 style="font-size:1.2rem;margin-bottom:4px">' + esc(t.n) + ' – ' + (t.ways ? "ways people go about it" : "what often helps") + '</h3><ul class="ways">' + waysOf(t).map(function(w){ return "<li>" + esc(w) + "</li>"; }).join("") + "</ul>" + extras({things:[{key:t.k, g:t.g, name:""}]});
     $("general").innerHTML = GENERAL.map(function(g){ return "<li>" + esc(g) + "</li>"; }).join("");
   }
   $("lPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; if(b.dataset.more) L.open = !L.open; else L.sel = b.dataset.k; drawList(); });
@@ -700,21 +749,22 @@ footer p{margin:6px 0}
     document.querySelector("#mine .saveSlot").innerHTML = saveBoxHTML();
     $("acct").innerHTML = acctHTML();
     var live = P.resets.filter(function(r){ return !r.done; }), done = P.resets.filter(function(r){ return r.done; });
-    $("cards").innerHTML = live.length ? live.map(function(r){ var c = counter(r);
-      return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + gOf(r).c + '"><div class="rkind">' + esc(kindOf(r)) + '</div><div class="rtop"><span class="rname">' + esc(r.name) + '</span><span class="rcount">' + esc(c.big) + "</span></div>" + (askWaiting(r) ? '<div class="small" style="margin-top:4px">● Today\'s question is waiting</div>' : "") + "</button>"; }).join("")
+    $("cards").innerHTML = live.length ? live.map(function(r){ var ths = things(r), one = ths.length === 1;
+      return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + pG(r).c + '"><div class="rkind">' + esc(pKind(r)) + '</div><div class="rtop"><span class="rname">' + esc(pName(r)) + '</span>' + (one ? '<span class="rcount">' + esc(counter(ths[0], r).big) + "</span>" : "") + "</div>"
+        + (one ? "" : '<div class="rthings">' + ths.map(function(t){ return "<span>" + esc(t.name) + " · <b>" + esc(counter(t, r).big) + "</b></span>"; }).join("") + "</div>") + (askWaiting(r) ? '<div class="small" style="margin-top:4px">● Today\'s question is waiting</div>' : "") + "</button>"; }).join("")
       : '<p class="empty">Nothing on the go. Add a reset below.</p>';
     $("doneBox").hidden = !done.length;
-    $("doneList").innerHTML = done.map(function(r){ return '<div class="drow"><button type="button" class="name" data-id="' + r.id + '">' + esc(r.name) + ' – <b>' + days(r.done.days) + '</b></button><button type="button" class="ghost" data-reopen="' + r.id + '">Reopen</button></div>'; }).join("");
+    $("doneList").innerHTML = done.map(function(r){ return '<div class="drow"><button type="button" class="name" data-id="' + r.id + '">' + esc(pName(r)) + ' – <b>' + days(r.done.days) + '</b></button><button type="button" class="ghost" data-reopen="' + r.id + '">Reopen</button></div>'; }).join("");
   }
   $("cards").addEventListener("click", function(e){ var b = e.target.closest(".rcard"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
   $("doneList").addEventListener("click", function(e){ var b = e.target.closest("[data-reopen]"); if(b){ reopen(find(b.dataset.reopen)); return; } b = e.target.closest("[data-id]"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
-  $("addBtn").addEventListener("click", openSheet);
+  $("addBtn").addEventListener("click", function(){ openSheet(); });
   // ---------- One reset: a page built from sections ----------
   var wordIx = {};
   function wordsFor(r){ return r.words.concat(WORDS); }
   function byDay(list, r, rowFn){ var groups = {}, order = [], tday = ds(Date.now()), yday = ds(Date.now() - DAY);
     list.slice().sort(function(a, b){ return b.ts - a.ts; }).forEach(function(n){ var k = ds(n.ts); if(!groups[k]){ groups[k] = []; order.push(k); } groups[k].push(n); });
-    return order.map(function(k){ var ms = groups[k][0].ts, label = k === tday ? "Today" : k === yday ? "Yesterday" : nice(ms), dd = dayNo(ms) - dayNo(r.start) + 1;
+    return order.map(function(k){ var ms = groups[k][0].ts, label = k === tday ? "Today" : k === yday ? "Yesterday" : nice(ms), dd = dayNo(ms) - dayNo(pStart(r)) + 1;
       return '<details class="jday"' + (k === tday ? " open" : "") + '><summary>' + label + (dd > 0 ? ' <span class="dn">· Day ' + dd + "</span>" : "") + ' <span class="dn">· ' + groups[k].length + '</span></summary>' + groups[k].map(rowFn).join("") + "</details>"; }).join(""); }
   // Weight: stored in kg, shown in the unit you pick (kg, lb, or stones and pounds)
   var LB = 0.45359237;
@@ -728,7 +778,7 @@ footer p{margin:6px 0}
     var W = 320, H = 130, L = 46, R = 10, Tp = 12, B = 22, xs = list.map(function(w){ return dayNo(new Date(w.d + "T12:00").getTime()); }), ys = list.map(function(w){ return inUnit(w.kg); });
     var x0 = xs[0], x1 = xs[xs.length - 1], lo = Math.min.apply(null, ys), hi = Math.max.apply(null, ys); if(hi - lo < 1){ lo -= .5; hi += .5; }
     var X = function(x){ return L + (x1 === x0 ? (W - L - R) / 2 : (x - x0) / (x1 - x0) * (W - L - R)); }, Y = function(y){ return Tp + (hi - y) / (hi - lo) * (H - Tp - B); };
-    var c = gOf(r).c, pts = xs.map(function(x, i){ return X(x).toFixed(1) + "," + Y(ys[i]).toFixed(1); }).join(" ");
+    var c = pG(r).c, pts = xs.map(function(x, i){ return X(x).toFixed(1) + "," + Y(ys[i]).toFixed(1); }).join(" ");
     var lbl = function(v){ return unit() === "st" ? (Math.floor(v / 14) + "st " + Math.round(v % 14) + "") : v.toFixed(1); };
     return '<svg class="wchart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Weight from ' + esc(nice(new Date(list[0].d + "T12:00").getTime())) + " to " + esc(nice(new Date(list[list.length - 1].d + "T12:00").getTime())) + '">'
       + '<line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(hi) + '" y2="' + Y(hi) + '"/><line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(lo) + '" y2="' + Y(lo) + '"/>'
@@ -738,10 +788,10 @@ footer p{margin:6px 0}
       + list.map(function(w, i){ return '<circle cx="' + X(xs[i]).toFixed(1) + '" cy="' + Y(ys[i]).toFixed(1) + '" r="' + (i === list.length - 1 ? 5.5 : 4) + '" fill="' + c + '"><title>' + esc(nice(new Date(w.d + "T12:00").getTime())) + ": " + esc(fmtW(w.kg)) + "</title></circle>"; }).join("") + "</svg>"; }
   var wAll = {}, planDays = {}, planOpen = "", askEdit = {};
   // Today's question: asked once a day, answers kept so you can see how they change
-  function question(r){ return r.g === "stop" ? "Why do you think it's hard to " + (r.mode === "less" ? "cut down" : "give it up") + "?" : r.g === "start" ? "Why do you think it's hard to keep going?" : r.g === "without" ? "Why do you think it's hard to go without?" : "Why do you think this is hard to do?"; }
+  function question(r){ var k = pKind(r); return k === "Giving up" ? "Why do you think it's hard to give it up?" : k === "Cutting down" ? "Why do you think it's hard to cut down?" : k === "Doing more" ? "Why do you think it's hard to keep going?" : k === "Going without" ? "Why do you think it's hard to go without?" : "Why do you think this is hard?"; }
   function askToday(r){ var t = ds(Date.now()); return r.asks.filter(function(a){ return a.d === t; })[0]; }
-  function askWaiting(r){ return !r.done && r.secs.indexOf("ask") > -1 && !askToday(r) && Date.now() >= r.start; }
-  function askDay(r, a){ var n = dayNo(new Date(a.d + "T12:00").getTime()) - dayNo(r.start) + 1; return n > 0 ? "Day " + n : nice(new Date(a.d + "T12:00").getTime()); }
+  function askWaiting(r){ return !r.done && r.secs.indexOf("ask") > -1 && !askToday(r) && Date.now() >= pStart(r); }
+  function askDay(r, a){ var n = dayNo(new Date(a.d + "T12:00").getTime()) - dayNo(pStart(r)) + 1; return n > 0 ? "Day " + n : nice(new Date(a.d + "T12:00").getTime()); }
   var SECTION = {
     ask: function(r){ var q = question(r), today = askToday(r), list = r.asks.slice().sort(function(a, b){ return a.d < b.d ? 1 : -1; }), first = list[list.length - 1];
       var h = '<p class="words" style="font-size:1.3rem">' + esc(q) + "</p>";
@@ -751,27 +801,41 @@ footer p{margin:6px 0}
       var past = list.filter(function(a){ return a !== today; });
       if(past.length) h += '<details class="jday"><summary>All your answers <span class="dn">· ' + list.length + "</span></summary>" + list.map(function(a){ return '<div class="jnote"><time style="width:56px">' + esc(askDay(r, a)) + '</time><p>' + esc(a.t) + "</p></div>"; }).join("") + "</details>";
       return h; },
-    timer: function(r){ var c = counter(r);
-      return '<div class="big" data-live="big">' + esc(c.big) + '</div><div class="small" data-live="small">' + esc(c.small) + '</div><div class="live" data-live="live">' + esc(c.live) + "</div>"
-        + (!r.done && !r.end && dayOf(r) > 1 ? '<div class="row" style="margin-top:12px"><button type="button" class="ghost" data-a="restart">Start the count again</button></div>' : ""); },
+    timer: function(r){ var ths = things(r), multi = ths.length > 1;
+      return ths.map(function(t){ var c = counter(t, r);
+        return '<div class="tblock" style="--c:' + gOf(t).c + '">' + (multi ? '<div class="tname">' + esc(t.name) + " <span>" + esc(kindOf(t)) + "</span></div>" : "")
+          + '<div class="big' + (multi ? " mid" : "") + '" data-live="big" data-t="' + t.id + '">' + esc(c.big) + '</div><div class="small" data-live="small" data-t="' + t.id + '">' + esc(c.small) + '</div><div class="live" data-live="live" data-t="' + t.id + '">' + esc(c.live) + "</div>"
+          + (!r.done && !t.end && dayOf(t) > 1 ? '<div class="row" style="margin-top:10px"><button type="button" class="ghost" data-restart="' + t.id + '">' + (multi ? "Start this one again" : "Start the count again") + "</button></div>" : "") + "</div>"; }).join("")
+        + (r.done ? "" : '<button type="button" class="more" data-a="addthing">+ Add something else to this page</button>'); },
     words: function(r){ var all = wordsFor(r), i = (wordIx[r.id] || 0) % all.length;
       return '<p class="words">' + esc(all[i]) + '</p><div class="row"><button type="button" class="ghost" data-a="nextword">Another one</button></div>'
         + '<div class="jin" style="margin-top:14px"><input class="field" id="wIn" maxlength="140" placeholder="Add my own words"><button type="button" class="ghost" data-a="addword">Add</button></div>'
         + r.words.map(function(w, j){ return '<div class="litem"><p>' + esc(w) + '</p><button type="button" class="x" data-dword="' + j + '" aria-label="Delete">×</button></div>'; }).join(""); },
     about: function(r){
-      return '<label class="lbl" for="aName" style="margin-top:0">Name</label><input class="field" id="aName" data-f="name" maxlength="40" value="' + esc(r.name) + '">'
-        + (r.g === "stop" ? '<div class="lbl">Giving up or cutting down?</div><div class="chips"><button type="button" class="chip" data-mode="stop" aria-pressed="' + (r.mode !== "less") + '">Giving up</button><button type="button" class="chip" data-mode="less" aria-pressed="' + (r.mode === "less") + '">Cutting down</button></div>' : "")
+      var ths = things(r), multi = ths.length > 1;
+      return (multi ? '<label class="lbl" for="aTitle" style="margin-top:0">Page name <span>(optional)</span></label><input class="field" id="aTitle" data-f="title" maxlength="60" placeholder="' + esc(joinNames(ths)) + '" value="' + esc(r.title) + '">' : "")
+        + ths.map(function(t, i){ return '<div class="thing">'
+          + '<label class="lbl" for="tn-' + t.id + '"' + (i === 0 && !multi ? ' style="margin-top:0"' : "") + ">" + (multi ? "Thing " + (i + 1) : "Name") + '</label><input class="field" id="tn-' + t.id + '" data-tf="name" data-t="' + t.id + '" maxlength="40" value="' + esc(t.name) + '">'
+          + (t.g === "stop" ? '<div class="chips" style="margin-top:8px"><button type="button" class="chip" data-mode="stop" data-t="' + t.id + '" aria-pressed="' + (t.mode !== "less") + '">Giving up</button><button type="button" class="chip" data-mode="less" data-t="' + t.id + '" aria-pressed="' + (t.mode === "less") + '">Cutting down</button></div>' : "")
+          + '<div class="two"><div><label class="lbl" for="ts-' + t.id + '">Started</label><input class="field tStart" type="datetime-local" id="ts-' + t.id + '" data-t="' + t.id + '" value="' + toInput(t.start) + '"></div>'
+          + '<div><label class="lbl" for="te-' + t.id + '">Ends <span>(optional)</span></label><input class="field tEnd" type="datetime-local" id="te-' + t.id + '" data-t="' + t.id + '" value="' + (t.end ? toInput(t.end) : "") + '"></div></div>'
+          + (t.end ? '<button type="button" class="link" data-noend="' + t.id + '">Clear end</button>' : "")
+          + (multi ? '<div class="foot" style="margin-top:4px"><button type="button" class="link" data-split="' + t.id + '">Give it its own page</button><button type="button" class="link danger" data-tremove="' + t.id + '">Take off this page</button></div>' : "")
+          + "</div>"; }).join("")
+        + '<p class="small" style="margin:8px 0 0">Leave "Ends" blank to count up. Give it an end to count down – a fast or a dry month has an end, a quit doesn\'t.</p>'
+        + '<button type="button" class="more" data-a="addthing">+ Add something else to this page</button>'
         + '<label class="lbl" for="aWhy">Why? <span>(as little or as much as you like)</span></label><textarea class="field" id="aWhy" data-f="why" maxlength="4000">' + esc(r.why) + "</textarea>"
         + '<label class="lbl" for="aHow">How I\'m doing it</label>'
         + (r.ways.length ? '<div class="hchips" style="margin-bottom:8px">' + r.ways.map(function(w){ return '<span class="hchip">' + esc(w) + "</span>"; }).join("") + "</div>" : "")
         + '<input class="field" id="aHow" data-f="how" maxlength="120" placeholder="' + (r.ways.length ? "Anything else" : "Cold turkey, patches, only at weekends…") + '" value="' + esc(r.how) + '">'
-        + (r.ways.length ? "" : '<p class="small" style="margin:6px 0 0">Or tap "I\'m trying this" on any of the Tips.</p>')
-        + '<div class="two"><div><label class="lbl" for="aStart">Started</label><input class="field" type="datetime-local" id="aStart" value="' + toInput(r.start) + '"></div>'
-        + '<div><label class="lbl" for="aEnd">Ends <span>(optional)</span></label><input class="field" type="datetime-local" id="aEnd" value="' + (r.end ? toInput(r.end) : "") + '"></div></div>'
-        + '<p class="small" style="margin:6px 0 0">Leave "Ends" blank to count up. Give it an end to count down – a fast or a dry month has an end, a quit doesn\'t.' + (r.end ? ' <button type="button" class="link" data-a="noend">Clear end</button>' : "") + "</p>"; },
-    tips: function(r){ var t = tOf(r), list = (t.ways || []).concat(gOf(r).tips);
-      list = list.filter(function(w, i){ return list.indexOf(w) === i; });
-      return '<ul class="ways">' + list.map(function(w){ var on = r.ways.indexOf(w) > -1; return '<li><span>' + esc(w) + '</span><button type="button" class="doing" data-way="' + esc(w) + '" aria-pressed="' + on + '">' + (on ? "Trying ✓" : "I'm trying this") + "</button></li>"; }).join("") + "</ul>" + extras(r); },
+        + (r.ways.length ? "" : '<p class="small" style="margin:6px 0 0">Or tap "I\'m trying this" on any of the Tips.</p>'); },
+    tips: function(r){ var ths = things(r), multi = ths.length > 1, seen = {}, h = "";
+      var fresh = function(w){ if(seen[w]) return false; seen[w] = 1; return true; };
+      var li = function(w){ var on = r.ways.indexOf(w) > -1; return '<li><span>' + esc(w) + '</span><button type="button" class="doing" data-way="' + esc(w) + '" aria-pressed="' + on + '">' + (on ? "Trying ✓" : "I'm trying this") + "</button></li>"; };
+      ths.forEach(function(t){ var ws = (T(t.key).ways || []).filter(fresh); if(ws.length) h += (multi ? '<div class="grp">' + esc(t.name) + "</div>" : "") + '<ul class="ways">' + ws.map(li).join("") + "</ul>"; });
+      var gt = []; ths.forEach(function(t){ (gOf(t).tips || []).filter(fresh).forEach(function(w){ gt.push(w); }); });
+      if(gt.length) h += (h ? '<div class="grp">Also often helps</div>' : "") + '<ul class="ways">' + gt.map(li).join("") + "</ul>";
+      return h + extras(r); },
     journal: function(r){ return '<div class="jin"><textarea class="field" id="jIn" rows="2" maxlength="2000" placeholder="A thought, a craving, a good moment…"></textarea><button type="button" class="ghost" data-a="addnote">Add</button></div>'
       + (byDay(r.notes, r, function(n){ return '<div class="jnote"><time>' + hm(n.ts) + '</time><p>' + esc(n.t) + '</p><button type="button" class="x" data-dnote="' + n.id + '" aria-label="Delete note">×</button></div>'; })
         || '<p class="empty">Nothing yet. Type and press Enter – it\'s stamped with the time and filed under today.</p>'); },
@@ -790,7 +854,7 @@ footer p{margin:6px 0}
           + (more ? '<button type="button" class="more" data-a="wall">Show all ' + shown.length + "</button>" : "") + "</div>" : '<p class="empty">Log any day you like – one entry per day, logging again replaces it.</p>'); },
     plan: function(r){ var t0 = dayNo(Date.now()), n = planDays[r.id] || 14, rows = "", item = function(it){ return '<div class="pitem' + (it.done ? " done" : "") + '"><button type="button" class="tick" data-ptick="' + it.id + '" aria-label="' + (it.done ? "Untick" : "Tick") + '">' + (it.done ? "✓" : "") + '</button><p>' + esc(it.t) + '</p><button type="button" class="x" data-dplan="' + it.id + '" aria-label="Delete">×</button></div>'; };
       var byD = {}; r.plan.forEach(function(it){ (byD[it.d] = byD[it.d] || []).push(it); });
-      var dayRow = function(d, label){ var ms = new Date(d + "T12:00").getTime(), dn = dayNo(ms) - dayNo(r.start) + 1, isT = dayNo(ms) === t0;
+      var dayRow = function(d, label){ var ms = new Date(d + "T12:00").getTime(), dn = dayNo(ms) - dayNo(pStart(r)) + 1, isT = dayNo(ms) === t0;
         return '<div class="pday' + (isT ? " today" : "") + '"><div class="pdate">' + (isT ? "Today" : esc(label || nice(ms))) + "<small>" + (isT ? esc(nice(ms)) : "") + (dn > 0 ? (isT ? " · " : "") + "Day " + dn : "") + '</small></div><div class="pitems">' + (byD[d] || []).map(item).join("") + '</div><button type="button" class="padd" data-padd="' + d + '" aria-label="Add to ' + esc(nice(ms)) + '">+</button>'
           + (planOpen === d ? '<div class="pin"><input class="field" id="pIn" maxlength="200" placeholder="What\'s the plan?"><button type="button" class="ghost" data-a="addplan">Add</button></div>' : "") + "</div>"; };
       var earlier = Object.keys(byD).filter(function(d){ return dayNo(new Date(d + "T12:00").getTime()) < t0; }).sort();
@@ -803,18 +867,24 @@ footer p{margin:6px 0}
     learn: function(r){ return '<div class="jin"><input class="field" id="lIn" maxlength="300" placeholder="A fact or tip that keeps coming up"><button type="button" class="ghost" data-a="addlearn">Add</button></div>'
       + (r.learn.length ? r.learn.map(function(l){ return '<div class="litem"><p>' + esc(l.t) + '</p><button type="button" class="x" data-dlearn="' + l.id + '" aria-label="Delete">×</button></div>'; }).join("") : '<p class="empty">Nothing yet.</p>'); }
   };
+  var EDIT = false;
   function renderDetail(r){
-    var g = gOf(r), secs = r.secs.filter(function(s){ return SECTION[s]; }), hidden = SEC_ORDER.filter(function(s){ return secs.indexOf(s) < 0; });
+    if($("detail").dataset.id !== r.id) EDIT = false;
+    var g = pG(r), secs = r.secs.filter(function(s){ return SECTION[s]; }), hidden = SEC_ORDER.filter(function(s){ return secs.indexOf(s) < 0; });
     var h = '<button type="button" class="back" data-a="back">← My resets</button>' + saveBoxHTML()
-      + '<div class="dkind" style="--c:' + g.c + '">' + esc(kindOf(r)) + '</div><h1 class="dname">' + esc(r.name) + "</h1>";
-    h += '<div class="secs">';
-    secs.forEach(function(s, i){
-      h += '<section class="card" data-sec="' + s + '" style="--c:' + g.c + '"><div class="shead"><h2>' + esc(SECS[s].n) + '</h2><div class="sctl">'
-        + (i > 0 ? '<button type="button" data-up="' + s + '" aria-label="Move up">↑</button>' : "") + (i < secs.length - 1 ? '<button type="button" data-down="' + s + '" aria-label="Move down">↓</button>' : "")
-        + '<button type="button" data-hide="' + s + '" aria-label="Take off my page">×</button></div></div>' + SECTION[s](r) + "</section>"; });
-    h += "</div>";
-    if(hidden.length) h += '<section class="card"><h2 style="font-size:1.2rem;margin-bottom:4px">Add to my page</h2><div class="addsec">' + hidden.map(function(s){ return '<button type="button" data-show="' + s + '"><b>+ ' + esc(SECS[s].n) + "</b><span>" + esc(SECS[s].d) + "</span></button>"; }).join("") + "</div></section>";
-    h += '<div class="foot">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>' : '<button type="button" class="ghost" data-a="finish">Finish this reset</button>') + '<button type="button" class="link danger" data-a="delete">Delete this reset</button></div>';
+      + '<div class="dhead"><div><div class="dkind" style="--c:' + g.c + '">' + esc(pKind(r)) + '</div><h1 class="dname">' + esc(pName(r)) + "</h1></div>"
+      + '<button type="button" class="' + (EDIT ? "btn" : "ghost") + ' editbtn" data-a="edit">' + (EDIT ? "Done" : "✎ Edit page") + "</button></div>";
+    if(EDIT){
+      h += '<p class="small editnote">Move boxes with ↑ and ↓. Remove takes a box off your page – what you wrote in it is kept. Add more below, then tap Done.</p>'
+        + '<div class="elist">' + secs.map(function(s, i){ return '<div class="erow"><div><b>' + esc(SECS[s].n) + "</b><span>" + esc(SECS[s].d) + '</span></div><div class="ectl">'
+          + '<button type="button" data-up="' + s + '" aria-label="Move ' + esc(SECS[s].n) + ' up"' + (i === 0 ? " disabled" : "") + '>↑</button><button type="button" data-down="' + s + '" aria-label="Move ' + esc(SECS[s].n) + ' down"' + (i === secs.length - 1 ? " disabled" : "") + '>↓</button><button type="button" class="erem" data-hide="' + s + '">Remove</button></div></div>'; }).join("") + "</div>";
+      if(hidden.length) h += '<h2 class="egal">Add a box</h2><div class="gallery">' + hidden.map(function(s){ return '<button type="button" data-show="' + s + '"><b>+ ' + esc(SECS[s].n) + "</b><span>" + esc(SECS[s].d) + "</span></button>"; }).join("") + "</div>";
+      h += '<div class="row" style="margin-top:18px"><button type="button" class="btn" data-a="edit">Done</button></div>';
+    } else {
+      h += '<div class="secs">' + secs.map(function(s){ return '<section class="card" data-sec="' + s + '" style="--c:' + g.c + '"><div class="shead"><h2>' + esc(SECS[s].n) + "</h2></div>" + SECTION[s](r) + "</section>"; }).join("") + "</div>";
+      h += '<button type="button" class="add" data-a="edit">✎ Edit page – add, move or remove boxes</button>';
+      h += '<div class="foot">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>' : '<button type="button" class="ghost" data-a="finish">Finish this reset</button>') + '<button type="button" class="link danger" data-a="delete">Delete this page</button></div>';
+    }
     var m = $("detail"); m.innerHTML = h; m.dataset.id = r.id;
   }
   function current(){ return find($("detail").dataset.id); }
@@ -842,18 +912,29 @@ footer p{margin:6px 0}
     else if(id === "qIn" && !e.shiftKey){ e.preventDefault(); addAsk(r); }
     else if(id === "pAny"){ e.preventDefault(); addPlan(r, $("pDate").value, "pAny"); } });
   // Typing in "All about my reset" and "My thoughts" saves as you go
-  $("detail").addEventListener("input", function(e){ var r = current(), f = e.target.dataset.f; if(!r || !f) return;
-    r[f] = f === "name" ? (e.target.value.trim() || tOf(r).n || "My reset") : e.target.value; saveSoon();
-    if(f === "name") document.querySelector("#detail .dname").textContent = r.name; });
-  $("detail").addEventListener("change", function(e){ var r = current(); if(!r) return;
-    if(e.target.id === "aStart"){ var s = fromInput(e.target.value); if(s == null) return; if(r.end && s >= r.end){ toast("The start has to be before the end"); e.target.value = toInput(r.start); return; } r.start = s; save(); redraw(r); }
-    if(e.target.id === "aEnd"){ var en = fromInput(e.target.value); if(en != null && en <= r.start){ toast("The end has to be after the start"); e.target.value = r.end ? toInput(r.end) : ""; return; } r.end = en; save(); redraw(r); } });
+  $("detail").addEventListener("input", function(e){ var r = current(); if(!r) return; var f = e.target.dataset.f;
+    if(e.target.dataset.tf){ var t = thingById(r, e.target.dataset.t); if(!t) return; t.name = e.target.value.trim() || T(t.key).n || "My reset"; saveSoon(); document.querySelector("#detail .dname").textContent = pName(r); return; }
+    if(!f) return; r[f] = f === "title" ? e.target.value.trim() : e.target.value; saveSoon();
+    if(f === "title") document.querySelector("#detail .dname").textContent = pName(r); });
+  $("detail").addEventListener("change", function(e){ var r = current(); if(!r) return; var el = e.target, t = el.dataset.t && thingById(r, el.dataset.t); if(!t) return;
+    if(el.classList.contains("tStart")){ var s = fromInput(el.value); if(s == null) return; if(t.end && s >= t.end){ toast("The start has to be before the end"); el.value = toInput(t.start); return; } t.start = s; save(); redraw(r); }
+    if(el.classList.contains("tEnd")){ var en = fromInput(el.value); if(en != null && en <= t.start){ toast("The end has to be after the start"); el.value = t.end ? toInput(t.end) : ""; return; } t.end = en; save(); redraw(r); } });
   $("detail").addEventListener("click", function(e){ var r = current(), b = e.target.closest("button"); if(!r || !b) return; var d = b.dataset;
     if(d.act) return linkActs(e);
     if(d.up || d.down){ var s = d.up || d.down, i = r.secs.indexOf(s), j = d.up ? i - 1 : i + 1; r.secs.splice(i, 1); r.secs.splice(j, 0, s); save(); return redraw(r); }
     if(d.hide){ var at = r.secs.indexOf(d.hide), hs = d.hide; r.secs.splice(at, 1); save(); redraw(r); return toast(SECS[hs].n + " taken off – what you wrote is kept", function(){ r.secs.splice(at, 0, hs); save(); redraw(r); }); }
-    if(d.show){ r.secs.push(d.show); save(); redraw(r); var el = document.querySelector('[data-sec="' + d.show + '"]'); if(el) el.scrollIntoView({behavior:"smooth", block:"center"}); return; }
-    if(d.mode){ r.mode = d.mode; save(); return redraw(r); }
+    if(d.show){ r.secs.push(d.show); save(); redraw(r); return toast(SECS[d.show].n + " added to your page"); }
+    if(d.mode && d.t){ var mt = thingById(r, d.t); if(mt){ mt.mode = d.mode; save(); redraw(r); } return; }
+    if(d.restart){ var rt = thingById(r, d.restart); if(!rt) return; var was = dayOf(rt);
+      ask("Start the count again for " + rt.name + " from now? Your notes stay, and your best run is kept.", "Start again", function(){
+        rt.best = Math.max(rt.best || 0, was); rt.start = Date.now(); r.notes.push({id:uid(), ts:Date.now(), t:"Started the count again for " + rt.name + " (was on Day " + was + ")."}); save(); redraw(r); }); return; }
+    if(d.noend){ var nt = thingById(r, d.noend); if(nt){ nt.end = null; save(); redraw(r); } return; }
+    if(d.split){ var st = thingById(r, d.split); if(!st) return;
+      ask("Give " + st.name + " its own page? Its counter moves with it. Your notes and other boxes stay on this page.", "Move it", function(){
+        r.things = r.things.filter(function(x){ return x !== st; }); r.title = ""; P.resets.push(makePage([st])); save(); redraw(r); toast(st.name + " has its own page now – see My resets"); }); return; }
+    if(d.tremove){ var tt = thingById(r, d.tremove); if(!tt) return;
+      ask("Take " + tt.name + " off this page? Its counter goes; your notes stay.", "Take it off", function(){
+        var at2 = r.things.indexOf(tt); r.things.splice(at2, 1); r.title = ""; save(); redraw(r); toast(tt.name + " taken off", function(){ r.things.splice(at2, 0, tt); save(); redraw(r); }); }); return; }
     if(d.way){ var wi = r.ways.indexOf(d.way); if(wi > -1) r.ways.splice(wi, 1); else r.ways.push(d.way); save(); return redraw(r); }
     if(d.feel){ r.feel.push({id:uid(), ts:Date.now(), t:d.feel}); save(); redraw(r); return toast(d.feel + " – logged at " + hm(Date.now())); }
     if(d.dnote) return removeWithUndo(r, r.notes, d.dnote, "Note deleted");
@@ -867,6 +948,8 @@ footer p{margin:6px 0}
     if(d.dword != null){ var k = +d.dword, gw = r.words.splice(k, 1)[0]; save(); redraw(r); return toast("Deleted", function(){ r.words.splice(k, 0, gw); save(); redraw(r); }); }
     var a = d.a;
     if(a === "back") go("#p=" + CODE);
+    else if(a === "edit"){ EDIT = !EDIT; renderDetail(r); window.scrollTo(0, 0); }
+    else if(a === "addthing") openSheet(r.id);
     else if(a === "addnote") addTo(r.notes, "jIn", r);
     else if(a === "addfeel") addTo(r.feel, "fIn", r);
     else if(a === "addlearn") addLearn(r);
@@ -879,17 +962,13 @@ footer p{margin:6px 0}
     else if(a === "addplan") addPlan(r, planOpen, "pIn");
     else if(a === "addplanany") addPlan(r, $("pDate").value, "pAny");
     else if(a === "planmore"){ planDays[r.id] = (planDays[r.id] || 14) + 14; redraw(r); }
-    else if(a === "noend"){ r.end = null; save(); redraw(r); }
     else if(a === "reopen") reopen(r);
-    else if(a === "finish"){ r.done = {at:Date.now(), days:reached(r)}; save(); go("#p=" + CODE); toast(r.name + " – moved to Done", function(){ r.done = null; save(); render(); }); }
-    else if(a === "delete") ask("Delete \"" + r.name + "\" and everything on its page? To keep it, use Finish instead.", "Delete", function(){ P.resets = P.resets.filter(function(x){ return x !== r; }); save(); go("#p=" + CODE); toast("Deleted"); });
-    else if(a === "restart"){ var was = dayOf(r);
-      ask("Start the count again from now? Your notes stay, and your best run is kept.", "Start again", function(){
-        r.best = Math.max(r.best || 0, was); r.start = Date.now(); r.notes.push({id:uid(), ts:Date.now(), t:"Started the count again (was on Day " + was + ")."}); save(); redraw(r); }); }
+    else if(a === "finish"){ r.done = {at:Date.now(), days:Math.max.apply(null, things(r).map(reached).concat([0]))}; save(); go("#p=" + CODE); toast(pName(r) + " – moved to Done", function(){ r.done = null; save(); render(); }); }
+    else if(a === "delete") ask("Delete \"" + pName(r) + "\" and everything on its page? To keep it, use Finish instead.", "Delete", function(){ P.resets = P.resets.filter(function(x){ return x !== r; }); save(); go("#p=" + CODE); toast("Deleted"); });
   });
   // The timer ticks every second
-  setInterval(function(){ if($("detail").hidden) return; var r = current(); if(!r) return; var c = counter(r);
-    document.querySelectorAll("#detail [data-live]").forEach(function(el){ var v = c[el.dataset.live]; if(el.textContent !== v) el.textContent = v; }); }, 1000);
+  setInterval(function(){ if($("detail").hidden) return; var r = current(); if(!r) return; var cache = {};
+    document.querySelectorAll("#detail [data-live]").forEach(function(el){ var t = thingById(r, el.dataset.t); if(!t) return; var c = cache[t.id] || (cache[t.id] = counter(t, r)), v = c[el.dataset.live]; if(el.textContent !== v) el.textContent = v; }); }, 1000);
 
   // ---------- Which screen to show ----------
   function go(h){ if(location.hash === h) route(); else location.hash = h; }
