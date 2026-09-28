@@ -1,4 +1,4 @@
-<!-- DueAReset v19 -->
+<!-- DueAReset v20 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -64,6 +64,21 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .kinds b{display:block;color:var(--ink);font-size:1.02rem}
 .kinds button{position:relative;padding-right:42px!important}
 .kinds button::after{content:"→";position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--brand);font-weight:700}
+.qrot{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;width:100%;border:0;background:none;padding:0;text-align:left}
+.qq{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.35rem;color:var(--ink)}
+.qa{color:var(--brand);font-weight:700;font-size:1rem}
+#fRot{display:inline-block;transition:opacity .35s,transform .35s}
+#fRot.fade{opacity:0;transform:translateY(5px)}
+.qchev{display:inline-block;transition:transform .15s}
+.qrot[aria-expanded="true"] #fRot{display:none}
+.qrot[aria-expanded="true"] .qchev{transform:rotate(90deg)}
+.fsearch{margin-top:12px}
+#fSug{display:grid;gap:6px}
+#fSug:not(:empty){margin-top:8px}
+#fSug button{text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:9px 12px;font-size:.95rem}
+#fSug button:first-child{border-color:var(--brand)}
+#fSug small{color:var(--muted);margin-left:6px}
+@media (prefers-reduced-motion:reduce){ #fRot{transition:none} }
 .kpick{display:grid;gap:7px}
 .kpick button{text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 14px;font-weight:700}
 .kpick button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
@@ -293,9 +308,11 @@ footer p{margin:6px 0}
 
 
     <section class="card" id="formSlot">
-      <h2 id="start">What are you resetting?</h2>
+      <button type="button" class="qrot" id="fOpen" aria-expanded="false" aria-controls="fBody"><span class="qq" id="start">What are you resetting?</span><span class="qa"><span id="fRot">Giving something up</span> <span class="qchev" aria-hidden="true">›</span></span></button>
       <form id="rf" novalidate autocomplete="off">
-        <div class="lbl" style="margin-top:0">Are you…</div>
+        <div class="fsearch"><input class="field" id="fSearch" maxlength="60" autocomplete="off" placeholder="Type it – e.g. quit vaping" aria-label="Type what you're resetting"><div id="fSug" role="listbox" aria-label="Suggestions"></div></div>
+        <div id="fBody">
+        <div class="lbl">Are you…</div>
         <div class="kpick" id="fKind" role="group" aria-label="Kind of reset"></div>
         <div id="fStep2" hidden>
           <label class="lbl" for="fName" id="fQ">What is it?</label>
@@ -306,6 +323,7 @@ footer p{margin:6px 0}
         <div class="picked" id="fPicked"></div>
         <div id="fTogether" hidden><div class="lbl">Put them on…</div><div class="chips"><button type="button" class="chip" data-tog="1">One page</button><button type="button" class="chip" data-tog="0">A page each</button></div><p class="small" id="fTogHint" style="margin:6px 0 0"></p></div>
         <div id="fWhen" hidden><label class="lbl" for="fStart">When did you start?</label><div class="win"><input class="field" type="datetime-local" id="fStart"><button type="button" class="chip" data-when="now">Just now</button><button type="button" class="chip" data-when="yday">Yesterday</button></div></div>
+        </div>
         <button class="btn wide" id="fGo" type="submit">Start one</button>
       </form>
     </section>
@@ -353,7 +371,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v19</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v20</span></p>
   </footer>
 </div>
 
@@ -667,7 +685,7 @@ footer p{margin:6px 0}
   ];
   var KWORD = {giveup:"giving up", cutdown:"cutting down", more:"doing more", without:"going without", adventure:"adventure"};
   function K(k){ return KINDS.filter(function(x){ return x.k === k; })[0]; }
-  var F = {kind:"", sel:[], open:false, together:null, target:""};   // sel: [{k, kind}]; target: add to this page
+  var F = {kind:"", sel:[], open:false, together:null, target:"", expanded:false};   // sel: [{k, kind}]; target: add to this page
   function pickCount(){ return F.sel.length + ($("fName").value.trim() ? 1 : 0); }
   function pickKinds(){ var ks = F.sel.map(function(x){ return x.kind; }); if($("fName").value.trim()) ks.push(F.kind); return uniq(ks); }
   function together(){ return F.together != null ? F.together : pickKinds().length <= 1; }
@@ -679,15 +697,51 @@ footer p{margin:6px 0}
     $("fGo").textContent = F.target ? "Add to this page" : P ? (n > 1 && !tog ? "Add them" : "Add it") : "Start one"; }
   function selKeys(){ return F.sel.filter(function(x){ return x.kind === F.kind; }).map(function(x){ return x.k; }); }
   function drawForm(){ var kd = K(F.kind);
+    if(F.kind || F.sel.length) F.expanded = true;
+    $("fBody").hidden = $("fGo").hidden = !F.expanded; $("fOpen").setAttribute("aria-expanded", String(F.expanded));
     $("fKind").innerHTML = KINDS.map(function(x){ return '<button type="button" data-kind="' + x.k + '" aria-pressed="' + (F.kind === x.k) + '"><b>' + esc(x.n) + "</b><span>" + esc(x.ex) + "</span></button>"; }).join("");
     $("fStep2").hidden = !kd;
     if(kd){ $("fQ").textContent = kd.q; $("fName").placeholder = "In your words, " + kd.eg; $("fPick").innerHTML = picker(selKeys(), F.open, kd.g); }
     $("fPicked").innerHTML = F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "";
     drawBottom(); }
-  function resetForm(){ F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
+  function resetForm(){ F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
   $("fWhen").addEventListener("click", function(e){ var b = e.target.closest("[data-when]"); if(b) $("fStart").value = toInput(b.dataset.when === "yday" ? Date.now() - DAY : Date.now()); });
   $("fTogether").addEventListener("click", function(e){ var b = e.target.closest("[data-tog]"); if(!b) return; F.together = b.dataset.tog === "1"; drawBottom(); });
   function pickKind(k){ F.kind = k; F.open = false; drawForm(); }
+  // The question rotates through the kinds of reset until you open it
+  var rotI = 0;
+  setInterval(function(){ if(F.expanded || document.hidden || $("front").hidden) return; var el = $("fRot"); el.classList.add("fade");
+    setTimeout(function(){ rotI = (rotI + 1) % KINDS.length; el.textContent = KINDS[rotI].n; el.classList.remove("fade"); }, 350); }, 2800);
+  $("fOpen").addEventListener("click", function(){ F.expanded = !F.expanded; if(!F.expanded){ F.kind = ""; F.sel = []; $("fName").value = ""; } drawForm(); });
+  // Type to find it fast: everyday words map to the kind of reset and to the list of common resets
+  var SYN = [[/vap/,"vaping"],[/smok|cig|tobacco|nicotin|fag/,"smoking"],[/drink|alcohol|booze|wine|beer|lager|pint|spirits/,"drinking"],[/sugar|sweet|chocolate|cake|biscuit|fizzy/,"sugar"],[/snack/,"snacking"],[/\beat|food|portion/,"eating"],[/junk|crisps|fast food|mcdonald/,"junk"],[/takeaway|deliveroo|uber eats|just eat/,"takeaways"],[/coffee|caffeine|energy drink/,"caffeine"],[/screen|phone|scroll/,"screen"],[/social|instagram|tiktok|facebook|twitter|youtube/,"social"],[/in bed/,"phonebed"],[/spend|shopping|buying/,"spending"],[/gambl|betting|\bbet/,"gambling"],[/nail/,"nails"],[/walk|steps/,"walking"],[/exercise|gym|\brun|running|workout|sport|move/,"exercise"],[/sleep|bedtime|early night/,"sleep"],[/healthy|veg|diet|eat better/,"eatwell"],[/water|hydrat/,"water"],[/read|book/,"reading"],[/meditat|mindful|breath/,"meditation"],[/morning|wake up|early/,"mornings"],[/cook/,"cooking"],[/outside|outdoors|nature/,"outside"],[/\bfast/,"fast"],[/dry|sober/,"dry"],[/detox|offline|unplug/,"detox"],[/no.?spend/,"nospend"],[/misogi|challenge/,"challenge"],[/trek|hike|long walk|climb/,"trek"],[/trip|travel/,"trip"],[/solo|on my own/,"solo"],[/learn|course|skill|class|lesson/,"learn"],[/camp/,"camping"],[/sabbatical|time off|time out|career break/,"timeout"]];
+  var KG = {giveup:"stop", cutdown:"stop", more:"start", without:"without", adventure:"adventure"};
+  function kindFromText(q){
+    if(/\b(quit|stop|give up|giving up|no more|kick|ditch|never)\b/.test(q)) return "giveup";
+    if(/\b(cut|less|reduce|cutting|fewer|limit|lower)\b/.test(q)) return "cutdown";
+    if(/\b(without|dry|detox|fast|no.?spend|month off|break from)\b/.test(q)) return "without";
+    if(/\b(adventure|challenge|misogi|trip|trek|climb|hike)\b/.test(q)) return "adventure";
+    if(/\b(more|start|daily|every day|begin|build|each day)\b/.test(q)) return "more";
+    return ""; }
+  function suggest(q){ var out = [], det = kindFromText(q), keys = [];
+    SYN.forEach(function(x){ if(x[0].test(q) && keys.indexOf(x[1]) < 0) keys.push(x[1]); });
+    TYPES.forEach(function(t){ if(q.length > 2 && t.n.toLowerCase().indexOf(q) > -1 && keys.indexOf(t.k) < 0) keys.push(t.k); });
+    keys.slice(0, 4).forEach(function(k){ var t = T(k), kinds;
+      if(det && KG[det] === t.g) kinds = [det];
+      else kinds = t.g === "stop" ? (t.less ? ["cutdown", "giveup"] : ["giveup", "cutdown"]) : t.g === "start" ? ["more"] : [t.g];
+      kinds.forEach(function(kd){ if(out.length < 6) out.push({k:k, kind:kd}); }); });
+    return {list:out, det:det}; }
+  function drawSug(){ var raw = $("fSearch").value.trim(), q = raw.toLowerCase(); if(q.length < 2){ $("fSug").innerHTML = ""; return; }
+    var r = suggest(q);
+    $("fSug").innerHTML = r.list.map(function(x){ return '<button type="button" role="option" data-sk="' + x.k + '" data-skind="' + x.kind + '"><b>' + esc(T(x.k).n) + "</b><small>" + KWORD[x.kind] + "</small></button>"; }).join("")
+      + '<button type="button" role="option" data-sown="1" data-skind="' + r.det + '">Start “' + esc(raw.charAt(0).toUpperCase() + raw.slice(1)) + "” in your own words" + (r.det ? "<small>" + KWORD[r.det] + "</small>" : "") + "</button>"; }
+  $("fSearch").addEventListener("input", drawSug);
+  $("fSearch").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); var b = $("fSug").querySelector("button"); if(b) b.click(); } });
+  $("fSug").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; var kd = b.dataset.skind;
+    if(b.dataset.sk){ var i = F.sel.findIndex(function(x){ return x.k === b.dataset.sk; }); if(i > -1) F.sel[i].kind = kd; else F.sel.push({k:b.dataset.sk, kind:kd}); F.kind = kd; }
+    else { var raw = $("fSearch").value.trim(); if(kd) F.kind = kd; $("fName").value = raw.charAt(0).toUpperCase() + raw.slice(1); if(!kd) toast("Now pick what kind of reset it is"); }
+    $("fSearch").value = ""; $("fSug").innerHTML = ""; F.expanded = true; drawForm();
+    if(!kd) $("fKind").scrollIntoView({behavior:"smooth", block:"center"}); });
   $("fKind").addEventListener("click", function(e){ var b = e.target.closest("[data-kind]"); if(b) pickKind(b.dataset.kind); });
   $("fName").addEventListener("input", drawBottom);
   $("fPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return;
@@ -714,7 +768,7 @@ footer p{margin:6px 0}
     toast(made.length === 1 ? "This is your page – tap Edit page to add, move or remove boxes" : made.length + " pages added"); });
 
   // The same form pops up on your page for "Add another reset"
-  function openSheet(target){ resetForm(); F.target = typeof target === "string" ? target : ""; $("sheetTitle").textContent = F.target ? "Add to this page" : "Add a reset"; drawBottom(); $("sheetSlot").appendChild($("rf")); $("sheet").hidden = false; document.body.style.overflow = "hidden"; $("sheet").scrollTop = 0; }
+  function openSheet(target){ resetForm(); F.expanded = true; drawForm(); F.target = typeof target === "string" ? target : ""; $("sheetTitle").textContent = F.target ? "Add to this page" : "Add a reset"; drawBottom(); $("sheetSlot").appendChild($("rf")); $("sheet").hidden = false; document.body.style.overflow = "hidden"; $("sheet").scrollTop = 0; }
   function closeSheet(){ if($("sheet").hidden) return; $("sheet").hidden = true; document.body.style.overflow = ""; $("formSlot").appendChild($("rf")); resetForm(); }
   $("sheetX").addEventListener("click", closeSheet);
   $("sheet").addEventListener("click", function(e){ if(e.target === this) closeSheet(); });
