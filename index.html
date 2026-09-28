@@ -1,4 +1,4 @@
-<!-- DueAReset v14 -->
+<!-- DueAReset v15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -181,6 +181,10 @@ textarea.field{resize:vertical;min-height:80px}
 .rthings b{color:var(--brand-deep)}
 .tblock+.tblock{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
 .tname{font-weight:700}
+.tedit{background:#fbfaf8;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
+.qrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.qrow span{font-size:.82rem;color:var(--muted);width:100%}
+@media (max-width:560px){ .two{grid-template-columns:1fr;gap:0} }
 .tname span{font-weight:400;color:var(--muted);font-size:.85rem;margin-left:6px}
 .big.mid{font-size:2.4rem}
 .thing+.thing{border-top:1px solid var(--line);margin-top:16px;padding-top:4px}
@@ -302,6 +306,7 @@ footer p{margin:6px 0}
         </div>
         <div class="picked" id="fPicked"></div>
         <div id="fTogether" hidden><div class="lbl">Put them on…</div><div class="chips"><button type="button" class="chip" data-tog="1">One page</button><button type="button" class="chip" data-tog="0">A page each</button></div><p class="small" id="fTogHint" style="margin:6px 0 0"></p></div>
+        <div id="fWhen" hidden><label class="lbl" for="fStart">When did you start?</label><div class="win"><input class="field" type="datetime-local" id="fStart"><button type="button" class="chip" data-when="now">Just now</button><button type="button" class="chip" data-when="yday">Yesterday</button></div></div>
         <button class="btn wide" id="fGo" type="submit">Start one</button>
       </form>
     </section>
@@ -339,7 +344,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v14</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v15</span></p>
   </footer>
 </div>
 
@@ -659,6 +664,7 @@ footer p{margin:6px 0}
   function together(){ return F.together != null ? F.together : pickKinds().length <= 1; }
   function drawBottom(){ var n = pickCount(), tog = together();
     $("fTogether").hidden = n < 2 || !!F.target;
+    $("fWhen").hidden = n < 1;
     document.querySelectorAll("#fTogether [data-tog]").forEach(function(b){ b.setAttribute("aria-pressed", String((b.dataset.tog === "1") === tog)); });
     $("fTogHint").textContent = tog ? "One page, with a counter for each." : "Each one gets its own page.";
     $("fGo").textContent = F.target ? "Add to this page" : P ? (n > 1 && !tog ? "Add them" : "Add it") : "Start one"; }
@@ -669,7 +675,8 @@ footer p{margin:6px 0}
     if(kd){ $("fQ").textContent = kd.q; $("fName").placeholder = "In your words, " + kd.eg; $("fPick").innerHTML = picker(selKeys(), F.open, kd.g); }
     $("fPicked").innerHTML = F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "";
     drawBottom(); }
-  function resetForm(){ F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; $("fName").value = ""; drawForm(); }
+  function resetForm(){ F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
+  $("fWhen").addEventListener("click", function(e){ var b = e.target.closest("[data-when]"); if(b) $("fStart").value = toInput(b.dataset.when === "yday" ? Date.now() - DAY : Date.now()); });
   $("fTogether").addEventListener("click", function(e){ var b = e.target.closest("[data-tog]"); if(!b) return; F.together = b.dataset.tog === "1"; drawBottom(); });
   function pickKind(k){ F.kind = k; F.open = false; drawForm(); }
   $("fKind").addEventListener("click", function(e){ var b = e.target.closest("[data-kind]"); if(b) pickKind(b.dataset.kind); });
@@ -690,6 +697,7 @@ footer p{margin:6px 0}
     if(typed){ var match = TYPES.filter(function(t){ return t.n.toLowerCase() === typed.toLowerCase(); })[0]; if(match){ if(!picks.some(function(x){ return x.k === match.k; })) picks.push({k:match.k, kind:F.kind}); typed = ""; } }
     if(!typed && !picks.length){ toast("Type what it is, or tap one of the buttons"); $("fName").focus(); return; }
     var ths = picks.map(function(x){ return makeThing(x.k, "", x.kind); }); if(typed) ths.push(makeThing("own", typed, F.kind));
+    var st = fromInput($("fStart").value); if(st != null) ths.forEach(function(t){ t.start = st; });
     var target = F.target && find(F.target);
     if(target){ ths.forEach(function(t){ target.things.push(t); }); target.title = ""; save(); var tid = target.id; closeSheet(); go("#p=" + CODE + "&r=" + tid); render(); toast(joinNames(ths) + " added to this page"); return; }
     var tog = together(), fresh = !P; if(fresh){ CODE = newCode(); P = {v:3, resets:[], ack:false}; }
@@ -786,7 +794,7 @@ footer p{margin:6px 0}
       + '<text x="' + L + '" y="' + (H - 5) + '">' + esc(nice(new Date(list[0].d + "T12:00").getTime())) + '</text><text x="' + (W - R) + '" y="' + (H - 5) + '" text-anchor="end">' + esc(nice(new Date(list[list.length - 1].d + "T12:00").getTime())) + "</text>"
       + '<polyline points="' + pts + '" fill="none" stroke="' + c + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
       + list.map(function(w, i){ return '<circle cx="' + X(xs[i]).toFixed(1) + '" cy="' + Y(ys[i]).toFixed(1) + '" r="' + (i === list.length - 1 ? 5.5 : 4) + '" fill="' + c + '"><title>' + esc(nice(new Date(w.d + "T12:00").getTime())) + ": " + esc(fmtW(w.kg)) + "</title></circle>"; }).join("") + "</svg>"; }
-  var wAll = {}, planDays = {}, planOpen = "", askEdit = {};
+  var wAll = {}, planDays = {}, planOpen = "", askEdit = {}, tEdit = {};
   // Today's question: asked once a day, answers kept so you can see how they change
   function question(r){ var k = pKind(r); return k === "Giving up" ? "Why do you think it's hard to give it up?" : k === "Cutting down" ? "Why do you think it's hard to cut down?" : k === "Doing more" ? "Why do you think it's hard to keep going?" : k === "Going without" ? "Why do you think it's hard to go without?" : "Why do you think this is hard?"; }
   function askToday(r){ var t = ds(Date.now()); return r.asks.filter(function(a){ return a.d === t; })[0]; }
@@ -805,7 +813,13 @@ footer p{margin:6px 0}
       return ths.map(function(t){ var c = counter(t, r);
         return '<div class="tblock" style="--c:' + gOf(t).c + '">' + (multi ? '<div class="tname">' + esc(t.name) + " <span>" + esc(kindOf(t)) + "</span></div>" : "")
           + '<div class="big' + (multi ? " mid" : "") + '" data-live="big" data-t="' + t.id + '">' + esc(c.big) + '</div><div class="small" data-live="small" data-t="' + t.id + '">' + esc(c.small) + '</div><div class="live" data-live="live" data-t="' + t.id + '">' + esc(c.live) + "</div>"
-          + (!r.done && !t.end && dayOf(t) > 1 ? '<div class="row" style="margin-top:10px"><button type="button" class="ghost" data-restart="' + t.id + '">' + (multi ? "Start this one again" : "Start the count again") + "</button></div>" : "") + "</div>"; }).join("")
+          + (r.done ? "" : '<div class="row" style="margin-top:10px">' + (!t.end && dayOf(t) > 1 ? '<button type="button" class="ghost" data-restart="' + t.id + '">' + (multi ? "Start this one again" : "Start the count again") + "</button>" : "") + '<button type="button" class="link" data-tedit="' + t.id + '">✎ Change start or end</button></div>')
+          + (tEdit[t.id] && !r.done ? '<div class="tedit"><div class="two"><div><label class="lbl" for="tes-' + t.id + '" style="margin-top:0">Started</label><input class="field tStart" type="datetime-local" id="tes-' + t.id + '" data-t="' + t.id + '" value="' + toInput(t.start) + '"></div>'
+            + '<div><label class="lbl" for="tee-' + t.id + '" style="margin-top:0">Ends <span>(optional)</span></label><input class="field tEnd" type="datetime-local" id="tee-' + t.id + '" data-t="' + t.id + '" value="' + (t.end ? toInput(t.end) : "") + '"></div></div>'
+            + '<div class="qrow"><span>Started</span><button type="button" class="chip" data-qs="1" data-t="' + t.id + '">An hour ago</button><button type="button" class="chip" data-qs="24" data-t="' + t.id + '">Yesterday, this time</button><button type="button" class="chip" data-qs="48" data-t="' + t.id + '">2 days ago</button></div>'
+            + '<div class="qrow"><span>Ends after</span><button type="button" class="chip" data-qe="1" data-t="' + t.id + '">24 hours</button><button type="button" class="chip" data-qe="3" data-t="' + t.id + '">3 days</button><button type="button" class="chip" data-qe="7" data-t="' + t.id + '">1 week</button><button type="button" class="chip" data-qe="30" data-t="' + t.id + '">30 days</button>' + (t.end ? '<button type="button" class="chip" data-noend="' + t.id + '">No end</button>' : "") + "</div>"
+            + '<div class="row" style="margin-top:10px"><button type="button" class="ghost" data-tedit="' + t.id + '">Done</button></div></div>' : "")
+          + "</div>"; }).join("")
         + (r.done ? "" : '<button type="button" class="more" data-a="addthing">+ Add something else to this page</button>'); },
     words: function(r){ var all = wordsFor(r), i = (wordIx[r.id] || 0) % all.length;
       return '<p class="words">' + esc(all[i]) + '</p><div class="row"><button type="button" class="ghost" data-a="nextword">Another one</button></div>'
@@ -929,6 +943,9 @@ footer p{margin:6px 0}
       ask("Start the count again for " + rt.name + " from now? Your notes stay, and your best run is kept.", "Start again", function(){
         rt.best = Math.max(rt.best || 0, was); rt.start = Date.now(); r.notes.push({id:uid(), ts:Date.now(), t:"Started the count again for " + rt.name + " (was on Day " + was + ")."}); save(); redraw(r); }); return; }
     if(d.noend){ var nt = thingById(r, d.noend); if(nt){ nt.end = null; save(); redraw(r); } return; }
+    if(d.tedit){ tEdit[d.tedit] = !tEdit[d.tedit]; return redraw(r); }
+    if(d.qs && d.t){ var qt = thingById(r, d.t); if(!qt) return; var ns = Date.now() - (+d.qs) * 36e5; if(qt.end && ns >= qt.end){ toast("The start has to be before the end"); return; } qt.start = ns; save(); redraw(r); return toast("Start changed to " + nice(ns) + " at " + hm(ns)); }
+    if(d.qe && d.t){ var et = thingById(r, d.t); if(!et) return; et.end = et.start + (+d.qe) * DAY; save(); redraw(r); return toast("Ends " + nice(et.end) + " at " + hm(et.end)); }
     if(d.split){ var st = thingById(r, d.split); if(!st) return;
       ask("Give " + st.name + " its own page? Its counter moves with it. Your notes and other boxes stay on this page.", "Move it", function(){
         r.things = r.things.filter(function(x){ return x !== st; }); r.title = ""; P.resets.push(makePage([st])); save(); redraw(r); toast(st.name + " has its own page now – see My resets"); }); return; }
