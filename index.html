@@ -1,4 +1,4 @@
-<!-- DueAReset v8 -->
+<!-- DueAReset v9 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -279,7 +279,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v8</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v9</span></p>
   </footer>
 </div>
 
@@ -447,10 +447,14 @@ footer p{margin:6px 0}
   function sbGiveUp(){ if(sb) return; sbFailed = true; var w = sbWait; sbWait = []; w.forEach(function(f){ f(); }); }
   (function loadSb(){ var sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
     sc.onload = function(){ try{
-      sb = supabase.createClient(SB_URL, SB_KEY, {auth:{persistSession:true, autoRefreshToken:true, storageKey:"dueareset-auth", detectSessionInUrl:false}});
+      sb = supabase.createClient(SB_URL, SB_KEY, {auth:{persistSession:true, autoRefreshToken:true, storageKey:"dueareset-auth", detectSessionInUrl:true}});
       sb.auth.onAuthStateChange(function(ev, sess){ USER = sess ? sess.user : null; });
       sb.auth.getSession().then(function(res){ USER = res.data && res.data.session ? res.data.session.user : null; }).catch(function(){}).then(function(){
-        var w = sbWait; sbWait = []; w.forEach(function(f){ f(); }); sync(); refresh(); });
+        var w = sbWait; sbWait = []; w.forEach(function(f){ f(); });
+        // Arrived from a sign-in link in an email: tidy the address, then open their page
+        var fromLink = /access_token|type=(signup|magiclink)/.test(location.hash);
+        if(fromLink) history.replaceState(null, "", location.pathname);
+        Promise.resolve(sync()).then(function(){ if(USER && P && !/p=/.test(location.hash)){ go("#p=" + CODE); if(fromLink) toast("Signed in – your page is saved to your account"); } else refresh(); }); });
     }catch(e){} };
     sc.onerror = sbGiveUp; setTimeout(sbGiveUp, 10000);
     document.head.appendChild(sc); })();
