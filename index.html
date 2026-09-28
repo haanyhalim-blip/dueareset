@@ -1,4 +1,4 @@
-<!-- DueAReset v18 -->
+<!-- DueAReset v19 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -208,6 +208,17 @@ textarea.field{resize:vertical;min-height:80px}
 .gallery button{text-align:left;border:2px dashed var(--line);background:rgba(255,255,255,.88);border-radius:14px;padding:14px;min-height:96px}
 .gallery b{display:block;color:var(--brand);margin-bottom:4px}
 .gallery span{font-size:.85rem;color:var(--muted)}
+.secs>.sec{padding:0;margin:8px 0;overflow:hidden}
+.srow{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t c" "p c";gap:3px 12px;width:100%;text-align:left;border:0;background:none;padding:14px 16px;align-items:center}
+.srow:hover{background:#fbfaf8}
+.stitle{grid-area:t;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.12rem}
+.sprev{grid-area:p;font-size:.9rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;font-variant-numeric:tabular-nums}
+.sprev b{color:var(--c,var(--brand-deep))}
+.sec.open .sprev{display:none}
+.chev{grid-area:c;font-size:1.6rem;line-height:1;color:var(--faint);transition:transform .15s}
+.sec.open .chev{transform:rotate(90deg);color:var(--brand)}
+.sbody{padding:0 16px 16px}
+@media (prefers-reduced-motion:reduce){ .chev{transition:none} }
 .foot{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin:6px 0 0}
 .danger{color:var(--accent)!important}
 
@@ -342,7 +353,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v18</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v19</span></p>
   </footer>
 </div>
 
@@ -876,7 +887,25 @@ footer p{margin:6px 0}
     learn: function(r){ return '<div class="jin"><input class="field" id="lIn" maxlength="300" placeholder="A fact or tip that keeps coming up"><button type="button" class="ghost" data-a="addlearn">Add</button></div>'
       + (r.learn.length ? r.learn.map(function(l){ return '<div class="litem"><p>' + esc(l.t) + '</p><button type="button" class="x" data-dlearn="' + l.id + '" aria-label="Delete">×</button></div>'; }).join("") : '<p class="empty">Nothing yet.</p>'); }
   };
-  var EDIT = false;
+  function clip(t, n){ t = String(t || "").replace(/\s+/g, " ").trim(); return t.length > n ? t.slice(0, n - 1) + "…" : t; }
+  function lastOf(list){ return list.slice().sort(function(a, b){ return b.ts - a.ts; })[0]; }
+  var PREVIEW = {
+    timer: function(r){ var ths = things(r);
+      return ths.length === 1 ? '<b data-live="big" data-t="' + ths[0].id + '">' + esc(counter(ths[0], r).big) + '</b> · <span data-live="live" data-t="' + ths[0].id + '">' + esc(counter(ths[0], r).live) + "</span>"
+        : ths.map(function(t){ return esc(t.name) + ' <b data-live="big" data-t="' + t.id + '">' + esc(counter(t, r).big) + "</b>"; }).join(" · "); },
+    ask: function(r){ var a = askToday(r); return a ? "Today: " + esc(clip(a.t, 70)) : "<b>Not answered yet today</b> – " + esc(question(r)); },
+    words: function(r){ var all = wordsFor(r); return "“" + esc(all[(wordIx[r.id] || 0) % all.length]) + "”"; },
+    about: function(r){ return r.why ? "Why: " + esc(clip(r.why, 70)) : "Add why you're doing this, and how"; },
+    tips: function(r){ return r.ways.length ? "Trying " + r.ways.length + ": " + esc(clip(r.ways.join(", "), 60)) : "Ways people go about it – tick the ones you try"; },
+    journal: function(r){ var n = lastOf(r.notes); return n ? esc(hm(n.ts)) + " " + (ds(n.ts) === ds(Date.now()) ? "today" : esc(nice(n.ts))) + " – " + esc(clip(n.t, 60)) : "No notes yet"; },
+    feel: function(r){ var n = lastOf(r.feel); return n ? "Last: " + esc(clip(n.t, 40)) + " at " + esc(hm(n.ts)) + (ds(n.ts) === ds(Date.now()) ? "" : ", " + esc(nice(n.ts))) : "Nothing logged yet"; },
+    canvas: function(r){ return r.canvas.trim() ? esc(clip(r.canvas, 70)) : "A blank page, just for you"; },
+    weight: function(r){ var l = sortedW(r); return l.length ? "<b>" + esc(fmtW(l[l.length - 1].kg)) + "</b>" + (l.length > 1 ? " · " + esc(fmtDiff(l[l.length - 1].kg - l[0].kg)) + " since " + esc(nice(new Date(l[0].d + "T12:00").getTime())) : "") : "No weight logged yet"; },
+    plan: function(r){ var t = ds(Date.now()), today = r.plan.filter(function(x){ return x.d === t; }), next = r.plan.filter(function(x){ return x.d > t && !x.done; }).sort(function(a, b){ return a.d < b.d ? -1 : 1; })[0];
+      return today.length ? "Today: " + esc(clip(today.map(function(x){ return (x.done ? "✓ " : "") + x.t; }).join(", "), 60)) : next ? "Next: " + esc(clip(next.t, 40)) + ", " + esc(nice(new Date(next.d + "T12:00").getTime())) : "Nothing planned yet"; },
+    learn: function(r){ return r.learn.length ? r.learn.length + (r.learn.length === 1 ? " thing" : " things") + " – latest: " + esc(clip(r.learn[0].t, 50)) : "Nothing yet"; }
+  };
+  var EDIT = false, OPEN = {};
   function renderDetail(r){
     if($("detail").dataset.id !== r.id) EDIT = false;
     var g = pG(r), secs = r.secs.filter(function(s){ return SECTION[s]; }), hidden = SEC_ORDER.filter(function(s){ return secs.indexOf(s) < 0; });
@@ -890,7 +919,11 @@ footer p{margin:6px 0}
       if(hidden.length) h += '<h2 class="egal">Add a box</h2><div class="gallery">' + hidden.map(function(s){ return '<button type="button" data-show="' + s + '"><b>+ ' + esc(SECS[s].n) + "</b><span>" + esc(SECS[s].d) + "</span></button>"; }).join("") + "</div>";
       h += '<div class="row" style="margin-top:18px"><button type="button" class="btn" data-a="edit">Done</button></div>';
     } else {
-      h += '<div class="secs">' + secs.map(function(s){ return '<section class="card" data-sec="' + s + '" style="--c:' + g.c + '"><div class="shead"><h2>' + esc(SECS[s].n) + "</h2></div>" + SECTION[s](r) + "</section>"; }).join("") + "</div>";
+      var op = OPEN[r.id] || (OPEN[r.id] = {}), anyOpen = secs.some(function(s){ return op[s]; });
+      h += '<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="link" data-a="' + (anyOpen ? "closeall" : "openall") + '">' + (anyOpen ? "Close all" : "Open all") + "</button></div>";
+      h += '<div class="secs">' + secs.map(function(s){ var o = !!op[s];
+        return '<section class="card sec' + (o ? " open" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle">' + esc(SECS[s].n) + '</span><span class="sprev">' + PREVIEW[s](r) + '</span><span class="chev" aria-hidden="true">›</span></button>'
+          + (o ? '<div class="sbody">' + SECTION[s](r) + "</div>" : "") + "</section>"; }).join("") + "</div>";
       h += '<button type="button" class="add" data-a="edit">✎ Edit page – add, move or remove boxes</button>';
       h += '<div class="foot">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>' : '<button type="button" class="ghost" data-a="finish">Finish this reset</button>') + '<button type="button" class="link danger" data-a="delete">Delete this page</button></div>';
     }
@@ -930,6 +963,7 @@ footer p{margin:6px 0}
     if(el.classList.contains("tEnd")){ var en = fromInput(el.value); if(en != null && en <= t.start){ toast("The end has to be after the start"); el.value = t.end ? toInput(t.end) : ""; return; } t.end = en; save(); redraw(r); } });
   $("detail").addEventListener("click", function(e){ var r = current(), b = e.target.closest("button"); if(!r || !b) return; var d = b.dataset;
     if(d.act) return linkActs(e);
+    if(d.toggle){ var op = OPEN[r.id] || (OPEN[r.id] = {}); op[d.toggle] = !op[d.toggle]; return redraw(r); }
     if(d.up || d.down){ var s = d.up || d.down, i = r.secs.indexOf(s), j = d.up ? i - 1 : i + 1; r.secs.splice(i, 1); r.secs.splice(j, 0, s); save(); return redraw(r); }
     if(d.hide){ var at = r.secs.indexOf(d.hide), hs = d.hide; r.secs.splice(at, 1); save(); redraw(r); return toast(SECS[hs].n + " taken off – what you wrote is kept", function(){ r.secs.splice(at, 0, hs); save(); redraw(r); }); }
     if(d.show){ r.secs.push(d.show); save(); redraw(r); return toast(SECS[d.show].n + " added to your page"); }
@@ -960,6 +994,7 @@ footer p{margin:6px 0}
     if(d.dword != null){ var k = +d.dword, gw = r.words.splice(k, 1)[0]; save(); redraw(r); return toast("Deleted", function(){ r.words.splice(k, 0, gw); save(); redraw(r); }); }
     var a = d.a;
     if(a === "back") go("#p=" + CODE);
+    else if(a === "openall" || a === "closeall"){ var oa = OPEN[r.id] = {}; if(a === "openall") r.secs.forEach(function(s){ oa[s] = true; }); redraw(r); }
     else if(a === "edit"){ EDIT = !EDIT; renderDetail(r); window.scrollTo(0, 0); }
     else if(a === "addthing") openSheet(r.id);
     else if(a === "addnote") addTo(r.notes, "jIn", r);
