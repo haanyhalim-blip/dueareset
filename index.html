@@ -1,4 +1,4 @@
-<!-- DueAReset v20 -->
+<!-- DueAReset v21 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -91,6 +91,12 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .why{border-color:transparent;background:#ecebf4}
 .why h2{font-size:1.45rem;color:#3f3270;margin:2px 0 10px}
 .why p{margin:0 0 10px}
+.whyrow{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;border:0;background:none;padding:0;text-align:left}
+.whyrow h2{margin:0 0 4px!important}
+.whysub{display:block;color:#5b4a8e;font-size:.95rem}
+.whyrow .chev{font-size:1.6rem;line-height:1;color:#5b4a8e;transition:transform .15s;flex:none}
+.whyrow[aria-expanded="true"] .chev{transform:rotate(90deg)}
+#whyBody{margin-top:12px}
 .eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:#5b4a8e}
 
 /* form and chips */
@@ -330,12 +336,14 @@ footer p{margin:6px 0}
    </div>
    <div class="colR">
     <section class="card why" aria-labelledby="whyAdv">
-      <div class="eyebrow">From the book The Comfort Crisis</div>
-      <h2 id="whyAdv">Why an adventure? The misogi challenge</h2>
-      <p>In <i>The Comfort Crisis</i> (2021), the journalist Michael Easter argues that modern life has quietly taken the hard parts out of our days. We're rarely cold, hungry, bored or pushed anywhere near our limit, and he thinks we're worse off for it.</p>
-      <p>His answer is the <b>misogi</b>, a name borrowed from a Japanese purification ritual: a big challenge, taken on on purpose, hard enough that you might not manage it. It has just two rules – <b>make it really hard, and don't die.</b></p>
-      <p>The point isn't the challenge itself. It's finding out you can do more than you thought, and bringing that back into the rest of your life. Easter suggests one a year. Even one every few years can reset how you see yourself.</p>
-      <p class="small" style="margin:0">To start one, pick "Going on an adventure" under "What are you resetting?"</p>
+      <button type="button" class="whyrow" id="whyOpen" aria-expanded="false" aria-controls="whyBody"><span><h2 id="whyAdv">Have you thought about an adventure?</h2><span class="whysub">Sometimes the way round a habit is to do something hard.</span></span><span class="chev" aria-hidden="true">›</span></button>
+      <div id="whyBody" hidden>
+        <p>Not every reset is about giving something up. Take on something hard enough, and everything else can feel different afterwards – including the habits you wanted to change.</p>
+        <p>One idea is the <b>misogi challenge</b>: one big challenge, taken on on purpose, hard enough that you might not manage it – a long walk, a cold swim, a climb, a trip on your own. It has just two rules: <b>make it really hard, and don't die.</b></p>
+        <p>The point isn't the challenge itself. It's finding out you can do more than you thought, and bringing that back into the rest of your life. One a year is plenty – even one every few years can reset how you see yourself.</p>
+        <p class="small">The idea comes from Michael Easter's book <i>The Comfort Crisis</i> (2021).</p>
+        <button type="button" class="btn" id="whyGo" style="padding:10px 18px;font-size:.98rem">Start an adventure</button>
+      </div>
     </section>
 
     <section class="card" id="haveBox">
@@ -371,7 +379,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v20</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v21</span></p>
   </footer>
 </div>
 
@@ -712,6 +720,8 @@ footer p{margin:6px 0}
   var rotI = 0;
   setInterval(function(){ if(F.expanded || document.hidden || $("front").hidden) return; var el = $("fRot"); el.classList.add("fade");
     setTimeout(function(){ rotI = (rotI + 1) % KINDS.length; el.textContent = KINDS[rotI].n; el.classList.remove("fade"); }, 350); }, 2800);
+  $("whyOpen").addEventListener("click", function(){ var o = $("whyBody").hidden; $("whyBody").hidden = !o; this.setAttribute("aria-expanded", String(o)); });
+  $("whyGo").addEventListener("click", function(){ pickKind("adventure"); $("formSlot").scrollIntoView({behavior:"smooth", block:"start"}); });
   $("fOpen").addEventListener("click", function(){ F.expanded = !F.expanded; if(!F.expanded){ F.kind = ""; F.sel = []; $("fName").value = ""; } drawForm(); });
   // Type to find it fast: everyday words map to the kind of reset and to the list of common resets
   var SYN = [[/vap/,"vaping"],[/smok|cig|tobacco|nicotin|fag/,"smoking"],[/drink|alcohol|booze|wine|beer|lager|pint|spirits/,"drinking"],[/sugar|sweet|chocolate|cake|biscuit|fizzy/,"sugar"],[/snack/,"snacking"],[/\beat|food|portion/,"eating"],[/junk|crisps|fast food|mcdonald/,"junk"],[/takeaway|deliveroo|uber eats|just eat/,"takeaways"],[/coffee|caffeine|energy drink/,"caffeine"],[/screen|phone|scroll/,"screen"],[/social|instagram|tiktok|facebook|twitter|youtube/,"social"],[/in bed/,"phonebed"],[/spend|shopping|buying/,"spending"],[/gambl|betting|\bbet/,"gambling"],[/nail/,"nails"],[/walk|steps/,"walking"],[/exercise|gym|\brun|running|workout|sport|move/,"exercise"],[/sleep|bedtime|early night/,"sleep"],[/healthy|veg|diet|eat better/,"eatwell"],[/water|hydrat/,"water"],[/read|book/,"reading"],[/meditat|mindful|breath/,"meditation"],[/morning|wake up|early/,"mornings"],[/cook/,"cooking"],[/outside|outdoors|nature/,"outside"],[/\bfast/,"fast"],[/dry|sober/,"dry"],[/detox|offline|unplug/,"detox"],[/no.?spend/,"nospend"],[/misogi|challenge/,"challenge"],[/trek|hike|long walk|climb/,"trek"],[/trip|travel/,"trip"],[/solo|on my own/,"solo"],[/learn|course|skill|class|lesson/,"learn"],[/camp/,"camping"],[/sabbatical|time off|time out|career break/,"timeout"]];
