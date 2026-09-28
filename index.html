@@ -1,4 +1,4 @@
-<!-- DueAReset v22 -->
+<!-- DueAReset v23 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -54,7 +54,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 
 /* front */
 .hero{padding:26px 0 6px}
-.hero h1{font-size:2.5rem;color:var(--brand-deep);margin-bottom:14px}
+.hero h1{font-size:2.5rem;color:var(--brand-deep);margin-bottom:6px}
+.heroline{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;background:none;padding:4px 0;text-align:left;color:var(--brand);font-size:1.05rem;font-weight:600;min-height:3.2em}
+.heroline .rot{flex:1;min-width:0}
+.heroline .chev{font-size:1.6rem;line-height:1;color:var(--brand);transition:transform .15s;flex:none}
+.heroless{display:none;flex:1}
+.heroline[aria-expanded="true"] .rot{display:none}
+.heroline[aria-expanded="true"] .heroless{display:block}
+.heroline[aria-expanded="true"] .chev{transform:rotate(90deg)}
+#heroBody{margin-top:8px}
 .hero p{margin:0 0 12px}
 .hero .btn{margin-top:6px}
 .quiet{font-size:.92rem;color:var(--muted);margin:16px 0 0}
@@ -314,11 +322,14 @@ footer p{margin:6px 0}
    <div class="colL">
     <section class="hero">
       <h1>Due a reset?</h1>
+      <button type="button" class="heroline" id="heroOpen" aria-expanded="false" aria-controls="heroBody"><span class="rot" id="heroRot">Quit, cut down, do more, go without – or go on an adventure.</span><span class="heroless">Show less</span><span class="chev" aria-hidden="true">›</span></button>
+      <div id="heroBody" hidden>
       <p class="lead">Most of us run on habits we never chose. We all want to get a little better, and we go about it in different ways. Some people take a habit on head-on. Others come at it sideways – a challenge, a change of scene, or a new routine that crowds the old one out.</p>
       <p>Whether you're quitting, cutting down, doing more or starting something new, that's a reset: a deliberate change, a bit bolder than your usual.</p>
       <p>How bold is up to you – what feels extreme to one person is an ordinary week for someone else. What matters is that it's on purpose.</p>
       <p>Say what you're resetting, then build your own page to get you through it: a timer, tips, a journal, your weight, a plan, words to keep you going, and a question each day about why it's hard. Nobody sees your page but you. The list of common resets shows what people commonly reset and how they go about it, so you know you're not the only one.</p>
       <p class="quiet">People use it as a quit smoking day counter, to cut down on drinking, for Dry January, a digital detox, a no-spend month, walking every day, a misogi challenge – or simply a fresh start.</p>
+      </div>
     </section>
 
 
@@ -392,7 +403,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v22</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v23</span></p>
   </footer>
 </div>
 
@@ -810,10 +821,13 @@ footer p{margin:6px 0}
   document.querySelectorAll(".rotcard .rchead").forEach(function(h){ h.addEventListener("click", function(){ openCard(h.closest(".rotcard")); }); });
   var WAYROT = []; TYPES.filter(function(t){ return t.pop && t.ways; }).forEach(function(t, i, a){ t.ways.slice(0, 3).forEach(function(w, j){ WAYROT[j * a.length + i] = t.n + " · " + w; }); });
   WAYROT = WAYROT.filter(Boolean);
+  var HEROROT = ["Quit, cut down, do more, go without – or go on an adventure.","Build your own page: a timer, journal, weight, plan and a daily question.","Free and private – nobody sees your page but you.","No account needed – sign in only if you want to.","How bold is up to you. What matters is that it's on purpose."];
+  $("heroOpen").addEventListener("click", function(){ var o = $("heroBody").hidden; $("heroBody").hidden = !o; this.setAttribute("aria-expanded", String(o)); });
   var rotN = 0; $("waysRot").textContent = WAYROT[0]; $("helpRot").textContent = GENERAL[0];
   function rotate(id, list){ var el = $(id); if(!el || el.closest(".rotcard").querySelector(".rchead").getAttribute("aria-expanded") === "true") return;
     el.classList.add("fade"); setTimeout(function(){ el.textContent = list[rotN % list.length]; el.classList.remove("fade"); }, 350); }
-  setInterval(function(){ if(document.hidden || $("front").hidden) return; rotN++; rotate("waysRot", WAYROT); rotate("helpRot", GENERAL); }, 3200);
+  setInterval(function(){ if(document.hidden || $("front").hidden) return; rotN++; rotate("waysRot", WAYROT); rotate("helpRot", GENERAL);
+    if($("heroBody").hidden){ var hr = $("heroRot"); hr.classList.add("fade"); setTimeout(function(){ hr.textContent = HEROROT[rotN % HEROROT.length]; hr.classList.remove("fade"); }, 350); } }, 3200);
   $("lPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; if(b.dataset.more) L.open = !L.open; else L.sel = b.dataset.k; drawList(); });
   $("myBtn").addEventListener("click", function(){ go("#p=" + CODE); });
   $("haveGo").addEventListener("click", function(){ var v = $("haveIn").value.trim().toLowerCase(), m = v.match(/p=([a-z0-9]{12})/) || v.match(/^([a-z0-9]{12})$/);
