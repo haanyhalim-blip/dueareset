@@ -1,4 +1,4 @@
-<!-- DueAReset v28 -->
+<!-- DueAReset v29 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -57,6 +57,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .hero h1{font-size:2.5rem;color:var(--brand-deep);margin-bottom:6px}
 .heroline{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;background:none;padding:4px 0;text-align:left;color:var(--brand);font-size:1.05rem;font-weight:600;min-height:3.2em}
 .heroline #heroRot{flex:1;min-width:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hbig{display:block;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.65rem;line-height:1.2;color:var(--brand-deep);text-wrap:balance}
+.hsub{display:block;margin-top:10px;font-size:1.02rem;font-weight:500;color:var(--brand);line-height:1.4}
 .heroline .chev{font-size:1.6rem;line-height:1;color:var(--brand);transition:transform .15s;flex:none}
 .heroless{display:none;flex:1}
 .heroline[aria-expanded="true"] #heroRot{display:none}
@@ -324,8 +327,8 @@ footer p{margin:6px 0}
   <main id="front">
    <div class="colL">
     <section class="hero">
-      <h1>Due a reset?</h1>
-      <button type="button" class="heroline" id="heroOpen" aria-expanded="false" aria-controls="heroBody"><span id="heroRot">Most of us run on habits we never chose. A reset is changing one, on purpose.</span><span class="heroless">Show less</span><span class="chev" aria-hidden="true">›</span></button>
+      <h1 class="vh">Due a reset? Quit, cut down, do more or go on an adventure</h1>
+      <button type="button" class="heroline" id="heroOpen" aria-expanded="false" aria-controls="heroBody"><span id="heroRot"><span class="hbig">Most of us run on habits we never chose. A reset is changing one, on purpose.</span><span class="hsub">It doesn’t have to be forever – just long enough to find out what you’re capable of.</span></span><span class="heroless">Show less</span><span class="chev" aria-hidden="true">›</span></button>
       <div id="heroBody" hidden>
       <p class="lead">Most of us run on habits we never chose. We all want to get a little better, and we go about it in different ways. Some people take a habit on head-on. Others come at it sideways – a challenge, a change of scene, or a new routine that crowds the old one out.</p>
       <p>Whether you're quitting, cutting down, doing more or starting something new, that's a reset: a deliberate change, a bit bolder than your usual.</p>
@@ -403,7 +406,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v28</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v29</span></p>
   </footer>
 </div>
 
