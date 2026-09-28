@@ -1,4 +1,4 @@
-<!-- DueAReset v9 -->
+<!-- DueAReset v10 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -195,13 +195,29 @@ footer{margin:36px 0 30px;font-size:.85rem;color:var(--muted)}
 footer p{margin:6px 0}
 .ver{color:var(--faint)}
 @media (min-width:700px){ .hero h1{font-size:3rem} }
+.who{border-color:transparent;background:var(--brand-wash);color:var(--brand-deep)}
+/* On a computer: use the width – two columns, the phone layout is untouched */
+@media (min-width:960px){
+  .wrap{max-width:1140px;padding:0 32px}
+  #front{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0 36px;grid-template-areas:"hero form" "why have" "list list";align-items:start}
+  #front .hero{grid-area:hero}
+  #front .why{grid-area:why;margin-top:0}
+  #formSlot{grid-area:form;margin-top:34px}
+  #haveBox{grid-area:have;margin-top:0}
+  #list{grid-area:list}
+  .listcols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;align-items:start}
+  #cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+  .secs{column-count:2;column-gap:20px;margin-top:14px}
+  .secs>.card{display:inline-block;width:100%;break-inside:avoid;margin:0 0 16px}
+  .canvas{min-height:300px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <a class="brand" href="#">DueAReset</a>
-    <span class="row"><button class="pill" id="signBtn" type="button" hidden>Sign in</button><button class="pill" id="myBtn" type="button" hidden>My page</button></span>
+    <span class="row"><button class="pill who" id="whoBtn" type="button" hidden>✓ Signed in</button><button class="pill" id="signBtn" type="button" hidden>Sign in</button><button class="pill" id="myBtn" type="button" hidden>My page</button></span>
   </header>
 
   <!-- ===== Front page ===== -->
@@ -256,11 +272,11 @@ footer p{margin:6px 0}
       <h2>What people reset, and how</h2>
       <p class="small">To start with, this comes from common advice online. Tap one to see the ways people go about it.</p>
       <div id="lPick"></div>
-      <div class="card" id="waysBox"></div>
+      <div class="listcols"><div class="card" id="waysBox"></div>
       <div class="card">
         <h3 style="font-size:1.2rem;margin-bottom:6px">Whatever the reset, people say these help</h3>
         <ul class="ways" id="general"></ul>
-      </div>
+      </div></div>
     </section>
   </main>
 
@@ -279,7 +295,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v9</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v10</span></p>
   </footer>
 </div>
 
@@ -530,6 +546,9 @@ footer p{margin:6px 0}
   $("siGo").addEventListener("click", siVerify);
   $("siEmail").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); siSend(); } });
   $("siCode").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); siVerify(); } });
+  $("whoBtn").addEventListener("click", function(){
+    if(!P){ toast("Signed in as " + (USER && USER.email || "")); return; }
+    go("#p=" + CODE); setTimeout(function(){ var a = $("acct"); if(a) a.scrollIntoView({behavior:"smooth", block:"center"}); }, 120); });
   $("signBtn").addEventListener("click", function(){ openSignin("Sign in to open your page on this phone."); });
   function clearLocal(){ try{ if(CODE) localStorage.removeItem(PKEY + CODE); localStorage.removeItem(CKEY); }catch(e){} CODE = ""; P = null; dirty = false; setNet("local"); }
   function signOut(){ ask("Sign out? Your page stays safe in your account and is taken off this phone.", "Sign out", function(){
@@ -767,10 +786,12 @@ footer p{margin:6px 0}
     var g = gOf(r), secs = r.secs.filter(function(s){ return SECTION[s]; }), hidden = SEC_ORDER.filter(function(s){ return secs.indexOf(s) < 0; });
     var h = '<button type="button" class="back" data-a="back">← My resets</button>' + saveBoxHTML()
       + '<div class="dkind" style="--c:' + g.c + '">' + esc(kindOf(r)) + '</div><h1 class="dname">' + esc(r.name) + "</h1>";
+    h += '<div class="secs">';
     secs.forEach(function(s, i){
       h += '<section class="card" data-sec="' + s + '" style="--c:' + g.c + '"><div class="shead"><h2>' + esc(SECS[s].n) + '</h2><div class="sctl">'
         + (i > 0 ? '<button type="button" data-up="' + s + '" aria-label="Move up">↑</button>' : "") + (i < secs.length - 1 ? '<button type="button" data-down="' + s + '" aria-label="Move down">↓</button>' : "")
         + '<button type="button" data-hide="' + s + '" aria-label="Take off my page">×</button></div></div>' + SECTION[s](r) + "</section>"; });
+    h += "</div>";
     if(hidden.length) h += '<section class="card"><h2 style="font-size:1.2rem;margin-bottom:4px">Add to my page</h2><div class="addsec">' + hidden.map(function(s){ return '<button type="button" data-show="' + s + '"><b>+ ' + esc(SECS[s].n) + "</b><span>" + esc(SECS[s].d) + "</span></button>"; }).join("") + "</div></section>";
     h += '<div class="foot">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>' : '<button type="button" class="ghost" data-a="finish">Finish this reset</button>') + '<button type="button" class="link danger" data-a="delete">Delete this reset</button></div>';
     var m = $("detail"); m.innerHTML = h; m.dataset.id = r.id;
@@ -860,6 +881,7 @@ footer p{margin:6px 0}
       else { $("myBtn").hidden = $("signBtn").hidden = true; return fetchPage(m[1]); } }
     $("myBtn").hidden = !P || !!m;
     $("signBtn").hidden = !!USER || !!P;
+    $("whoBtn").hidden = !USER; $("whoBtn").title = USER ? "Signed in as " + (USER.email || "") : "";
     if(m && P){ var r = rm && find(rm[1]);
       if(r){ show("detail"); renderDetail(r); } else { show("mine"); renderMine(); }
     } else { show("front"); if($("sheet").hidden) drawForm(); drawList(); }
