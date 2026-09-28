@@ -1,4 +1,4 @@
-<!-- DueAReset v10 -->
+<!-- DueAReset v11 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -58,7 +58,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .kinds{margin:4px 0 16px;display:grid;gap:8px}
 .kinds button{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--muted);font-size:.95rem}
 .kinds b{display:block;color:var(--ink);font-size:1.02rem}
-.kinds button::after{content:"→";float:right;color:var(--brand);font-weight:700;margin-top:-1.4em}
+.kinds button{position:relative;padding-right:42px!important}
+.kinds button::after{content:"→";position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--brand);font-weight:700}
 .kpick{display:grid;gap:7px}
 .kpick button{text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 14px;font-weight:700}
 .kpick button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
@@ -196,16 +197,14 @@ footer p{margin:6px 0}
 .ver{color:var(--faint)}
 @media (min-width:700px){ .hero h1{font-size:3rem} }
 .who{border-color:transparent;background:var(--brand-wash);color:var(--brand-deep)}
+.quietpill{border-color:var(--line);color:var(--ink);font-weight:400}
 /* On a computer: use the width – two columns, the phone layout is untouched */
 @media (min-width:960px){
   .wrap{max-width:1140px;padding:0 32px}
-  #front{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0 36px;grid-template-areas:"hero form" "why have" "list list";align-items:start}
-  #front .hero{grid-area:hero}
-  #front .why{grid-area:why;margin-top:0}
-  #formSlot{grid-area:form;margin-top:34px}
-  #haveBox{grid-area:have;margin-top:0}
-  #list{grid-area:list}
-  .listcols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;align-items:start}
+  #front{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0 36px;align-items:start}
+  #formSlot{margin-top:34px}
+  #list h2{margin-top:22px}
+  .listcols{display:block}
   #cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
   .secs{column-count:2;column-gap:20px;margin-top:14px}
   .secs>.card{display:inline-block;width:100%;break-inside:avoid;margin:0 0 16px}
@@ -217,11 +216,12 @@ footer p{margin:6px 0}
 <div class="wrap">
   <header class="top">
     <a class="brand" href="#">DueAReset</a>
-    <span class="row"><button class="pill who" id="whoBtn" type="button" hidden>✓ Signed in</button><button class="pill" id="signBtn" type="button" hidden>Sign in</button><button class="pill" id="myBtn" type="button" hidden>My page</button></span>
+    <span class="row"><button class="pill quietpill" id="listBtn" type="button">Common resets</button><button class="pill who" id="whoBtn" type="button" hidden>✓ Signed in</button><button class="pill" id="signBtn" type="button" hidden>Sign in</button><button class="pill" id="myBtn" type="button" hidden>My page</button></span>
   </header>
 
   <!-- ===== Front page ===== -->
   <main id="front">
+   <div class="colL">
     <section class="hero">
       <h1>Due a reset?</h1>
       <p class="lead">Most of us run on habits we never chose. A reset is drawing a line, on purpose, and deciding to do things differently for a while. It can take a few forms – tap one to start:</p>
@@ -233,7 +233,7 @@ footer p{margin:6px 0}
         <button type="button" data-kind="adventure"><b>Go on an adventure</b>something hard and a bit scary that shakes you out of the everyday</button>
       </div>
       <p>It doesn't have to be big. It has to be on purpose. That's a reset.</p>
-      <p>Say what you're resetting, then build your own page to get you through it: a timer, tips, a journal, your weight, a plan, words to keep you going, and a question each day about why it's hard. Nobody sees your page but you. The list further down shows what people commonly reset and how they go about it, so you know you're not the only one.</p>
+      <p>Say what you're resetting, then build your own page to get you through it: a timer, tips, a journal, your weight, a plan, words to keep you going, and a question each day about why it's hard. Nobody sees your page but you. The list of common resets shows what people commonly reset and how they go about it, so you know you're not the only one.</p>
       <a class="btn" href="#start" id="heroGo">Start one</a>
       <p class="quiet">People use it for quitting smoking or vaping, cutting sugar, less screen time, a fast, drinking less, walking every day – or a big adventure.</p>
     </section>
@@ -244,9 +244,11 @@ footer p{margin:6px 0}
       <p>In <i>The Comfort Crisis</i> (2021), the journalist Michael Easter argues that modern life has quietly taken the hard parts out of our days. We're rarely cold, hungry, bored or pushed anywhere near our limit, and he thinks we're worse off for it.</p>
       <p>His answer is the <b>misogi</b>, a name borrowed from a Japanese purification ritual: a big challenge, taken on on purpose, hard enough that you might not manage it. It has just two rules – <b>make it really hard, and don't die.</b></p>
       <p>The point isn't the challenge itself. It's finding out you can do more than you thought, and bringing that back into the rest of your life. Easter suggests one a year. Even one every few years can reset how you see yourself.</p>
-      <p class="small" style="margin:0">To start one, pick "Going on an adventure" in the form below.</p>
+      <p class="small" style="margin:0">To start one, pick "Going on an adventure" under "What are you resetting?"</p>
     </section>
 
+   </div>
+   <div class="colR">
     <section class="card" id="formSlot">
       <h2 id="start">What are you resetting?</h2>
       <form id="rf" novalidate autocomplete="off">
@@ -278,6 +280,7 @@ footer p{margin:6px 0}
         <ul class="ways" id="general"></ul>
       </div></div>
     </section>
+   </div>
   </main>
 
   <!-- ===== My resets ===== -->
@@ -295,7 +298,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v10</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v11</span></p>
   </footer>
 </div>
 
@@ -546,6 +549,7 @@ footer p{margin:6px 0}
   $("siGo").addEventListener("click", siVerify);
   $("siEmail").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); siSend(); } });
   $("siCode").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); siVerify(); } });
+  $("listBtn").addEventListener("click", function(){ go("#list"); });
   $("whoBtn").addEventListener("click", function(){
     if(!P){ toast("Signed in as " + (USER && USER.email || "")); return; }
     go("#p=" + CODE); setTimeout(function(){ var a = $("acct"); if(a) a.scrollIntoView({behavior:"smooth", block:"center"}); }, 120); });
@@ -886,6 +890,7 @@ footer p{margin:6px 0}
       if(r){ show("detail"); renderDetail(r); } else { show("mine"); renderMine(); }
     } else { show("front"); if($("sheet").hidden) drawForm(); drawList(); }
     if(keepScroll !== true) window.scrollTo(0, 0);
+    if(!m && location.hash === "#list") setTimeout(function(){ $("list").scrollIntoView({behavior:"smooth", block:"start"}); }, 50);
   }
   window.addEventListener("hashchange", function(){ closeSheet(); route(); });
   // Coming back to the page (maybe on a new day): refresh the counters, but don't disturb typing
