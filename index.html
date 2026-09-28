@@ -1,4 +1,4 @@
-<!-- DueAReset v23 -->
+<!-- DueAReset v24 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -271,6 +271,8 @@ textarea.field{resize:vertical;min-height:80px}
 #signin{position:fixed;inset:0;background:rgba(20,25,35,.45);z-index:24;overflow-y:auto;padding:40px 16px}
 #siBox{max-width:440px;margin:0 auto;position:relative}
 #siBox h2{font-size:1.45rem;margin-bottom:8px;padding-right:30px}
+.havelink{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+.havelink summary{cursor:pointer;color:var(--brand);font-size:.9rem}
 #siX{position:absolute;right:10px;top:10px;font-size:1.5rem}
 .netState{margin:10px 0 0}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:12px;padding:11px 16px;display:flex;gap:14px;align-items:center;z-index:30;max-width:calc(100% - 32px);font-size:.95rem}
@@ -356,9 +358,9 @@ footer p{margin:6px 0}
    </div>
    <div class="colR">
     <section class="card why" aria-labelledby="whyAdv">
-      <button type="button" class="whyrow" id="whyOpen" aria-expanded="false" aria-controls="whyBody"><span><h2 id="whyAdv">Have you thought about an adventure?</h2><span class="whysub">Sometimes the way round a habit is to do something hard.</span></span><span class="chev" aria-hidden="true">›</span></button>
+      <button type="button" class="whyrow" id="whyOpen" aria-expanded="false" aria-controls="whyBody"><span><h2 id="whyAdv">Have you thought about a different kind of reset?</h2><span class="whysub">Sometimes the way round a habit is to do something hard.</span></span><span class="chev" aria-hidden="true">›</span></button>
       <div id="whyBody" hidden>
-        <p>Not every reset is about giving something up. Take on something hard enough, and everything else can feel different afterwards – including the habits you wanted to change.</p>
+        <p>Not every reset is about giving something up. Sometimes it's an adventure: take on something hard enough, and everything else can feel different afterwards – including the habits you wanted to change.</p>
         <p>One idea is the <b>misogi challenge</b>: one big challenge, taken on on purpose, hard enough that you might not manage it – a long walk, a cold swim, a climb, a trip on your own. It has just two rules: <b>make it really hard, and don't die.</b></p>
         <p>The point isn't the challenge itself. It's finding out you can do more than you thought, and bringing that back into the rest of your life. One a year is plenty – even one every few years can reset how you see yourself.</p>
         <p class="small">The idea comes from Michael Easter's book <i>The Comfort Crisis</i> (2021).</p>
@@ -366,10 +368,6 @@ footer p{margin:6px 0}
       </div>
     </section>
 
-    <section class="card" id="haveBox">
-      <label class="lbl" for="haveIn" style="margin-top:0">Have a page already? Paste your link or code</label>
-      <div class="row"><input class="field" id="haveIn" style="flex:1;min-width:0" placeholder="dueareset.com/#p=…"><button class="ghost" id="haveGo" type="button">Open</button></div>
-    </section>
 
     <section id="list">
       <section class="card rotcard" id="waysCard">
@@ -403,7 +401,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v23</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v24</span></p>
   </footer>
 </div>
 
@@ -415,6 +413,9 @@ footer p{margin:6px 0}
   <div id="siStep1"><label class="lbl" for="siEmail">Your email</label><input class="field" id="siEmail" type="email" autocomplete="email" inputmode="email" maxlength="200"><button class="btn wide" id="siSend" type="button" style="margin-top:12px">Email me a code</button></div>
   <div id="siStep2" hidden><p style="margin:10px 0 0">We've sent a code to <b id="siTo"></b>. It can take a minute – check your junk folder too.</p><label class="lbl" for="siCode">The code from the email</label><input class="field" id="siCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10"><button class="btn wide" id="siGo" type="button" style="margin-top:12px">Sign in</button><button class="link" id="siBack" type="button">Use a different email</button></div>
   <p class="small" style="margin:14px 0 0">No password. We only use your email to sign you in – never for anything else.</p>
+  <details class="havelink"><summary>Have a page link instead? Paste it here</summary>
+    <div class="row" style="margin-top:8px"><input class="field" id="haveIn" style="flex:1;min-width:0" placeholder="dueareset.com/#p=…" aria-label="Your page link or code"><button class="ghost" id="haveGo" type="button">Open</button></div>
+  </details>
 </div></div>
 <div id="toast" hidden role="status"><span id="toastMsg"></span><button id="toastUndo" type="button" hidden>Undo</button></div>
 
@@ -831,7 +832,7 @@ footer p{margin:6px 0}
   $("lPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; if(b.dataset.more) L.open = !L.open; else L.sel = b.dataset.k; drawList(); });
   $("myBtn").addEventListener("click", function(){ go("#p=" + CODE); });
   $("haveGo").addEventListener("click", function(){ var v = $("haveIn").value.trim().toLowerCase(), m = v.match(/p=([a-z0-9]{12})/) || v.match(/^([a-z0-9]{12})$/);
-    if(!m){ toast("That doesn't look like a DueAReset link or code"); return; } $("haveIn").value = ""; go("#p=" + m[1]); });
+    if(!m){ toast("That doesn't look like a DueAReset link or code"); return; } $("haveIn").value = ""; closeSignin(); go("#p=" + m[1]); });
 
   // ---------- Save-your-link box (shown until they say they've saved it) ----------
   var LINK_BTNS = '<div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>'
