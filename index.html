@@ -1,4 +1,4 @@
-<!-- DueAReset v21 -->
+<!-- DueAReset v22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -120,7 +120,16 @@ textarea.field{resize:vertical;min-height:80px}
 .book{background:var(--brand-wash);border-radius:10px;padding:10px 12px;font-size:.9rem;margin:12px 0 0}
 
 /* public list */
-#list h2{font-size:1.6rem;margin:30px 0 6px;color:var(--brand-deep)}
+.rchead{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t c" "l c";gap:3px 12px;width:100%;border:0;background:none;padding:0;text-align:left;align-items:center}
+.rct{grid-area:t;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.2rem;color:var(--brand-deep)}
+.rcl{grid-area:l;color:var(--muted);font-size:.93rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.rchead .chev{grid-area:c;font-size:1.6rem;line-height:1;color:var(--faint);transition:transform .15s}
+.rchead[aria-expanded="true"] .chev{transform:rotate(90deg);color:var(--brand)}
+.rchead[aria-expanded="true"] .rcl{display:none}
+.rcbody{margin-top:12px}
+.rot{display:inline-block;transition:opacity .35s,transform .35s}
+.rot.fade{opacity:0;transform:translateY(5px)}
+@media (prefers-reduced-motion:reduce){ .rot{transition:none} }
 .ways{margin:10px 0 0;padding:0;list-style:none}
 .ways li{padding:9px 0;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;justify-content:space-between}
 .ways li:first-child{border-top:0}
@@ -352,14 +361,18 @@ footer p{margin:6px 0}
     </section>
 
     <section id="list">
-      <h2>What people reset, and how</h2>
-      <p class="small">To start with, this comes from common advice online. Tap one to see the ways people go about it.</p>
-      <div id="lPick"></div>
-      <div class="listcols"><div class="card" id="waysBox"></div>
-      <div class="card">
-        <h3 style="font-size:1.2rem;margin-bottom:6px">Whatever the reset, people say these help</h3>
-        <ul class="ways" id="general"></ul>
-      </div></div>
+      <section class="card rotcard" id="waysCard">
+        <button type="button" class="rchead" aria-expanded="false" aria-controls="waysBody"><span class="rct">What people reset, and how</span><span class="rcl"><span class="rot" id="waysRot">Smoking · Nicotine patches</span></span><span class="chev" aria-hidden="true">›</span></button>
+        <div class="rcbody" id="waysBody" hidden>
+          <p class="small" style="margin:0 0 10px">To start with, this comes from common advice online. Tap one to see the ways people go about it.</p>
+          <div id="lPick"></div>
+          <div id="waysBox" style="margin-top:12px"></div>
+        </div>
+      </section>
+      <section class="card rotcard" id="helpCard">
+        <button type="button" class="rchead" aria-expanded="false" aria-controls="helpBody"><span class="rct">What helps, whatever the reset</span><span class="rcl"><span class="rot" id="helpRot">Tell one person</span></span><span class="chev" aria-hidden="true">›</span></button>
+        <div class="rcbody" id="helpBody" hidden><ul class="ways" id="general"></ul></div>
+      </section>
     </section>
    </div>
   </main>
@@ -379,7 +392,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v21</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v22</span></p>
   </footer>
 </div>
 
@@ -789,9 +802,18 @@ footer p{margin:6px 0}
   function drawList(){
     $("lPick").innerHTML = picker([L.sel], L.open);
     var t = T(L.sel);
-    $("waysBox").innerHTML = '<h3 style="font-size:1.2rem;margin-bottom:4px">' + esc(t.n) + ' – ' + (t.ways ? "ways people go about it" : "what often helps") + '</h3><ul class="ways">' + waysOf(t).map(function(w){ return "<li>" + esc(w) + "</li>"; }).join("") + "</ul>" + extras({things:[{key:t.k, g:t.g, name:""}]});
+    $("waysBox").innerHTML = '<h3 style="font-size:1.1rem;margin-bottom:4px">' + esc(t.n) + ' – ' + (t.ways ? "ways people go about it" : "what often helps") + '</h3><ul class="ways">' + waysOf(t).map(function(w){ return "<li>" + esc(w) + "</li>"; }).join("") + "</ul>" + extras({things:[{key:t.k, g:t.g, name:""}]});
     $("general").innerHTML = GENERAL.map(function(g){ return "<li>" + esc(g) + "</li>"; }).join("");
   }
+  // The two boxes open with a tap; while closed, a line underneath rotates through what's inside
+  function openCard(card, open){ var h = card.querySelector(".rchead"), o = open != null ? open : h.getAttribute("aria-expanded") !== "true"; h.setAttribute("aria-expanded", String(o)); card.querySelector(".rcbody").hidden = !o; }
+  document.querySelectorAll(".rotcard .rchead").forEach(function(h){ h.addEventListener("click", function(){ openCard(h.closest(".rotcard")); }); });
+  var WAYROT = []; TYPES.filter(function(t){ return t.pop && t.ways; }).forEach(function(t, i, a){ t.ways.slice(0, 3).forEach(function(w, j){ WAYROT[j * a.length + i] = t.n + " · " + w; }); });
+  WAYROT = WAYROT.filter(Boolean);
+  var rotN = 0; $("waysRot").textContent = WAYROT[0]; $("helpRot").textContent = GENERAL[0];
+  function rotate(id, list){ var el = $(id); if(!el || el.closest(".rotcard").querySelector(".rchead").getAttribute("aria-expanded") === "true") return;
+    el.classList.add("fade"); setTimeout(function(){ el.textContent = list[rotN % list.length]; el.classList.remove("fade"); }, 350); }
+  setInterval(function(){ if(document.hidden || $("front").hidden) return; rotN++; rotate("waysRot", WAYROT); rotate("helpRot", GENERAL); }, 3200);
   $("lPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; if(b.dataset.more) L.open = !L.open; else L.sel = b.dataset.k; drawList(); });
   $("myBtn").addEventListener("click", function(){ go("#p=" + CODE); });
   $("haveGo").addEventListener("click", function(){ var v = $("haveIn").value.trim().toLowerCase(), m = v.match(/p=([a-z0-9]{12})/) || v.match(/^([a-z0-9]{12})$/);
@@ -1097,7 +1119,7 @@ footer p{margin:6px 0}
       if(r){ show("detail"); renderDetail(r); } else { show("mine"); renderMine(); }
     } else { show("front"); if($("sheet").hidden) drawForm(); drawList(); }
     if(keepScroll !== true) window.scrollTo(0, 0);
-    if(!m && location.hash === "#list") setTimeout(function(){ $("list").scrollIntoView({behavior:"smooth", block:"start"}); }, 50);
+    if(!m && location.hash === "#list"){ openCard($("waysCard"), true); setTimeout(function(){ $("list").scrollIntoView({behavior:"smooth", block:"start"}); }, 50); }
   }
   window.addEventListener("hashchange", function(){ closeSheet(); route(); });
   // Coming back to the page (maybe on a new day): refresh the counters, but don't disturb typing
