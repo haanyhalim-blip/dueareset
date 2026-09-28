@@ -1,4 +1,4 @@
-<!-- DueAReset v24 -->
+<!-- DueAReset v25 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -271,8 +271,6 @@ textarea.field{resize:vertical;min-height:80px}
 #signin{position:fixed;inset:0;background:rgba(20,25,35,.45);z-index:24;overflow-y:auto;padding:40px 16px}
 #siBox{max-width:440px;margin:0 auto;position:relative}
 #siBox h2{font-size:1.45rem;margin-bottom:8px;padding-right:30px}
-.havelink{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
-.havelink summary{cursor:pointer;color:var(--brand);font-size:.9rem}
 #siX{position:absolute;right:10px;top:10px;font-size:1.5rem}
 .netState{margin:10px 0 0}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:12px;padding:11px 16px;display:flex;gap:14px;align-items:center;z-index:30;max-width:calc(100% - 32px);font-size:.95rem}
@@ -324,7 +322,7 @@ footer p{margin:6px 0}
    <div class="colL">
     <section class="hero">
       <h1>Due a reset?</h1>
-      <button type="button" class="heroline" id="heroOpen" aria-expanded="false" aria-controls="heroBody"><span class="rot" id="heroRot">Quit, cut down, do more, go without – or go on an adventure.</span><span class="heroless">Show less</span><span class="chev" aria-hidden="true">›</span></button>
+      <button type="button" class="heroline" id="heroOpen" aria-expanded="false" aria-controls="heroBody"><span class="rot" id="heroRot">Most of us run on habits we never chose.</span><span class="heroless">Show less</span><span class="chev" aria-hidden="true">›</span></button>
       <div id="heroBody" hidden>
       <p class="lead">Most of us run on habits we never chose. We all want to get a little better, and we go about it in different ways. Some people take a habit on head-on. Others come at it sideways – a challenge, a change of scene, or a new routine that crowds the old one out.</p>
       <p>Whether you're quitting, cutting down, doing more or starting something new, that's a reset: a deliberate change, a bit bolder than your usual.</p>
@@ -401,7 +399,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v24</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v25</span></p>
   </footer>
 </div>
 
@@ -413,9 +411,6 @@ footer p{margin:6px 0}
   <div id="siStep1"><label class="lbl" for="siEmail">Your email</label><input class="field" id="siEmail" type="email" autocomplete="email" inputmode="email" maxlength="200"><button class="btn wide" id="siSend" type="button" style="margin-top:12px">Email me a code</button></div>
   <div id="siStep2" hidden><p style="margin:10px 0 0">We've sent a code to <b id="siTo"></b>. It can take a minute – check your junk folder too.</p><label class="lbl" for="siCode">The code from the email</label><input class="field" id="siCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10"><button class="btn wide" id="siGo" type="button" style="margin-top:12px">Sign in</button><button class="link" id="siBack" type="button">Use a different email</button></div>
   <p class="small" style="margin:14px 0 0">No password. We only use your email to sign you in – never for anything else.</p>
-  <details class="havelink"><summary>Have a page link instead? Paste it here</summary>
-    <div class="row" style="margin-top:8px"><input class="field" id="haveIn" style="flex:1;min-width:0" placeholder="dueareset.com/#p=…" aria-label="Your page link or code"><button class="ghost" id="haveGo" type="button">Open</button></div>
-  </details>
 </div></div>
 <div id="toast" hidden role="status"><span id="toastMsg"></span><button id="toastUndo" type="button" hidden>Undo</button></div>
 
@@ -612,7 +607,7 @@ footer p{margin:6px 0}
     if(P && old && old !== code && P.resets.length) d = merge(d, P);
     CODE = code; P = d; if(old && old !== code) try{ localStorage.removeItem(PKEY + old); }catch(e){}
     store(); }
-  function refresh(){ var a = document.activeElement; if(a && /INPUT|TEXTAREA/.test(a.tagName) && a.id !== "haveIn") return; var y = window.scrollY; render(); window.scrollTo(0, y); }
+  function refresh(){ var a = document.activeElement; if(a && /INPUT|TEXTAREA/.test(a.tagName)) return; var y = window.scrollY; render(); window.scrollTo(0, y); }
   function locked(){ openSignin("This page is protected. Sign in with the email it belongs to."); }
   // Bring this phone and the online copy together
   function sync(){ if(!sb) return Promise.resolve();
@@ -822,7 +817,7 @@ footer p{margin:6px 0}
   document.querySelectorAll(".rotcard .rchead").forEach(function(h){ h.addEventListener("click", function(){ openCard(h.closest(".rotcard")); }); });
   var WAYROT = []; TYPES.filter(function(t){ return t.pop && t.ways; }).forEach(function(t, i, a){ t.ways.slice(0, 3).forEach(function(w, j){ WAYROT[j * a.length + i] = t.n + " · " + w; }); });
   WAYROT = WAYROT.filter(Boolean);
-  var HEROROT = ["Quit, cut down, do more, go without – or go on an adventure.","Build your own page: a timer, journal, weight, plan and a daily question.","Free and private – nobody sees your page but you.","No account needed – sign in only if you want to.","How bold is up to you. What matters is that it's on purpose."];
+  var HEROROT = ["Most of us run on habits we never chose.","Some people take a habit on head-on. Others come at it sideways.","A new routine can crowd the old one out.","A reset is a deliberate change – a bit bolder than your usual.","What feels extreme to one person is an ordinary week for someone else.","What matters is that it's on purpose."]
   $("heroOpen").addEventListener("click", function(){ var o = $("heroBody").hidden; $("heroBody").hidden = !o; this.setAttribute("aria-expanded", String(o)); });
   var rotN = 0; $("waysRot").textContent = WAYROT[0]; $("helpRot").textContent = GENERAL[0];
   function rotate(id, list){ var el = $(id); if(!el || el.closest(".rotcard").querySelector(".rchead").getAttribute("aria-expanded") === "true") return;
@@ -831,8 +826,6 @@ footer p{margin:6px 0}
     if($("heroBody").hidden){ var hr = $("heroRot"); hr.classList.add("fade"); setTimeout(function(){ hr.textContent = HEROROT[rotN % HEROROT.length]; hr.classList.remove("fade"); }, 350); } }, 3200);
   $("lPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; if(b.dataset.more) L.open = !L.open; else L.sel = b.dataset.k; drawList(); });
   $("myBtn").addEventListener("click", function(){ go("#p=" + CODE); });
-  $("haveGo").addEventListener("click", function(){ var v = $("haveIn").value.trim().toLowerCase(), m = v.match(/p=([a-z0-9]{12})/) || v.match(/^([a-z0-9]{12})$/);
-    if(!m){ toast("That doesn't look like a DueAReset link or code"); return; } $("haveIn").value = ""; closeSignin(); go("#p=" + m[1]); });
 
   // ---------- Save-your-link box (shown until they say they've saved it) ----------
   var LINK_BTNS = '<div class="row"><button class="ghost" type="button" data-act="copy">Copy link</button><button class="ghost" type="button" data-act="send">Send it to myself</button><button class="ghost" type="button" data-act="home">Add to home screen</button></div>'
