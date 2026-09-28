@@ -1,4 +1,4 @@
-<!-- DueAReset v11 -->
+<!-- DueAReset v12 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -35,6 +35,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 input,textarea{font:inherit;color:var(--ink)}
 button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 [hidden]{display:none!important}
+/* The background: a quiet sunrise over hills, with a path towards it – a new start */
+#bgart{position:fixed;inset:0;z-index:-1;pointer-events:none}
+#bgart svg{width:100%;height:100%;display:block}
 .wrap{max-width:640px;margin:0 auto;padding:0 16px}
 .top{display:flex;align-items:center;justify-content:space-between;padding:14px 0 6px}
 .brand{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.15rem;color:var(--brand-deep);text-decoration:none}
@@ -213,6 +216,19 @@ footer p{margin:6px 0}
 </style>
 </head>
 <body>
+<div id="bgart" aria-hidden="true"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1f0ec"/><stop offset=".5" stop-color="#f3ede4"/><stop offset=".72" stop-color="#f8e0cb"/><stop offset="1" stop-color="#f3e6da"/></linearGradient>
+    <radialGradient id="bgGlow" cx=".5" cy=".68" r=".42"><stop offset="0" stop-color="#fbd3b2" stop-opacity=".95"/><stop offset=".45" stop-color="#fbdcc2" stop-opacity=".45"/><stop offset="1" stop-color="#fbdcc2" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bgSky)"/>
+  <rect width="1600" height="900" fill="url(#bgGlow)"/>
+  <circle cx="800" cy="612" r="74" fill="#f3b48c" opacity=".55"/>
+  <path d="M0 612 C 220 566 420 592 640 606 C 860 620 1080 566 1300 578 C 1430 585 1520 600 1600 596 V900 H0 Z" fill="#dde2e4"/>
+  <path d="M0 686 C 260 640 520 700 800 676 C 1080 652 1320 640 1600 682 V900 H0 Z" fill="#d1dadf"/>
+  <path d="M0 780 C 320 730 660 798 980 766 C 1240 740 1440 752 1600 776 V900 H0 Z" fill="#c6d1d8"/>
+  <path d="M690 900 C 736 852 640 812 716 772 C 772 742 838 716 796 686 L 804 686 C 856 716 800 746 750 776 C 684 818 790 858 830 900 Z" fill="#f2e8da" opacity=".95"/>
+</svg></div>
 <div class="wrap">
   <header class="top">
     <a class="brand" href="#">DueAReset</a>
@@ -298,7 +314,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v11</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v12</span></p>
   </footer>
 </div>
 
