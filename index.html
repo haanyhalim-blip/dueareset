@@ -1,4 +1,4 @@
-<!-- DueAReset v17 -->
+<!-- DueAReset v18 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -232,8 +232,9 @@ footer p{margin:6px 0}
 @media (min-width:700px){ .hero h1{font-size:3rem} }
 .who{border-color:transparent;background:var(--brand-wash);color:var(--brand-deep)}
 .quietpill{border-color:var(--line);color:var(--ink);font-weight:400}
-/* On a computer: use the width – two columns, the phone layout is untouched */
-@media (min-width:960px){
+/* Computer layout (two columns) – switched OFF for now so computers look exactly like phones.
+   To switch it back on, change 99999px below back to 960px. */
+@media (min-width:99999px){
   .wrap{max-width:1140px;padding:0 32px}
   #front{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0 36px;align-items:start}
   #formSlot{margin-top:18px}
@@ -341,7 +342,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v17</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v18</span></p>
   </footer>
 </div>
 
