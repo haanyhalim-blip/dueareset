@@ -1,4 +1,4 @@
-<!-- DueAReset v36 -->
+<!-- DueAReset v37 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -265,6 +265,10 @@ textarea.field{resize:vertical;min-height:80px}
 .stitle{grid-area:t;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.12rem}
 .sprev{grid-area:p;font-size:.9rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;font-variant-numeric:tabular-nums}
 .sprev b{color:var(--c,var(--brand-deep))}
+/* Words box: no title, just the words, changing every few seconds */
+.wordsrow .srow{grid-template-areas:"p c";padding:18px 16px}
+.wordsrow .sprev{font-family:Fraunces,Georgia,serif;font-size:1.25rem;line-height:1.35;color:var(--brand-deep);white-space:normal;transition:opacity .4s}
+.wordsrow .sprev.fade{opacity:0}
 .sec.open .sprev{display:none}
 .chev{grid-area:c;font-size:1.6rem;line-height:1;color:var(--faint);transition:transform .15s}
 .sec.open .chev{transform:rotate(90deg);color:var(--brand)}
@@ -344,7 +348,7 @@ footer p{margin:6px 0}
    <div class="colL">
     <section class="hero">
       <h1 class="vh">Due a reset? Quit, cut down, do more or take on a challenge</h1>
-      <button type="button" class="heroline" id="heroOpen" aria-expanded="false" aria-controls="heroBody"><span id="heroRot"><span class="hbig">Most of us run on habits we never chose. A reset is changing one, on purpose.</span><span class="hsub">It doesn’t have to be forever – just long enough to find out what you’re capable of.</span></span><span class="heroless">Show less</span><span class="chev" aria-hidden="true">›</span></button>
+      <button type="button" class="heroline" id="heroOpen" aria-expanded="false" aria-controls="heroBody"><span id="heroRot"><span class="hbig">Most of us run on habits we never chose. A reset is changing one, on purpose.</span><span class="hsub">Your page, set up your way, to help you through your journey.</span></span><span class="heroless">Show less</span><span class="chev" aria-hidden="true">›</span></button>
       <div id="heroBody" hidden>
       <p class="lead">Most of us run on habits we never chose. We all want to get a little better, and we go about it in different ways. Some people take a habit on head-on. Others come at it sideways – a challenge, a change of scene, or a new routine that crowds the old one out.</p>
       <p>Whether you're quitting, cutting down, doing more or starting something new, that's a reset: a deliberate change, a bit bolder than your usual.</p>
@@ -425,7 +429,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v36</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v37</span></p>
   </footer>
 </div>
 
@@ -1113,7 +1117,7 @@ $("helpRot").textContent = GENERAL[0];
         : '<button type="button" class="whyadd" data-a="editwhy">+ Write down why you’re doing this – it’ll be here for the hard moments</button>';
       h += '<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="link" data-a="' + (anyOpen ? "closeall" : "openall") + '">' + (anyOpen ? "Close all" : "Open all") + "</button></div>";
       h += '<div class="secs">' + secs.map(function(s){ var o = !!op[s];
-        return '<section class="card sec' + (o ? " open" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle">' + esc(SECS[s].n) + '</span><span class="sprev">' + PREVIEW[s](r) + '</span><span class="chev" aria-hidden="true">›</span></button>'
+        return '<section class="card sec' + (o ? " open" : "") + (s === "words" ? " wordsrow" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle' + (s === "words" ? " vh" : "") + '">' + esc(SECS[s].n) + '</span><span class="sprev">' + PREVIEW[s](r) + '</span><span class="chev" aria-hidden="true">›</span></button>'
           + (o ? '<div class="sbody">' + SECTION[s](r) + "</div>" : "") + "</section>"; }).join("") + "</div>";
       h += '<button type="button" class="add" data-a="edit">✎ Edit page – add, move or remove boxes</button>';
       h += '<div class="foot">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>' : '<button type="button" class="ghost" data-a="finish">Finish this reset</button>') + '<button type="button" class="link danger" data-a="delete">Delete this page</button></div>';
@@ -1121,6 +1125,10 @@ $("helpRot").textContent = GENERAL[0];
     var m = $("detail"); m.innerHTML = h; m.dataset.id = r.id;
   }
   function current(){ return find($("detail").dataset.id); }
+  // The words box turns over to a new line every few seconds while it's closed
+  setInterval(function(){ var d = $("detail"); if(!d || d.hidden || document.hidden || !d.dataset.id) return; var el = d.querySelector('.wordsrow:not(.open) .sprev'); if(!el) return;
+    var r = find(d.dataset.id); if(!r) return; el.classList.add("fade");
+    setTimeout(function(){ wordIx[r.id] = (wordIx[r.id] || 0) + 1; el.innerHTML = PREVIEW.words(r); el.classList.remove("fade"); }, 400); }, 6000);
   function redraw(r, focusId){ var y = window.scrollY; renderDetail(r); window.scrollTo(0, y); if(focusId && $(focusId)) $(focusId).focus(); }
   function addTo(list, id, r){ var v = $(id).value.trim(); if(!v) return; list.push({id:uid(), ts:Date.now(), t:v}); save(); redraw(r, id); }
   function addLearn(r){ var v = $("lIn").value.trim(); if(!v) return; r.learn.unshift({id:uid(), t:v}); save(); redraw(r, "lIn"); }
