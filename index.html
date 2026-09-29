@@ -379,7 +379,7 @@ footer p{margin:6px 0}
         <div id="fTogether" hidden><div class="lbl">Put them on…</div><div class="chips"><button type="button" class="chip" data-tog="1">One page</button><button type="button" class="chip" data-tog="0">A page each</button></div><p class="small" id="fTogHint" style="margin:6px 0 0"></p></div>
         <div id="fWhy" hidden><label class="lbl" for="fWhyIn">Why are you doing this? <span class="small">(optional)</span></label><textarea class="field" id="fWhyIn" rows="2" maxlength="4000" placeholder="e.g. I want more energy for my kids"></textarea><p class="small" style="margin:6px 0 0">It goes at the top of your page, so it’s the first thing you see when it gets hard.</p></div>
         <div id="fSecs" hidden><div class="lbl">What would you like on your page?</div><div class="chips" id="fSecChips"></div><p class="small" style="margin:6px 0 0">You can change these any time with Edit page.</p></div>
-        <div id="fWhen" hidden><label class="lbl" for="fStart">When did you start?</label><div class="win"><input class="field" type="datetime-local" id="fStart"><button type="button" class="chip" data-when="now">Just now</button><button type="button" class="chip" data-when="yday">Yesterday</button></div></div>
+        <div id="fWhen" hidden><label class="lbl" for="fStart">When did you start – or when will you?</label><div class="win"><input class="field" type="datetime-local" id="fStart"><button type="button" class="chip" data-when="now">Just now</button><button type="button" class="chip" data-when="yday">Yesterday</button><button type="button" class="chip" data-when="not" aria-pressed="false">Not started yet</button></div></div>
         </div>
         <button class="btn wide" id="fGo" type="submit">Start one</button>
       </form>
@@ -568,6 +568,7 @@ footer p{margin:6px 0}
   function counter(r, pg){
     var now = Date.now();
     if(pg && pg.done) return {big: days(pg.done.days), small: "Finished " + nice(pg.done.at), live: ""};
+    if(r.notyet) return {big: "Not started yet", small: "When you’re ready, tap “I’m starting now”.", live: ""};
     if(now < r.start) return {big: "Starts in " + days(dayNo(r.start) - dayNo(now)), small: nice(r.start) + " at " + hm(r.start), live: dur(r.start - now) + " to go"};
     var d = dayOf(r);
     if(r.end){
@@ -787,8 +788,11 @@ footer p{margin:6px 0}
     var own = dir && $("fName").value.trim() ? "<span>" + esc($("fName").value.trim()) + " <small>(" + KWORD[F.kind] + ')</small><button type="button" class="x" data-unown="1" aria-label="Remove">×</button></span>' : "";
     $("fPicked").innerHTML = (F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "") + own;
     drawBottom(); }
-  function resetForm(){ F.direct = false; F.chip = false; F.secs = null; $("fWhyIn").value = ""; F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
-  $("fWhen").addEventListener("click", function(e){ var b = e.target.closest("[data-when]"); if(b) $("fStart").value = toInput(b.dataset.when === "yday" ? Date.now() - DAY : Date.now()); });
+  function resetForm(){ if(typeof notYet === "function") notYet(false); F.direct = false; F.chip = false; F.secs = null; $("fWhyIn").value = ""; F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
+  // "Not started yet": the page is ready, and the count begins when you tap "I'm starting now" (or pick a date, even a future one)
+  function notYet(on){ F.notyet = on; var c = $("fWhen").querySelector('[data-when="not"]'); if(c) c.setAttribute("aria-pressed", String(on)); }
+  $("fWhen").addEventListener("click", function(e){ var b = e.target.closest("[data-when]"); if(!b) return; if(b.dataset.when === "not"){ notYet(!F.notyet); if(F.notyet) $("fStart").value = ""; return; } notYet(false); $("fStart").value = toInput(b.dataset.when === "yday" ? Date.now() - DAY : Date.now()); });
+  $("fStart").addEventListener("input", function(){ if(this.value) notYet(false); });
   $("fSecs").addEventListener("click", function(e){ var b = e.target.closest("[data-sec]"); if(!b) return; var ss = pageSecs().slice(), k = b.dataset.sec, i = ss.indexOf(k); if(i > -1) ss.splice(i, 1); else ss.push(k); F.secs = SEC_ORDER.filter(function(x){ return ss.indexOf(x) > -1; }); drawBottom(); });
   $("fTogether").addEventListener("click", function(e){ var b = e.target.closest("[data-tog]"); if(!b) return; F.together = b.dataset.tog === "1"; drawBottom(); });
   function pickKind(k){ F.kind = k; F.open = false; F.direct = false; F.chip = false; drawForm(); }
@@ -883,10 +887,11 @@ footer p{margin:6px 0}
     if(!typed && !picks.length){ toast("Type what it is, or tap one of the buttons"); $("fName").focus(); return; }
     var ths = picks.map(function(x){ return makeThing(x.k, "", x.kind); }); if(typed) ths.push(makeThing("own", typed, F.kind));
     var st = fromInput($("fStart").value); if(st != null) ths.forEach(function(t){ t.start = st; });
+    else if(F.notyet) ths.forEach(function(t){ t.start = Date.now(); t.notyet = true; });
     var target = F.target && find(F.target);
     if(target){ ths.forEach(function(t){ target.things.push(t); }); target.title = ""; save(); var tid = target.id; closeSheet(); go("#p=" + CODE + "&r=" + tid); render(); toast(joinNames(ths) + " added to this page"); return; }
     var tog = together(), fresh = !P; if(fresh){ CODE = newCode(); P = {v:3, resets:[], ack:false}; }
-    var made = tog ? [makePage(ths)] : ths.map(function(t){ return makePage([t]); }), chosen = pageSecs().slice();
+    var made = tog ? [makePage(ths)] : ths.map(function(t){ return makePage([t]); }), chosen = pageSecs().slice(); if(F.notyet && chosen.indexOf("timer") < 0) chosen.unshift("timer");
     var why = $("fWhyIn").value.trim();
     made.forEach(function(r){ if(chosen.length) r.secs = chosen.slice(); if(why) r.why = why; });
     made.forEach(function(r){ P.resets.push(r); }); save(); closeSheet(); resetForm();
@@ -1008,7 +1013,7 @@ $("helpRot").textContent = GENERAL[0];
       return ths.map(function(t){ var c = counter(t, r);
         return '<div class="tblock" style="--c:' + gOf(t).c + '">' + (multi ? '<div class="tname">' + esc(t.name) + " <span>" + esc(kindOf(t)) + "</span></div>" : "")
           + '<div class="big' + (multi ? " mid" : "") + '" data-live="big" data-t="' + t.id + '">' + esc(c.big) + '</div><div class="small" data-live="small" data-t="' + t.id + '">' + esc(c.small) + '</div><div class="live" data-live="live" data-t="' + t.id + '">' + esc(c.live) + "</div>"
-          + (r.done ? "" : '<div class="row" style="margin-top:10px">' + (!t.end && dayOf(t) > 1 ? '<button type="button" class="ghost" data-restart="' + t.id + '">' + (multi ? "Start this one again" : "Start the count again") + "</button>" : "") + '<button type="button" class="link" data-tedit="' + t.id + '">✎ Change start or end</button></div>')
+          + (r.done ? "" : '<div class="row" style="margin-top:10px">' + (t.notyet ? '<button type="button" class="btn" data-startnow="' + t.id + '">I’m starting now</button>' : "") + (!t.notyet && !t.end && dayOf(t) > 1 ? '<button type="button" class="ghost" data-restart="' + t.id + '">' + (multi ? "Start this one again" : "Start the count again") + "</button>" : "") + '<button type="button" class="link" data-tedit="' + t.id + '">✎ Change start or end</button></div>')
           + (tEdit[t.id] && !r.done ? '<div class="tedit"><div class="two"><div><label class="lbl" for="tes-' + t.id + '" style="margin-top:0">Started</label><input class="field tStart" type="datetime-local" id="tes-' + t.id + '" data-t="' + t.id + '" value="' + toInput(t.start) + '"></div>'
             + '<div><label class="lbl" for="tee-' + t.id + '" style="margin-top:0">Ends <span>(optional)</span></label><input class="field tEnd" type="datetime-local" id="tee-' + t.id + '" data-t="' + t.id + '" value="' + (t.end ? toInput(t.end) : "") + '"></div></div>'
             + '<div class="qrow"><span>Started</span><button type="button" class="chip" data-qs="1" data-t="' + t.id + '">An hour ago</button><button type="button" class="chip" data-qs="24" data-t="' + t.id + '">Yesterday, this time</button><button type="button" class="chip" data-qs="48" data-t="' + t.id + '">2 days ago</button></div>'
@@ -1155,7 +1160,7 @@ $("helpRot").textContent = GENERAL[0];
     if(!f) return; r[f] = f === "title" ? e.target.value.trim() : e.target.value; saveSoon();
     if(f === "title") document.querySelector("#detail .dname").textContent = pName(r); });
   $("detail").addEventListener("change", function(e){ var r = current(); if(!r) return; var el = e.target, t = el.dataset.t && thingById(r, el.dataset.t); if(!t) return;
-    if(el.classList.contains("tStart")){ var s = fromInput(el.value); if(s == null) return; if(t.end && s >= t.end){ toast("The start has to be before the end"); el.value = toInput(t.start); return; } t.start = s; save(); redraw(r); }
+    if(el.classList.contains("tStart")){ var s = fromInput(el.value); if(s == null) return; delete t.notyet; if(t.end && s >= t.end){ toast("The start has to be before the end"); el.value = toInput(t.start); return; } t.start = s; save(); redraw(r); }
     if(el.classList.contains("tEnd")){ var en = fromInput(el.value); if(en != null && en <= t.start){ toast("The end has to be after the start"); el.value = t.end ? toInput(t.end) : ""; return; } t.end = en; save(); redraw(r); } });
   $("detail").addEventListener("click", function(e){ var r = current(), b = e.target.closest("button"); if(!r || !b) return; var d = b.dataset;
     if(d.act) return linkActs(e);
@@ -1164,12 +1169,13 @@ $("helpRot").textContent = GENERAL[0];
     if(d.hide){ var at = r.secs.indexOf(d.hide), hs = d.hide; r.secs.splice(at, 1); save(); redraw(r); return toast(SECS[hs].n + " taken off – what you wrote is kept", function(){ r.secs.splice(at, 0, hs); save(); redraw(r); }); }
     if(d.show){ r.secs.push(d.show); save(); redraw(r); return toast(SECS[d.show].n + " added to your page"); }
     if(d.mode && d.t){ var mt = thingById(r, d.t); if(mt){ mt.mode = d.mode; save(); redraw(r); } return; }
+    if(d.startnow){ var sn = thingById(r, d.startnow); if(!sn) return; sn.start = Date.now(); delete sn.notyet; r.notes.push({id:uid(), ts:Date.now(), t:"Started " + sn.name + "."}); save(); redraw(r); return toast("Day 1 – you’ve started. You’ve got this."); }
     if(d.restart){ var rt = thingById(r, d.restart); if(!rt) return; var was = dayOf(rt);
       ask("Start the count again for " + rt.name + " from now? Your notes stay, and your best run is kept.", "Start again", function(){
         rt.best = Math.max(rt.best || 0, was); rt.start = Date.now(); r.notes.push({id:uid(), ts:Date.now(), t:"Started the count again for " + rt.name + " (was on Day " + was + ")."}); save(); redraw(r); }); return; }
     if(d.noend){ var nt = thingById(r, d.noend); if(nt){ nt.end = null; save(); redraw(r); } return; }
     if(d.tedit){ tEdit[d.tedit] = !tEdit[d.tedit]; return redraw(r); }
-    if(d.qs && d.t){ var qt = thingById(r, d.t); if(!qt) return; var ns = Date.now() - (+d.qs) * 36e5; if(qt.end && ns >= qt.end){ toast("The start has to be before the end"); return; } qt.start = ns; save(); redraw(r); return toast("Start changed to " + nice(ns) + " at " + hm(ns)); }
+    if(d.qs && d.t){ var qt = thingById(r, d.t); if(!qt) return; delete qt.notyet; var ns = Date.now() - (+d.qs) * 36e5; if(qt.end && ns >= qt.end){ toast("The start has to be before the end"); return; } qt.start = ns; save(); redraw(r); return toast("Start changed to " + nice(ns) + " at " + hm(ns)); }
     if(d.qe && d.t){ var et = thingById(r, d.t); if(!et) return; et.end = et.start + (+d.qe) * DAY; save(); redraw(r); return toast("Ends " + nice(et.end) + " at " + hm(et.end)); }
     if(d.split){ var st = thingById(r, d.split); if(!st) return;
       ask("Give " + st.name + " its own page? Its counter moves with it. Your notes and other boxes stay on this page.", "Move it", function(){
