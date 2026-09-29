@@ -1,4 +1,4 @@
-<!-- DueAReset v31 -->
+<!-- DueAReset v32 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -345,8 +345,8 @@ footer p{margin:6px 0}
         <div class="fsearch"><input class="field" id="fSearch" maxlength="60" autocomplete="off" placeholder="Type it – e.g. quit vaping" aria-label="Type what you're resetting"><div id="fSug" role="listbox" aria-label="Suggestions"></div>
           <div class="qchips" id="fQuick" aria-label="Popular resets"><button type="button" class="chip" data-qk="smoking" data-qkind="giveup">Quit smoking</button><button type="button" class="chip" data-qk="drinking" data-qkind="cutdown">Cut down on drinking</button><button type="button" class="chip" data-qk="exercise" data-qkind="more">Exercise more</button><button type="button" class="chip" data-qkind="adventure">Take on a challenge</button></div></div>
         <div id="fBody">
-        <div class="lbl">Are you…</div>
-        <div class="kpick" id="fKind" role="group" aria-label="Kind of reset"></div>
+        <div id="fKindWrap"><div class="lbl">Are you…</div>
+        <div class="kpick" id="fKind" role="group" aria-label="Kind of reset"></div></div>
         <div id="fStep2" hidden>
           <label class="lbl" for="fName" id="fQ">What is it?</label>
           <input class="field" id="fName" maxlength="40" placeholder="In your words">
@@ -406,7 +406,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v31</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v32</span></p>
   </footer>
 </div>
 
@@ -719,7 +719,7 @@ footer p{margin:6px 0}
   ];
   var KWORD = {giveup:"giving up", cutdown:"cutting down", more:"doing more", without:"going without", adventure:"challenge"};
   function K(k){ return KINDS.filter(function(x){ return x.k === k; })[0]; }
-  var F = {kind:"", sel:[], open:false, together:null, target:"", expanded:false};   // sel: [{k, kind}]; target: add to this page
+  var F = {kind:"", sel:[], open:false, together:null, target:"", expanded:false, direct:false};   // direct: picked from the type-in list, so skip the kind question   // sel: [{k, kind}]; target: add to this page
   function pickCount(){ return F.sel.length + ($("fName").value.trim() ? 1 : 0); }
   function pickKinds(){ var ks = F.sel.map(function(x){ return x.kind; }); if($("fName").value.trim()) ks.push(F.kind); return uniq(ks); }
   function together(){ return F.together != null ? F.together : pickKinds().length <= 1; }
@@ -728,28 +728,31 @@ footer p{margin:6px 0}
     $("fWhen").hidden = n < 1;
     document.querySelectorAll("#fTogether [data-tog]").forEach(function(b){ b.setAttribute("aria-pressed", String((b.dataset.tog === "1") === tog)); });
     $("fTogHint").textContent = tog ? "One page, with a counter for each." : "Each one gets its own page.";
-    $("fGo").textContent = F.target ? "Add to this page" : P ? (n > 1 && !tog ? "Add them" : "Add it") : "Start one"; }
+    $("fGo").textContent = F.target ? "Add to this page" : P ? (n > 1 && !tog ? "Add them" : "Add it") : "Start my page"; }
   function selKeys(){ return F.sel.filter(function(x){ return x.kind === F.kind; }).map(function(x){ return x.k; }); }
   function drawForm(){ var kd = K(F.kind);
     if(F.kind || F.sel.length) F.expanded = true;
     $("fBody").hidden = $("fGo").hidden = !F.expanded;
     $("fQuick").hidden = F.expanded || !!$("fSearch").value.trim(); $("fOpen").setAttribute("aria-expanded", String(F.expanded));
     $("fKind").innerHTML = KINDS.map(function(x){ return '<button type="button" data-kind="' + x.k + '" aria-pressed="' + (F.kind === x.k) + '"><b>' + esc(x.n) + "</b><span>" + esc(x.ex) + "</span></button>"; }).join("");
-    $("fStep2").hidden = !kd;
+    var dir = F.direct && !!kd;
+    $("fKindWrap").hidden = dir; $("fStep2").hidden = !kd || dir;
+    $("fSearch").placeholder = (F.sel.length || $("fName").value.trim()) ? "Add another? Type it here" : "Type it – e.g. quit vaping";
     if(kd){ $("fQ").textContent = kd.q; $("fName").placeholder = "In your words, " + kd.eg; $("fPick").innerHTML = picker(selKeys(), F.open, kd.g); }
-    $("fPicked").innerHTML = F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "";
+    var own = dir && $("fName").value.trim() ? "<span>" + esc($("fName").value.trim()) + " <small>(" + KWORD[F.kind] + ')</small><button type="button" class="x" data-unown="1" aria-label="Remove">×</button></span>' : "";
+    $("fPicked").innerHTML = (F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "") + own;
     drawBottom(); }
-  function resetForm(){ F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
+  function resetForm(){ F.direct = false; F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
   $("fWhen").addEventListener("click", function(e){ var b = e.target.closest("[data-when]"); if(b) $("fStart").value = toInput(b.dataset.when === "yday" ? Date.now() - DAY : Date.now()); });
   $("fTogether").addEventListener("click", function(e){ var b = e.target.closest("[data-tog]"); if(!b) return; F.together = b.dataset.tog === "1"; drawBottom(); });
-  function pickKind(k){ F.kind = k; F.open = false; drawForm(); }
+  function pickKind(k){ F.kind = k; F.open = false; F.direct = false; drawForm(); }
   // The question rotates through the kinds of reset until you open it
   var rotI = 0;
   setInterval(function(){ if(F.expanded || document.hidden || $("front").hidden) return; var el = $("fRot"); el.classList.add("fade");
     setTimeout(function(){ rotI = (rotI + 1) % KINDS.length; el.textContent = KINDS[rotI].n; el.classList.remove("fade"); }, 350); }, 2800);
   $("whyOpen").addEventListener("click", function(){ var o = $("whyBody").hidden; $("whyBody").hidden = !o; this.setAttribute("aria-expanded", String(o)); });
   $("whyGo").addEventListener("click", function(){ pickKind("adventure"); $("formSlot").scrollIntoView({behavior:"smooth", block:"start"}); });
-  $("fOpen").addEventListener("click", function(){ F.expanded = !F.expanded; if(!F.expanded){ F.kind = ""; F.sel = []; $("fName").value = ""; } drawForm(); });
+  $("fOpen").addEventListener("click", function(){ F.expanded = !F.expanded; F.direct = false; if(!F.expanded){ F.kind = ""; F.sel = []; $("fName").value = ""; } drawForm(); });
   // Type to find it fast: everyday words map to the kind of reset and to the list of common resets
   var SYN = [[/vap/,"vaping"],[/smok|cig|tobacco|nicotin|fag/,"smoking"],[/drink|alcohol|booze|wine|beer|lager|pint|spirits/,"drinking"],[/sugar|sweet|chocolate|cake|biscuit|fizzy/,"sugar"],[/snack/,"snacking"],[/\beat|food|portion/,"eating"],[/junk|crisps|fast food|mcdonald/,"junk"],[/takeaway|deliveroo|uber eats|just eat/,"takeaways"],[/coffee|caffeine|energy drink/,"caffeine"],[/screen|phone|scroll/,"screen"],[/social|instagram|tiktok|facebook|twitter|youtube/,"social"],[/in bed/,"phonebed"],[/spend|shopping|buying/,"spending"],[/gambl|betting|\bbet/,"gambling"],[/nail/,"nails"],[/walk|steps/,"walking"],[/exercise|gym|\brun|running|workout|sport|move/,"exercise"],[/sleep|bedtime|early night/,"sleep"],[/healthy|veg|diet|eat better/,"eatwell"],[/water|hydrat/,"water"],[/read|book/,"reading"],[/meditat|mindful|breath/,"meditation"],[/morning|wake up|early/,"mornings"],[/cook/,"cooking"],[/outside|outdoors|nature/,"outside"],[/\bfast/,"fast"],[/dry|sober/,"dry"],[/detox|offline|unplug/,"detox"],[/no.?spend/,"nospend"],[/misogi|challenge/,"challenge"],[/trek|hike|long walk|climb/,"trek"],[/trip|travel/,"trip"],[/solo|on my own/,"solo"],[/learn|course|skill|class|lesson/,"learn"],[/camp/,"camping"],[/sabbatical|time off|time out|career break/,"timeout"]];
   var KG = {giveup:"stop", cutdown:"stop", more:"start", without:"without", adventure:"adventure"};
@@ -774,12 +777,12 @@ footer p{margin:6px 0}
       + '<button type="button" role="option" data-sown="1" data-skind="' + r.det + '">Start “' + esc(raw.charAt(0).toUpperCase() + raw.slice(1)) + "” in your own words" + (r.det ? "<small>" + KWORD[r.det] + "</small>" : "") + "</button>"; }
   $("fSearch").addEventListener("input", function(){ drawSug(); $("fQuick").hidden = F.expanded || !!this.value.trim(); });
   $("fQuick").addEventListener("click", function(e){ var b = e.target.closest("[data-qkind]"); if(!b) return; var kd = b.dataset.qkind;
-    if(b.dataset.qk){ if(!F.sel.some(function(x){ return x.k === b.dataset.qk; })) F.sel.push({k:b.dataset.qk, kind:kd}); }
+    if(b.dataset.qk){ if(!F.sel.some(function(x){ return x.k === b.dataset.qk; })) F.sel.push({k:b.dataset.qk, kind:kd}); F.direct = true; } else F.direct = false;
     F.kind = kd; F.expanded = true; drawForm(); });
   $("fSearch").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); var b = $("fSug").querySelector("button"); if(b) b.click(); } });
   $("fSug").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; var kd = b.dataset.skind;
-    if(b.dataset.sk){ var i = F.sel.findIndex(function(x){ return x.k === b.dataset.sk; }); if(i > -1) F.sel[i].kind = kd; else F.sel.push({k:b.dataset.sk, kind:kd}); F.kind = kd; }
-    else { var raw = $("fSearch").value.trim(); if(kd) F.kind = kd; $("fName").value = raw.charAt(0).toUpperCase() + raw.slice(1); if(!kd) toast("Now pick what kind of reset it is"); }
+    if(b.dataset.sk){ var i = F.sel.findIndex(function(x){ return x.k === b.dataset.sk; }); if(i > -1) F.sel[i].kind = kd; else F.sel.push({k:b.dataset.sk, kind:kd}); F.kind = kd; if(!F.expanded || F.direct) F.direct = true; }
+    else { var raw = $("fSearch").value.trim(); $("fName").value = raw.charAt(0).toUpperCase() + raw.slice(1); if(kd){ F.kind = kd; if(!F.expanded || F.direct) F.direct = true; } else { F.direct = false; toast("Now pick what kind of reset it is"); } }
     $("fSearch").value = ""; $("fSug").innerHTML = ""; F.expanded = true; drawForm();
     if(!kd) $("fKind").scrollIntoView({behavior:"smooth", block:"center"}); });
   $("fKind").addEventListener("click", function(e){ var b = e.target.closest("[data-kind]"); if(b) pickKind(b.dataset.kind); });
@@ -788,7 +791,8 @@ footer p{margin:6px 0}
     if(b.dataset.more){ F.open = !F.open; drawForm(); return; }
     var k = b.dataset.k, i = F.sel.findIndex(function(x){ return x.k === k; });
     if(i > -1 && F.sel[i].kind === F.kind) F.sel.splice(i, 1); else if(i > -1) F.sel[i].kind = F.kind; else F.sel.push({k:k, kind:F.kind}); drawForm(); });
-  $("fPicked").addEventListener("click", function(e){ var b = e.target.closest("[data-unpick]"); if(b){ F.sel.splice(+b.dataset.unpick, 1); drawForm(); } });
+  $("fPicked").addEventListener("click", function(e){ var b = e.target.closest("[data-unpick]"); if(b){ F.sel.splice(+b.dataset.unpick, 1); drawForm(); }
+    if(e.target.closest("[data-unown]")){ $("fName").value = ""; drawForm(); } });
   // Tapping a kind in the intro jumps to the form with it picked
   function makeThing(key, name, kind){ var t = T(key), kd = K(kind) || {}; return {id:uid(), key:key, g:kd.g || t.g || "stop", mode:kd.mode || (t.less ? "less" : "stop"), name:name || t.n, start:Date.now(), end:null, best:0}; }
   function makePage(ths){ return {id:uid(), things:ths, title:"", why:"", how:"", ways:[], secs:SEC_DEFAULT.slice(), notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", done:null, made:Date.now()}; }
