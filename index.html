@@ -1,4 +1,4 @@
-<!-- DueAReset v30 -->
+<!-- DueAReset v31 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -327,7 +327,7 @@ footer p{margin:6px 0}
   <main id="front">
    <div class="colL">
     <section class="hero">
-      <h1 class="vh">Due a reset? Quit, cut down, do more or go on an adventure</h1>
+      <h1 class="vh">Due a reset? Quit, cut down, do more or take on a challenge</h1>
       <button type="button" class="heroline" id="heroOpen" aria-expanded="false" aria-controls="heroBody"><span id="heroRot"><span class="hbig">Most of us run on habits we never chose. A reset is changing one, on purpose.</span><span class="hsub">It doesn’t have to be forever – just long enough to find out what you’re capable of.</span></span><span class="heroless">Show less</span><span class="chev" aria-hidden="true">›</span></button>
       <div id="heroBody" hidden>
       <p class="lead">Most of us run on habits we never chose. We all want to get a little better, and we go about it in different ways. Some people take a habit on head-on. Others come at it sideways – a challenge, a change of scene, or a new routine that crowds the old one out.</p>
@@ -343,7 +343,7 @@ footer p{margin:6px 0}
       <button type="button" class="qrot" id="fOpen" aria-expanded="false" aria-controls="fBody"><span class="qq" id="start">What are you resetting?</span><span class="qa"><span id="fRot">Giving something up</span> <span class="qchev" aria-hidden="true">›</span></span></button>
       <form id="rf" novalidate autocomplete="off">
         <div class="fsearch"><input class="field" id="fSearch" maxlength="60" autocomplete="off" placeholder="Type it – e.g. quit vaping" aria-label="Type what you're resetting"><div id="fSug" role="listbox" aria-label="Suggestions"></div>
-          <div class="qchips" id="fQuick" aria-label="Popular resets"><button type="button" class="chip" data-qk="smoking" data-qkind="giveup">Quit smoking</button><button type="button" class="chip" data-qk="drinking" data-qkind="cutdown">Cut down on drinking</button><button type="button" class="chip" data-qk="exercise" data-qkind="more">Exercise more</button><button type="button" class="chip" data-qkind="adventure">Go on an adventure</button></div></div>
+          <div class="qchips" id="fQuick" aria-label="Popular resets"><button type="button" class="chip" data-qk="smoking" data-qkind="giveup">Quit smoking</button><button type="button" class="chip" data-qk="drinking" data-qkind="cutdown">Cut down on drinking</button><button type="button" class="chip" data-qk="exercise" data-qkind="more">Exercise more</button><button type="button" class="chip" data-qkind="adventure">Take on a challenge</button></div></div>
         <div id="fBody">
         <div class="lbl">Are you…</div>
         <div class="kpick" id="fKind" role="group" aria-label="Kind of reset"></div>
@@ -369,7 +369,7 @@ footer p{margin:6px 0}
         <p>One idea is the <b>misogi challenge</b>: one big challenge, taken on on purpose, hard enough that you might not manage it – a long walk, a cold swim, a climb, a trip on your own. It has just two rules: <b>make it really hard, and don't die.</b></p>
         <p>The point isn't the challenge itself. It's finding out you can do more than you thought, and bringing that back into the rest of your life. One a year is plenty – even one every few years can reset how you see yourself.</p>
         <p class="small">The idea comes from Michael Easter's book <i>The Comfort Crisis</i> (2021).</p>
-        <button type="button" class="btn" id="whyGo" style="padding:10px 18px;font-size:.98rem">Start an adventure</button>
+        <button type="button" class="btn" id="whyGo" style="padding:10px 18px;font-size:.98rem">Start a challenge</button>
       </div>
     </section>
 
@@ -406,7 +406,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v30</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v31</span></p>
   </footer>
 </div>
 
@@ -434,7 +434,7 @@ footer p{margin:6px 0}
     stop: {n:"Stop or cut down", kind:"Giving up", c:"#b4532f", tips:["Know your triggers – the times, places and people","Plan what you'll do instead when the urge comes","Make it harder to get to","Pick a date and stop, or cut down in steps","Tell one person"]},
     start: {n:"Start something", kind:"Doing more", c:"#2f6b45", tips:["Start smaller than feels worthwhile","Same time every day","Tie it to something you already do","Get things ready the night before","Missing one day is fine – try not to miss two"]},
     without: {n:"Go without for a while", kind:"Going without", c:"#9a6f1e", tips:["Pick the end date before you start","Plan for the hard moments","Tell the people you live with","Have something to replace it with","Plan how you'll finish"]},
-    adventure: {n:"An adventure", kind:"Adventure", c:"#5b4a8e", tips:["Pick something with a real chance you won't manage it","Put a date on it and tell someone","Prepare properly – kit, route, weather","Make sure someone knows where you are and when you'll be back","Write it down while it's fresh"],
+    adventure: {n:"A challenge", kind:"Challenge", c:"#5b4a8e", tips:["Pick something with a real chance you won't manage it","Put a date on it and tell someone","Prepare properly – kit, route, weather","Make sure someone knows where you are and when you'll be back","Write it down while it's fresh"],
       book:"In The Comfort Crisis, Michael Easter calls this a misogi: one big, hard challenge a year, taken on on purpose. It has two rules – make it really hard, and don't die."}
   };
   var TYPES = [
@@ -715,9 +715,9 @@ footer p{margin:6px 0}
     {k:"cutdown", n:"Cutting down on something", q:"What are you cutting down on?", g:"stop", mode:"less", eg:"e.g. Sugar", ex:"cut down on drinking, less sugar, less screen time"},
     {k:"more", n:"Doing more of something", q:"What are you doing more of?", g:"start", eg:"e.g. Walking", ex:"walk every day, sleep earlier, eat better, read"},
     {k:"without", n:"Going without for a while", q:"What are you going without?", g:"without", eg:"e.g. A fast", ex:"Dry January or a dry month, a digital detox, a no-spend month, a fast"},
-    {k:"adventure", n:"Going on an adventure", q:"What's the adventure?", g:"adventure", eg:"e.g. Climbing Ben Nevis", ex:"a misogi challenge – something hard and a bit scary that shakes you out of the everyday"}
+    {k:"adventure", n:"Taking on a challenge", q:"What's the challenge?", g:"adventure", eg:"e.g. Climbing Ben Nevis", ex:"a misogi challenge – something hard and a bit scary that shakes you out of the everyday"}
   ];
-  var KWORD = {giveup:"giving up", cutdown:"cutting down", more:"doing more", without:"going without", adventure:"adventure"};
+  var KWORD = {giveup:"giving up", cutdown:"cutting down", more:"doing more", without:"going without", adventure:"challenge"};
   function K(k){ return KINDS.filter(function(x){ return x.k === k; })[0]; }
   var F = {kind:"", sel:[], open:false, together:null, target:"", expanded:false};   // sel: [{k, kind}]; target: add to this page
   function pickCount(){ return F.sel.length + ($("fName").value.trim() ? 1 : 0); }
