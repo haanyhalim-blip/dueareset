@@ -92,6 +92,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .whynote .wk{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--brand))}
 .whynote p{margin:4px 0 0;font-family:Fraunces,Georgia,serif;font-size:1.25rem;line-height:1.35;color:var(--brand-deep);white-space:pre-line}
 .whynote .link{position:absolute;right:12px;top:10px;font-size:.8rem}
+.whynote .whyl{margin:8px 0 0;padding:0 0 0 1.2em;font-family:Fraunces,Georgia,serif;font-size:1.15rem;line-height:1.35;color:var(--brand-deep)}
+.whynote .whyl li{margin:0 0 6px;padding-left:2px}
+.whynote .whyl li::marker{color:var(--c,var(--brand))}
 .whyadd{display:block;width:100%;margin:14px 0 4px;padding:12px 14px;border-radius:12px;border:1.5px dashed var(--line,#ccc);background:transparent;color:var(--brand-deep);font:inherit;font-size:.92rem;text-align:left;cursor:pointer}
 .fjumps{margin:10px 0 0;font-size:.85rem;color:var(--muted)}
 .fjumps a{color:var(--brand-deep);text-underline-offset:3px}
@@ -1104,6 +1107,10 @@ $("helpRot").textContent = GENERAL[0];
     learn: function(r){ return r.learn.length ? r.learn.length + (r.learn.length === 1 ? " thing" : " things") + " – latest: " + esc(clip(r.learn[0].t, 50)) : "Nothing yet"; }
   };
   var EDIT = false, OPEN = {};
+  // Your reasons as bullet points: one per line, or one per sentence if it's all one paragraph
+  function whyList(t){ var parts = String(t).split(/\n+/).map(function(x){ return x.trim(); }).filter(Boolean);
+    if(parts.length < 2) parts = String(t).split(/(?<=[.!?])\s+(?=\S)/).map(function(x){ return x.trim(); }).filter(Boolean);
+    return parts.length < 2 ? '<p>' + esc(t) + '</p>' : '<ul class="whyl">' + parts.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join("") + '</ul>'; }
   function renderDetail(r){
     if($("detail").dataset.id !== r.id) EDIT = false;
     var g = pG(r), secs = r.secs.filter(function(s){ return SECTION[s]; }), hidden = SEC_ORDER.filter(function(s){ return secs.indexOf(s) < 0; });
@@ -1119,7 +1126,7 @@ $("helpRot").textContent = GENERAL[0];
     } else {
       var op = OPEN[r.id] || (OPEN[r.id] = {}), anyOpen = secs.some(function(s){ return op[s]; });
       // Your reasons, first thing on the page – for the moments you forget why you started
-      h += r.why ? '<div class="whynote" style="--c:' + g.c + '"><span class="wk">Remember why</span><p>' + esc(r.why) + '</p><button type="button" class="link" data-a="editwhy">Change</button></div>'
+      h += r.why ? '<div class="whynote" style="--c:' + g.c + '"><span class="wk">Remember why</span>' + whyList(r.why) + '<button type="button" class="link" data-a="editwhy">Change</button></div>'
         : '<button type="button" class="whyadd" data-a="editwhy">+ Write down why you’re doing this – it’ll be here for the hard moments</button>';
       h += '<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="link" data-a="' + (anyOpen ? "closeall" : "openall") + '">' + (anyOpen ? "Close all" : "Open all") + "</button></div>";
       h += '<div class="secs">' + secs.map(function(s){ var o = !!op[s];
