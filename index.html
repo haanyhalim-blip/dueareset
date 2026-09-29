@@ -1,4 +1,4 @@
-<!-- DueAReset v35 -->
+<!-- DueAReset v36 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -359,13 +359,13 @@ footer p{margin:6px 0}
       <button type="button" class="qrot" id="fOpen" aria-expanded="false" aria-controls="fBody"><span class="qq" id="start">What are you resetting?</span><span class="qa"><span class="qchev" aria-hidden="true">›</span></span></button>
       <form id="rf" novalidate autocomplete="off">
         <div class="fsearch"><input class="field" id="fSearch" maxlength="60" autocomplete="off" placeholder="Type it – e.g. quit vaping" aria-label="Type what you're resetting"><div id="fSug" role="listbox" aria-label="Suggestions"></div>
-          <div class="qchips" id="fQuick" aria-label="Popular resets"><button type="button" class="chip" data-qk="smoking" data-qkind="giveup">Quit smoking</button><button type="button" class="chip" data-qk="drinking" data-qkind="cutdown">Cut down on drinking</button><button type="button" class="chip" data-qk="exercise" data-qkind="more">Exercise more</button><button type="button" class="chip" data-qkind="adventure">Take on a challenge</button></div>
+          <div class="qchips" id="fQuick" aria-label="Or choose what kind of reset"><button type="button" class="chip" data-qkind="giveup">Stopping</button><button type="button" class="chip" data-qkind="cutdown">Reducing</button><button type="button" class="chip" data-qkind="more">Increasing</button><button type="button" class="chip" data-qkind="begin">Starting</button><button type="button" class="chip" data-qkind="adventure">A challenge</button><button type="button" class="chip" data-qkind="other">Something else</button></div>
           <p class="fjumps"><a href="#list" data-jump="waysCard">Common resets</a> · <a href="#" data-jump="helpCard">What’s worked for others</a></p></div>
         <div id="fBody">
         <div id="fKindWrap"><div class="lbl">Are you…</div>
         <div class="kpick" id="fKind" role="group" aria-label="Kind of reset"></div></div>
         <div id="fStep2" hidden>
-          <label class="lbl" for="fName" id="fQ">What is it?</label>
+          <label class="lbl" for="fName"><span id="fQ">What is it?</span> <button type="button" class="link small" id="fChange" hidden>change</button></label>
           <input class="field" id="fName" maxlength="40" placeholder="In your words">
           <p class="hint" id="fHint">Tap as many as you like, or type your own above.</p>
           <div id="fPick"></div>
@@ -425,7 +425,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v35</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v36</span></p>
   </footer>
 </div>
 
@@ -527,7 +527,7 @@ footer p{margin:6px 0}
   function waysOf(t){ return t.ways || GROUPS[t.g].tips; }
   function isSmoke(r){ return ["smoking","vaping"].indexOf(r.key) > -1 || /smok|cig|vap|nicotin|tobacco|roll.?up/i.test(r.name || ""); }
   function isDrink(r){ return ["drinking","dry"].indexOf(r.key) > -1 || /drink|alcohol|booze|wine|beer|lager|spirits|sober/i.test(r.name || ""); }
-  function kindOf(r){ return r.g === "stop" ? (r.mode === "less" ? "Cutting down" : "Giving up") : gOf(r).kind; }
+  function kindOf(r){ if(r.kind === "begin") return "Starting"; if(r.kind === "other") return "My reset"; return r.g === "stop" ? (r.mode === "less" ? "Reducing" : "Stopping") : r.g === "start" ? "Increasing" : gOf(r).kind; }
   var MIXED = {c:"#2c4a6e", kind:"Mixed"};
   function things(r){ return r.things || []; }
   function thingById(r, id){ return things(r).filter(function(t){ return t.id === id; })[0]; }
@@ -780,17 +780,18 @@ footer p{margin:6px 0}
     $("fQuick").hidden = F.expanded || !!$("fSearch").value.trim(); $("fOpen").setAttribute("aria-expanded", String(F.expanded));
     $("fKind").innerHTML = KINDS.filter(function(x){ return !x.hide; }).map(function(x){ return '<button type="button" data-kind="' + x.k + '" aria-pressed="' + (F.kind === x.k) + '"><b>' + esc(x.n) + "</b><span>" + esc(x.ex) + "</span></button>"; }).join("");
     var dir = F.direct && !!kd;
-    $("fKindWrap").hidden = dir; $("fStep2").hidden = !kd || dir;
+    $("fKindWrap").hidden = dir || (F.chip && !!kd); $("fStep2").hidden = !kd || dir; $("fChange").hidden = !(F.chip && kd);
     $("fSearch").placeholder = (F.sel.length || $("fName").value.trim()) ? "Add another? Type it here" : "Type it – e.g. quit vaping";
     if(kd){ $("fQ").textContent = kd.q; $("fName").placeholder = F.kind === "other" ? "Type it in your own words" : "Or type your own, " + kd.eg; $("fPick").innerHTML = F.kind === "other" ? "" : topPicker(F.kind, F.open); $("fHint").hidden = F.kind === "other"; }
     var own = dir && $("fName").value.trim() ? "<span>" + esc($("fName").value.trim()) + " <small>(" + KWORD[F.kind] + ')</small><button type="button" class="x" data-unown="1" aria-label="Remove">×</button></span>' : "";
     $("fPicked").innerHTML = (F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "") + own;
     drawBottom(); }
-  function resetForm(){ F.direct = false; F.secs = null; $("fWhyIn").value = ""; F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
+  function resetForm(){ F.direct = false; F.chip = false; F.secs = null; $("fWhyIn").value = ""; F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
   $("fWhen").addEventListener("click", function(e){ var b = e.target.closest("[data-when]"); if(b) $("fStart").value = toInput(b.dataset.when === "yday" ? Date.now() - DAY : Date.now()); });
   $("fSecs").addEventListener("click", function(e){ var b = e.target.closest("[data-sec]"); if(!b) return; var ss = pageSecs().slice(), k = b.dataset.sec, i = ss.indexOf(k); if(i > -1) ss.splice(i, 1); else ss.push(k); F.secs = SEC_ORDER.filter(function(x){ return ss.indexOf(x) > -1; }); drawBottom(); });
   $("fTogether").addEventListener("click", function(e){ var b = e.target.closest("[data-tog]"); if(!b) return; F.together = b.dataset.tog === "1"; drawBottom(); });
-  function pickKind(k){ F.kind = k; F.open = false; F.direct = false; drawForm(); }
+  function pickKind(k){ F.kind = k; F.open = false; F.direct = false; F.chip = false; drawForm(); }
+  $("fChange").addEventListener("click", function(e){ e.preventDefault(); F.chip = false; drawForm(); $("fKind").scrollIntoView({behavior:"smooth", block:"center"}); });
   $("whyOpen").addEventListener("click", function(){ var o = $("whyBody").hidden; $("whyBody").hidden = !o; this.setAttribute("aria-expanded", String(o)); });
   $("whyGo").addEventListener("click", function(){ pickKind("adventure"); $("formSlot").scrollIntoView({behavior:"smooth", block:"start"}); });
 
@@ -815,9 +816,9 @@ footer p{margin:6px 0}
     var micScan = function(){ document.querySelectorAll(MICSEL).forEach(micWrap); };
     micScan(); new MutationObserver(micScan).observe(document.body, {childList:true, subtree:true}); }
   document.querySelector(".fjumps").addEventListener("click", function(e){ var a = e.target.closest("[data-jump]"); if(!a) return; e.preventDefault(); var c = $(a.dataset.jump); openCard(c, true); setTimeout(function(){ c.scrollIntoView({behavior:"smooth", block:"start"}); }, 50); });
-  $("fOpen").addEventListener("click", function(){ F.expanded = !F.expanded; F.direct = false; if(!F.expanded){ F.kind = ""; F.sel = []; $("fName").value = ""; } drawForm(); });
+  $("fOpen").addEventListener("click", function(){ F.expanded = !F.expanded; F.direct = false; F.chip = false; if(!F.expanded){ F.kind = ""; F.sel = []; $("fName").value = ""; } drawForm(); });
   // Type to find it fast: everyday words map to the kind of reset and to the list of common resets
-  var SYN = [[/vap/,"vaping"],[/smok|cig|tobacco|nicotin|fag/,"smoking"],[/drink|alcohol|booze|wine|beer|lager|pint|spirits/,"drinking"],[/sugar|sweet|chocolate|cake|biscuit|fizzy/,"sugar"],[/snack/,"snacking"],[/\beat|food|portion/,"eating"],[/junk|crisps|fast food|mcdonald/,"junk"],[/takeaway|deliveroo|uber eats|just eat/,"takeaways"],[/coffee|caffeine|energy drink/,"caffeine"],[/screen|phone|scroll/,"screen"],[/social|instagram|tiktok|facebook|twitter|youtube/,"social"],[/in bed/,"phonebed"],[/spend|shopping|buying/,"spending"],[/gambl|betting|\bbet/,"gambling"],[/nail/,"nails"],[/walk|steps/,"walking"],[/exercise|gym|\brun|running|workout|sport|move/,"exercise"],[/sleep|bedtime|early night/,"sleep"],[/healthy|veg|diet|eat better/,"eatwell"],[/water|hydrat/,"water"],[/read|book/,"reading"],[/meditat|mindful|breath/,"meditation"],[/morning|wake up|early/,"mornings"],[/cook/,"cooking"],[/outside|outdoors|nature/,"outside"],[/\bfast/,"fast"],[/dry|sober/,"dry"],[/detox|offline|unplug/,"detox"],[/no.?spend/,"nospend"],[/misogi|challenge/,"challenge"],[/trek|hike|long walk|climb/,"trek"],[/trip|travel/,"trip"],[/solo|on my own/,"solo"],[/learn|course|skill|class|lesson/,"learn"],[/camp/,"camping"],[/sabbatical|time off|time out|career break/,"timeout"]];
+  var SYN = [[/vap/,"vaping"],[/smok|cig|tobacco|nicotin|fag/,"smoking"],[/drink|alcohol|booze|wine|beer|lager|pint|spirits/,"drinking"],[/sugar|sweet|chocolate|cake|biscuit|fizzy/,"sugar"],[/snack/,"snacking"],[/\beat|food|portion/,"eating"],[/junk|crisps|fast food|mcdonald/,"junk"],[/takeaway|deliveroo|uber eats|just eat/,"takeaways"],[/coffee|caffeine|energy drink/,"caffeine"],[/screen|phone|scroll/,"screen"],[/social|instagram|tiktok|facebook|twitter|youtube/,"social"],[/in bed/,"phonebed"],[/spend|shopping|buying/,"spending"],[/gambl|betting|\bbet/,"gambling"],[/nail/,"nails"],[/walk|steps/,"walking"],[/\brun\b|running|jog/,"running"],[/yoga|pilates/,"yoga"],[/journal/,"journaling"],[/couch to|c25k|\b5k/,"c25k"],[/marathon/,"marathon"],[/three peaks|3 peaks/,"threepeaks"],[/75 hard/,"hard75"],[/language|instrument|guitar|piano|spanish|french/,"learnnew"],[/exercise|gym|workout|sport|move|fitness|fit\b/,"exercise"],[/sleep|bedtime|early night/,"sleep"],[/healthy|veg|diet|eat better/,"eatwell"],[/water|hydrat/,"water"],[/read|book/,"reading"],[/meditat|mindful|breath/,"meditation"],[/morning|wake up|early/,"mornings"],[/cook/,"cooking"],[/outside|outdoors|nature/,"outside"],[/\bfast/,"fast"],[/dry|sober/,"dry"],[/detox|offline|unplug/,"detox"],[/no.?spend/,"nospend"],[/misogi|challenge/,"challenge"],[/trek|hike|long walk|climb/,"trek"],[/trip|travel/,"trip"],[/solo|on my own/,"solo"],[/learn|course|skill|class|lesson/,"learn"],[/camp/,"camping"],[/sabbatical|time off|time out|career break/,"timeout"]];
   var KG = {giveup:"stop", cutdown:"stop", more:"start", begin:"start", other:"start", without:"without", adventure:"adventure"};
   function kindFromText(q){
     if(/\b(quit|stop|give up|giving up|no more|kick|ditch|never)\b/.test(q)) return "giveup";
@@ -827,26 +828,40 @@ footer p{margin:6px 0}
     if(/\b(start|begin|take up|taking up|learn|new)\b/.test(q)) return "begin";
     if(/\b(more|increase|daily|every day|build|each day)\b/.test(q)) return "more";
     return ""; }
+  // Typos: each word is compared with the words people usually use (one letter off for short words, two for long ones)
+  var FUZZ = {exercise:"exercise",exercising:"exercise",workout:"exercise",fitness:"exercise",smoking:"smoking",cigarettes:"smoking",vaping:"vaping",alcohol:"drinking",drinking:"drinking",sugar:"sugar",chocolate:"sugar",sweets:"sugar",snacking:"snacking",snacks:"snacking",takeaways:"takeaways",caffeine:"caffeine",coffee:"caffeine",screen:"screen",social:"social",instagram:"social",tiktok:"social",facebook:"social",spending:"spending",shopping:"spending",gambling:"gambling",betting:"gambling",nails:"nails",walking:"walking",sleep:"sleep",sleeping:"sleep",healthy:"eatwell",vegetables:"eatwell",water:"water",reading:"reading",meditation:"meditation",meditate:"meditation",mindfulness:"meditation",running:"running",jogging:"running",yoga:"yoga",pilates:"yoga",journaling:"journaling",journalling:"journaling",journal:"journaling",language:"learnnew",marathon:"marathon",couch:"c25k",peaks:"threepeaks",misogi:"challenge",challenge:"challenge",detox:"detox",sober:"dry",january:"dry",fasting:"fast",cooking:"cooking",mornings:"mornings",outdoors:"outside",outside:"outside",camping:"camping",hiking:"trek",travel:"trip",junk:"junk",eating:"eating"};
+  function dist(a, b){ var d = [], i, j; for(i = 0; i <= a.length; i++){ d[i] = [i]; } for(j = 0; j <= b.length; j++) d[0][j] = j;
+    for(i = 1; i <= a.length; i++) for(j = 1; j <= b.length; j++){ var c = a[i - 1] === b[j - 1] ? 0 : 1; d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + c);
+      if(i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1); }
+    return d[a.length][b.length]; }
+  function fuzzy(q){ var keys = [], fixed = q;
+    q.split(/[^a-z]+/).forEach(function(w){ if(w.length < 4 || FUZZ[w]) return; var best = null, bd = 9, lim = w.length >= 8 ? 2 : 1;
+      Object.keys(FUZZ).forEach(function(x){ if(Math.abs(x.length - w.length) > lim) return; var dd = dist(w, x); if(dd <= lim && dd < bd){ bd = dd; best = x; } });
+      if(best){ if(keys.indexOf(FUZZ[best]) < 0) keys.push(FUZZ[best]); fixed = fixed.replace(new RegExp("\\b" + w + "\\b"), best); } });
+    return {keys:keys, fixed:fixed}; }
   function suggest(q){ var out = [], det = kindFromText(q), keys = [];
     SYN.forEach(function(x){ if(x[0].test(q) && keys.indexOf(x[1]) < 0) keys.push(x[1]); });
     TYPES.forEach(function(t){ if(q.length > 2 && t.n.toLowerCase().indexOf(q) > -1 && keys.indexOf(t.k) < 0) keys.push(t.k); });
+    var fz0 = fuzzy(q); if(det) keys.sort(function(a, b){ return (T(b).g === KG[det]) - (T(a).g === KG[det]); });
+    var fz = fz0; fz.keys.forEach(function(k){ if(keys.indexOf(k) < 0) keys.push(k); }); if(!det && fz.fixed !== q) det = kindFromText(fz.fixed); if(det) keys.sort(function(a, b){ return (T(b).g === KG[det]) - (T(a).g === KG[det]); });
     keys.slice(0, 4).forEach(function(k){ var t = T(k), kinds;
       if(det && KG[det] === t.g) kinds = [det];
-      else kinds = t.g === "stop" ? (t.less ? ["cutdown", "giveup"] : ["giveup", "cutdown"]) : t.g === "start" ? ["more"] : [t.g];
+      else kinds = t.g === "stop" ? (t.less ? ["cutdown", "giveup"] : ["giveup", "cutdown"]) : t.g === "start" ? [TOP.begin.indexOf(k) > -1 ? "begin" : "more"] : [t.g];
       kinds.forEach(function(kd){ if(out.length < 6) out.push({k:k, kind:kd}); }); });
-    return {list:out, det:det}; }
+    return {list:out, det:det, fixed:fz.fixed}; }
   function drawSug(){ var raw = $("fSearch").value.trim(), q = raw.toLowerCase(); if(q.length < 2){ $("fSug").innerHTML = ""; return; }
     var r = suggest(q);
     $("fSug").innerHTML = r.list.map(function(x){ return '<button type="button" role="option" data-sk="' + x.k + '" data-skind="' + x.kind + '"><b>' + esc(T(x.k).n) + "</b><small>" + KWORD[x.kind] + "</small></button>"; }).join("")
+      + (r.fixed !== q ? '<button type="button" role="option" data-sown="1" data-sfix="' + esc(r.fixed) + '" data-skind="' + r.det + '">Did you mean “' + esc(r.fixed.charAt(0).toUpperCase() + r.fixed.slice(1)) + '”? Start it in your own words' + (r.det ? "<small>" + KWORD[r.det] + "</small>" : "") + "</button>" : "")
       + '<button type="button" role="option" data-sown="1" data-skind="' + r.det + '">Start “' + esc(raw.charAt(0).toUpperCase() + raw.slice(1)) + "” in your own words" + (r.det ? "<small>" + KWORD[r.det] + "</small>" : "") + "</button>"; }
   $("fSearch").addEventListener("input", function(){ drawSug(); $("fQuick").hidden = F.expanded || !!this.value.trim(); });
   $("fQuick").addEventListener("click", function(e){ var b = e.target.closest("[data-qkind]"); if(!b) return; var kd = b.dataset.qkind;
-    if(b.dataset.qk){ if(!F.sel.some(function(x){ return x.k === b.dataset.qk; })) F.sel.push({k:b.dataset.qk, kind:kd}); F.direct = true; } else F.direct = false;
+    if(b.dataset.qk){ if(!F.sel.some(function(x){ return x.k === b.dataset.qk; })) F.sel.push({k:b.dataset.qk, kind:kd}); F.direct = true; } else { F.direct = false; F.chip = true; }
     F.kind = kd; F.expanded = true; drawForm(); });
   $("fSearch").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); var b = $("fSug").querySelector("button"); if(b) b.click(); } });
   $("fSug").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; var kd = b.dataset.skind;
     if(b.dataset.sk){ var i = F.sel.findIndex(function(x){ return x.k === b.dataset.sk; }); if(i > -1) F.sel[i].kind = kd; else F.sel.push({k:b.dataset.sk, kind:kd}); F.kind = kd; if(!F.expanded || F.direct) F.direct = true; }
-    else { var raw = $("fSearch").value.trim(); $("fName").value = raw.charAt(0).toUpperCase() + raw.slice(1); if(kd){ F.kind = kd; if(!F.expanded || F.direct) F.direct = true; } else { F.direct = false; toast("Now pick what kind of reset it is"); } }
+    else { var raw = b.dataset.sfix || $("fSearch").value.trim(); $("fName").value = raw.charAt(0).toUpperCase() + raw.slice(1); if(kd){ F.kind = kd; if(!F.expanded || F.direct) F.direct = true; } else { F.direct = false; toast("Now pick what kind of reset it is"); } }
     $("fSearch").value = ""; $("fSug").innerHTML = ""; F.expanded = true; drawForm();
     if(!kd) $("fKind").scrollIntoView({behavior:"smooth", block:"center"}); });
   $("fKind").addEventListener("click", function(e){ var b = e.target.closest("[data-kind]"); if(b) pickKind(b.dataset.kind); });
@@ -858,7 +873,7 @@ footer p{margin:6px 0}
   $("fPicked").addEventListener("click", function(e){ var b = e.target.closest("[data-unpick]"); if(b){ F.sel.splice(+b.dataset.unpick, 1); drawForm(); }
     if(e.target.closest("[data-unown]")){ $("fName").value = ""; drawForm(); } });
   // Tapping a kind in the intro jumps to the form with it picked
-  function makeThing(key, name, kind){ var t = T(key), kd = K(kind) || {}; return {id:uid(), key:key, g:kd.g || t.g || "stop", mode:kd.mode || (t.less ? "less" : "stop"), name:name || t.n, start:Date.now(), end:null, best:0}; }
+  function makeThing(key, name, kind){ var t = T(key), kd = K(kind) || {}; return {id:uid(), kind:kind || "", key:key, g:kd.g || t.g || "stop", mode:kd.mode || (t.less ? "less" : "stop"), name:name || t.n, start:Date.now(), end:null, best:0}; }
   function makePage(ths){ return {id:uid(), things:ths, title:"", why:"", how:"", ways:[], secs:SEC_DEFAULT.slice(), notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", done:null, made:Date.now()}; }
   $("rf").addEventListener("submit", function(e){ e.preventDefault();
     var typed = $("fName").value.trim(), picks = F.sel.slice();
