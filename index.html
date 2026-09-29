@@ -1,4 +1,4 @@
-<!-- DueAReset v34 -->
+<!-- DueAReset v35 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -88,6 +88,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .qchips .chip{font-size:.85rem;padding:5px 11px}
 .qchips[hidden]{display:none}
+.whynote{margin:14px 0 4px;padding:14px 16px;border-radius:14px;background:var(--card,#fff);border:1.5px solid var(--c,var(--brand));border-left-width:6px;position:relative}
+.whynote .wk{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--brand))}
+.whynote p{margin:4px 0 0;font-family:Fraunces,Georgia,serif;font-size:1.25rem;line-height:1.35;color:var(--brand-deep);white-space:pre-line}
+.whynote .link{position:absolute;right:12px;top:10px;font-size:.8rem}
+.whyadd{display:block;width:100%;margin:14px 0 4px;padding:12px 14px;border-radius:12px;border:1.5px dashed var(--line,#ccc);background:transparent;color:var(--brand-deep);font:inherit;font-size:.92rem;text-align:left;cursor:pointer}
 .fjumps{margin:10px 0 0;font-size:.85rem;color:var(--muted)}
 .fjumps a{color:var(--brand-deep);text-underline-offset:3px}
 #fSug:not(:empty){margin-top:8px}
@@ -351,7 +356,7 @@ footer p{margin:6px 0}
 
 
     <section class="card" id="formSlot">
-      <button type="button" class="qrot" id="fOpen" aria-expanded="false" aria-controls="fBody"><span class="qq" id="start">What are you resetting?</span><span class="qa"><span id="fRot">Giving something up</span> <span class="qchev" aria-hidden="true">›</span></span></button>
+      <button type="button" class="qrot" id="fOpen" aria-expanded="false" aria-controls="fBody"><span class="qq" id="start">What are you resetting?</span><span class="qa"><span class="qchev" aria-hidden="true">›</span></span></button>
       <form id="rf" novalidate autocomplete="off">
         <div class="fsearch"><input class="field" id="fSearch" maxlength="60" autocomplete="off" placeholder="Type it – e.g. quit vaping" aria-label="Type what you're resetting"><div id="fSug" role="listbox" aria-label="Suggestions"></div>
           <div class="qchips" id="fQuick" aria-label="Popular resets"><button type="button" class="chip" data-qk="smoking" data-qkind="giveup">Quit smoking</button><button type="button" class="chip" data-qk="drinking" data-qkind="cutdown">Cut down on drinking</button><button type="button" class="chip" data-qk="exercise" data-qkind="more">Exercise more</button><button type="button" class="chip" data-qkind="adventure">Take on a challenge</button></div>
@@ -362,11 +367,13 @@ footer p{margin:6px 0}
         <div id="fStep2" hidden>
           <label class="lbl" for="fName" id="fQ">What is it?</label>
           <input class="field" id="fName" maxlength="40" placeholder="In your words">
-          <p class="hint">Or tap as many as you like.</p>
+          <p class="hint" id="fHint">Tap as many as you like, or type your own above.</p>
           <div id="fPick"></div>
         </div>
         <div class="picked" id="fPicked"></div>
         <div id="fTogether" hidden><div class="lbl">Put them on…</div><div class="chips"><button type="button" class="chip" data-tog="1">One page</button><button type="button" class="chip" data-tog="0">A page each</button></div><p class="small" id="fTogHint" style="margin:6px 0 0"></p></div>
+        <div id="fWhy" hidden><label class="lbl" for="fWhyIn">Why are you doing this? <span class="small">(optional)</span></label><textarea class="field" id="fWhyIn" rows="2" maxlength="4000" placeholder="e.g. I want more energy for my kids"></textarea><p class="small" style="margin:6px 0 0">It goes at the top of your page, so it’s the first thing you see when it gets hard.</p></div>
+        <div id="fSecs" hidden><div class="lbl">What would you like on your page?</div><div class="chips" id="fSecChips"></div><p class="small" style="margin:6px 0 0">You can change these any time with Edit page.</p></div>
         <div id="fWhen" hidden><label class="lbl" for="fStart">When did you start?</label><div class="win"><input class="field" type="datetime-local" id="fStart"><button type="button" class="chip" data-when="now">Just now</button><button type="button" class="chip" data-when="yday">Yesterday</button></div></div>
         </div>
         <button class="btn wide" id="fGo" type="submit">Start one</button>
@@ -418,7 +425,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v34</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v35</span></p>
   </footer>
 </div>
 
@@ -465,21 +472,29 @@ footer p{margin:6px 0}
     {k:"spending", less:1, n:"Spending", g:"stop", ways:["Deleting saved cards","A 24-hour wait before buying","Unsubscribing from shop emails","A weekly amount in cash"]},
     {k:"gambling", n:"Gambling", g:"stop", ways:["Blocking gambling sites and apps","Telling someone I trust","Self-exclusion schemes","Handing over control of money for a while"]},
     {k:"nails", n:"Nail biting", g:"stop"},
-    {k:"walking", n:"Walking daily", g:"start", pop:1, ways:["Same time every day","Starting with ten minutes","A walking buddy","Shoes by the door","Counting days, not distance"]},
-    {k:"exercise", n:"Moving more", g:"start", ways:["Starting small","Kit ready the night before","A class with a friend","Short bursts through the day"]},
-    {k:"sleep", n:"Sleeping earlier", g:"start", pop:1, ways:["Same bedtime every night","Phone out of the bedroom","No caffeine after lunch","A wind-down routine","Daylight first thing"]},
+    {k:"walking", n:"Walking", g:"start", pop:1, ways:["Same time every day","Starting with ten minutes","A walking buddy","Shoes by the door","Counting days, not distance"]},
+    {k:"exercise", n:"Exercise", g:"start", ways:["Starting small","Kit ready the night before","A class with a friend","Short bursts through the day"]},
+    {k:"sleep", n:"Sleep", g:"start", pop:1, ways:["Same bedtime every night","Phone out of the bedroom","No caffeine after lunch","A wind-down routine","Daylight first thing"]},
     {k:"eatwell", n:"Eating better", g:"start", ways:["One more vegetable a day","Planning the week's meals","Cooking more at home","Fruit where I can see it"]},
     {k:"water", n:"Drinking more water", g:"start", ways:["A bottle always with me","A glass with every meal","A glass first thing"]},
     {k:"reading", n:"Reading", g:"start", ways:["Ten pages before bed","A book in my bag","Phone away while I read"]},
     {k:"meditation", n:"Meditation", g:"start", ways:["Five minutes to start","Same time and place","A guided app"]},
+    {k:"running", n:"Running", g:"start", ways:["Couch to 5K – three short runs a week","Slow enough to talk","The same days each week","A running club or parkrun","Proper running shoes"]},
+    {k:"yoga", n:"Yoga or Pilates", g:"start", ways:["A beginners' class","Ten minutes at home with a video","The same time each day","A mat left out where I'll see it"]},
+    {k:"journaling", n:"Journaling", g:"start", ways:["Three lines before bed","A notebook by the bed","A question to start: what went well today?","The same time each day"]},
+    {k:"learnnew", n:"Learning something new", g:"start", ways:["Ten minutes a day","An app for a language","A class, so I have to turn up","Telling someone what I'm learning"]},
     {k:"mornings", n:"Early mornings", g:"start"},
     {k:"cooking", n:"Cooking at home", g:"start"},
     {k:"outside", n:"Getting outside", g:"start"},
     {k:"fast", n:"A fast", g:"without", pop:1, ways:["Plenty of water","A shorter fast first","Keeping busy","Planning how to break it","Lighter, restful days"]},
-    {k:"dry", n:"A dry month", g:"without", ways:["Doing it as part of Dry January","Alcohol-free drinks in the fridge","Telling friends up front","Plans that aren't about drinking","Crossing off the days"]},
+    {k:"dry", n:"Dry January or a dry month", g:"without", ways:["Doing it as part of Dry January","Alcohol-free drinks in the fridge","Telling friends up front","Plans that aren't about drinking","Crossing off the days"]},
     {k:"detox", n:"A digital detox", g:"without", ways:["Telling people I'll be offline","Deleting the apps for the time","A basic phone for calls","Plans away from screens"]},
     {k:"nospend", n:"A no-spend month", g:"without"},
     {k:"challenge", n:"A misogi – a big challenge", g:"adventure", pop:1, ways:["Pick something with a real chance I won't manage it","A date in the diary","Training for it","Telling people so I can't back out"]},
+    {k:"c25k", n:"Couch to 5K", g:"adventure", ways:["The free NHS Couch to 5K app","Three runs a week","Repeating a week if I need to","Finishing at a parkrun"]},
+    {k:"marathon", n:"A marathon or half marathon", g:"adventure", ways:["A 12 to 16 week training plan","Booking the race so there's a date","Building the long run slowly","Running for a charity"]},
+    {k:"threepeaks", n:"The Three Peaks", g:"adventure", ways:["Training walks with hills","Going with an organised group","Checking the weather","Breaking in boots first"]},
+    {k:"hard75", n:"75 Hard", g:"adventure", ways:["Reading the rules first","Planning both workouts each day","A water bottle always with me","A photo at the same time each day"]},
     {k:"trek", n:"A long walk or trek", g:"adventure", ways:["Planning the route","Breaking in boots first","Building up the distance","Someone knows my route"]},
     {k:"trip", n:"A trip somewhere new", g:"adventure"},
     {k:"solo", n:"Something on my own", g:"adventure"},
@@ -709,6 +724,10 @@ footer p{margin:6px 0}
   $("askYes").addEventListener("click", function(){ var cb = askCb; askClose(); if(cb) cb(); });
 
   // ---------- Chip pickers: a few popular ones, "Show all" opens the long list by group ----------
+  function topPicker(kind, open){ var top = TOP[kind] || [], g = K(kind).g, sel = F.sel.map(function(x){ return x.k; });
+    var chip = function(k){ var t = T(k), kd = KG[kind] === t.g ? kind : (t.g === "without" ? "without" : kind); return '<button type="button" class="chip" data-k="' + t.k + '" data-kind="' + kd + '" aria-pressed="' + (sel.indexOf(t.k) > -1) + '">' + esc(t.n) + "</button>"; };
+    var rest = TYPES.filter(function(t){ return t.g === g && top.indexOf(t.k) < 0; }).map(function(t){ return t.k; });
+    return '<div class="chips">' + top.map(chip).join("") + (open ? rest.map(chip).join("") : "") + "</div>" + (rest.length ? '<button type="button" class="more" data-more="1">' + (open ? "Fewer ideas" : "More ideas →") + "</button>" : ""); }
   function picker(sel, open, group){
     var chip = function(t){ return '<button type="button" class="chip" data-k="' + t.k + '" aria-pressed="' + (sel.indexOf(t.k) > -1) + '">' + esc(t.n) + "</button>"; };
     if(group){ var all = TYPES.filter(function(t){ return t.g === group; }), few = all.length > 9;
@@ -723,45 +742,55 @@ footer p{margin:6px 0}
   // ---------- The start form: in your words, or tap as many as you like ----------
   // First: what kind of reset. Then: what is it (own words, or tap as many as you like).
   var KINDS = [
-    {k:"giveup", n:"Giving something up", q:"What are you giving up?", g:"stop", mode:"stop", eg:"e.g. Smoking", ex:"quit smoking or vaping with a day counter, give up gambling, no more phone in bed"},
-    {k:"cutdown", n:"Cutting down on something", q:"What are you cutting down on?", g:"stop", mode:"less", eg:"e.g. Sugar", ex:"cut down on drinking, less sugar, less screen time"},
-    {k:"more", n:"Doing more of something", q:"What are you doing more of?", g:"start", eg:"e.g. Walking", ex:"walk every day, sleep earlier, eat better, read"},
-    {k:"without", n:"Going without for a while", q:"What are you going without?", g:"without", eg:"e.g. A fast", ex:"Dry January or a dry month, a digital detox, a no-spend month, a fast"},
-    {k:"adventure", n:"Taking on a challenge", q:"What's the challenge?", g:"adventure", eg:"e.g. Climbing Ben Nevis", ex:"a misogi challenge – something hard and a bit scary that shakes you out of the everyday"}
+    {k:"giveup", n:"Stopping something", q:"What are you stopping?", g:"stop", mode:"stop", eg:"e.g. Biting my nails", ex:"smoking, vaping, drinking, social media, gambling"},
+    {k:"cutdown", n:"Reducing something", q:"What are you reducing?", g:"stop", mode:"less", eg:"e.g. Caffeine", ex:"sugar, junk food, drinking, screen time, spending"},
+    {k:"more", n:"Increasing something", q:"What are you increasing?", g:"start", eg:"e.g. Time outside", ex:"exercise, sleep, walking, water, eating better"},
+    {k:"begin", n:"Starting something new", q:"What are you starting?", g:"start", eg:"e.g. Swimming", ex:"running, yoga or Pilates, meditation, journaling, learning something new"},
+    {k:"adventure", n:"Taking on a challenge", q:"What's the challenge?", g:"adventure", eg:"e.g. Climbing Ben Nevis", ex:"Dry January, Couch to 5K, a marathon, the Three Peaks, 75 Hard"},
+    {k:"other", n:"Something else", q:"What is it?", g:"start", eg:"In your own words", ex:"say it in your own words"},
+    {k:"without", hide:1, n:"Going without for a while", q:"What are you going without?", g:"without", eg:"e.g. A fast", ex:"a dry month, a digital detox, a no-spend month, a fast"}
   ];
-  var KWORD = {giveup:"giving up", cutdown:"cutting down", more:"doing more", without:"going without", adventure:"challenge"};
+  // The five most common answers for each kind (from surveys of what people quit, cut down on, do more of, start and take on)
+  var TOP = {giveup:["smoking","vaping","drinking","social","gambling"], cutdown:["sugar","junk","drinking","screen","spending"], more:["exercise","sleep","walking","water","eatwell"],
+    begin:["running","yoga","meditation","journaling","learnnew"], adventure:["dry","c25k","marathon","threepeaks","hard75","challenge"]};
+  var KWORD = {giveup:"stopping", cutdown:"reducing", more:"increasing", begin:"starting", other:"your own", without:"going without", adventure:"challenge"};
   function K(k){ return KINDS.filter(function(x){ return x.k === k; })[0]; }
-  var F = {kind:"", sel:[], open:false, together:null, target:"", expanded:false, direct:false};   // direct: picked from the type-in list, so skip the kind question   // sel: [{k, kind}]; target: add to this page
+  var F = {kind:"", sel:[], open:false, together:null, target:"", expanded:false, direct:false, secs:null};   // direct: picked from the type-in list, so skip the kind question   // sel: [{k, kind}]; target: add to this page
   function pickCount(){ return F.sel.length + ($("fName").value.trim() ? 1 : 0); }
   function pickKinds(){ var ks = F.sel.map(function(x){ return x.kind; }); if($("fName").value.trim()) ks.push(F.kind); return uniq(ks); }
   function together(){ return F.together != null ? F.together : pickKinds().length <= 1; }
   function drawBottom(){ var n = pickCount(), tog = together();
     $("fTogether").hidden = n < 2 || !!F.target;
     $("fWhen").hidden = n < 1;
+    $("fSecs").hidden = $("fWhy").hidden = n < 1 || !!F.target || !!P; var ss = pageSecs();
+    $("fSecChips").innerHTML = SEC_ORDER.map(function(k){ return '<button type="button" class="chip" data-sec="' + k + '" aria-pressed="' + (ss.indexOf(k) > -1) + '" title="' + esc(SECS[k].d) + '">' + esc(SECS[k].n) + "</button>"; }).join("");
     document.querySelectorAll("#fTogether [data-tog]").forEach(function(b){ b.setAttribute("aria-pressed", String((b.dataset.tog === "1") === tog)); });
     $("fTogHint").textContent = tog ? "One page, with a counter for each." : "Each one gets its own page.";
     $("fGo").textContent = F.target ? "Add to this page" : P ? (n > 1 && !tog ? "Add them" : "Add it") : "Start my page"; }
+  // Boxes suggested for the page: the usual ones, plus symptoms when stopping or reducing, weight for food, a plan for a challenge
+  function pageSecs(){ if(F.secs) return F.secs; var ks = pickKinds(), keys = F.sel.map(function(x){ return x.k; }), d = SEC_DEFAULT.slice();
+    if(ks.some(function(k){ return k === "giveup" || k === "cutdown"; })) d.push("feel");
+    if(keys.some(function(k){ return ["eating","snacking","junk","sugar","takeaways","eatwell","fast"].indexOf(k) > -1; })) d.push("weight");
+    if(ks.indexOf("adventure") > -1) d.push("plan");
+    return SEC_ORDER.filter(function(k){ return d.indexOf(k) > -1; }); }
   function selKeys(){ return F.sel.filter(function(x){ return x.kind === F.kind; }).map(function(x){ return x.k; }); }
   function drawForm(){ var kd = K(F.kind);
     if(F.kind || F.sel.length) F.expanded = true;
     $("fBody").hidden = $("fGo").hidden = !F.expanded;
     $("fQuick").hidden = F.expanded || !!$("fSearch").value.trim(); $("fOpen").setAttribute("aria-expanded", String(F.expanded));
-    $("fKind").innerHTML = KINDS.map(function(x){ return '<button type="button" data-kind="' + x.k + '" aria-pressed="' + (F.kind === x.k) + '"><b>' + esc(x.n) + "</b><span>" + esc(x.ex) + "</span></button>"; }).join("");
+    $("fKind").innerHTML = KINDS.filter(function(x){ return !x.hide; }).map(function(x){ return '<button type="button" data-kind="' + x.k + '" aria-pressed="' + (F.kind === x.k) + '"><b>' + esc(x.n) + "</b><span>" + esc(x.ex) + "</span></button>"; }).join("");
     var dir = F.direct && !!kd;
     $("fKindWrap").hidden = dir; $("fStep2").hidden = !kd || dir;
     $("fSearch").placeholder = (F.sel.length || $("fName").value.trim()) ? "Add another? Type it here" : "Type it – e.g. quit vaping";
-    if(kd){ $("fQ").textContent = kd.q; $("fName").placeholder = "In your words, " + kd.eg; $("fPick").innerHTML = picker(selKeys(), F.open, kd.g); }
+    if(kd){ $("fQ").textContent = kd.q; $("fName").placeholder = F.kind === "other" ? "Type it in your own words" : "Or type your own, " + kd.eg; $("fPick").innerHTML = F.kind === "other" ? "" : topPicker(F.kind, F.open); $("fHint").hidden = F.kind === "other"; }
     var own = dir && $("fName").value.trim() ? "<span>" + esc($("fName").value.trim()) + " <small>(" + KWORD[F.kind] + ')</small><button type="button" class="x" data-unown="1" aria-label="Remove">×</button></span>' : "";
     $("fPicked").innerHTML = (F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "") + own;
     drawBottom(); }
-  function resetForm(){ F.direct = false; F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
+  function resetForm(){ F.direct = false; F.secs = null; $("fWhyIn").value = ""; F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
   $("fWhen").addEventListener("click", function(e){ var b = e.target.closest("[data-when]"); if(b) $("fStart").value = toInput(b.dataset.when === "yday" ? Date.now() - DAY : Date.now()); });
+  $("fSecs").addEventListener("click", function(e){ var b = e.target.closest("[data-sec]"); if(!b) return; var ss = pageSecs().slice(), k = b.dataset.sec, i = ss.indexOf(k); if(i > -1) ss.splice(i, 1); else ss.push(k); F.secs = SEC_ORDER.filter(function(x){ return ss.indexOf(x) > -1; }); drawBottom(); });
   $("fTogether").addEventListener("click", function(e){ var b = e.target.closest("[data-tog]"); if(!b) return; F.together = b.dataset.tog === "1"; drawBottom(); });
   function pickKind(k){ F.kind = k; F.open = false; F.direct = false; drawForm(); }
-  // The question rotates through the kinds of reset until you open it
-  var rotI = 0;
-  setInterval(function(){ if(F.expanded || document.hidden || $("front").hidden) return; var el = $("fRot"); el.classList.add("fade");
-    setTimeout(function(){ rotI = (rotI + 1) % KINDS.length; el.textContent = KINDS[rotI].n; el.classList.remove("fade"); }, 350); }, 2800);
   $("whyOpen").addEventListener("click", function(){ var o = $("whyBody").hidden; $("whyBody").hidden = !o; this.setAttribute("aria-expanded", String(o)); });
   $("whyGo").addEventListener("click", function(){ pickKind("adventure"); $("formSlot").scrollIntoView({behavior:"smooth", block:"start"}); });
 
@@ -789,13 +818,14 @@ footer p{margin:6px 0}
   $("fOpen").addEventListener("click", function(){ F.expanded = !F.expanded; F.direct = false; if(!F.expanded){ F.kind = ""; F.sel = []; $("fName").value = ""; } drawForm(); });
   // Type to find it fast: everyday words map to the kind of reset and to the list of common resets
   var SYN = [[/vap/,"vaping"],[/smok|cig|tobacco|nicotin|fag/,"smoking"],[/drink|alcohol|booze|wine|beer|lager|pint|spirits/,"drinking"],[/sugar|sweet|chocolate|cake|biscuit|fizzy/,"sugar"],[/snack/,"snacking"],[/\beat|food|portion/,"eating"],[/junk|crisps|fast food|mcdonald/,"junk"],[/takeaway|deliveroo|uber eats|just eat/,"takeaways"],[/coffee|caffeine|energy drink/,"caffeine"],[/screen|phone|scroll/,"screen"],[/social|instagram|tiktok|facebook|twitter|youtube/,"social"],[/in bed/,"phonebed"],[/spend|shopping|buying/,"spending"],[/gambl|betting|\bbet/,"gambling"],[/nail/,"nails"],[/walk|steps/,"walking"],[/exercise|gym|\brun|running|workout|sport|move/,"exercise"],[/sleep|bedtime|early night/,"sleep"],[/healthy|veg|diet|eat better/,"eatwell"],[/water|hydrat/,"water"],[/read|book/,"reading"],[/meditat|mindful|breath/,"meditation"],[/morning|wake up|early/,"mornings"],[/cook/,"cooking"],[/outside|outdoors|nature/,"outside"],[/\bfast/,"fast"],[/dry|sober/,"dry"],[/detox|offline|unplug/,"detox"],[/no.?spend/,"nospend"],[/misogi|challenge/,"challenge"],[/trek|hike|long walk|climb/,"trek"],[/trip|travel/,"trip"],[/solo|on my own/,"solo"],[/learn|course|skill|class|lesson/,"learn"],[/camp/,"camping"],[/sabbatical|time off|time out|career break/,"timeout"]];
-  var KG = {giveup:"stop", cutdown:"stop", more:"start", without:"without", adventure:"adventure"};
+  var KG = {giveup:"stop", cutdown:"stop", more:"start", begin:"start", other:"start", without:"without", adventure:"adventure"};
   function kindFromText(q){
     if(/\b(quit|stop|give up|giving up|no more|kick|ditch|never)\b/.test(q)) return "giveup";
     if(/\b(cut|less|reduce|cutting|fewer|limit|lower)\b/.test(q)) return "cutdown";
     if(/\b(without|dry|detox|fast|no.?spend|month off|break from)\b/.test(q)) return "without";
     if(/\b(adventure|challenge|misogi|trip|trek|climb|hike)\b/.test(q)) return "adventure";
-    if(/\b(more|start|daily|every day|begin|build|each day)\b/.test(q)) return "more";
+    if(/\b(start|begin|take up|taking up|learn|new)\b/.test(q)) return "begin";
+    if(/\b(more|increase|daily|every day|build|each day)\b/.test(q)) return "more";
     return ""; }
   function suggest(q){ var out = [], det = kindFromText(q), keys = [];
     SYN.forEach(function(x){ if(x[0].test(q) && keys.indexOf(x[1]) < 0) keys.push(x[1]); });
@@ -823,8 +853,8 @@ footer p{margin:6px 0}
   $("fName").addEventListener("input", drawBottom);
   $("fPick").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return;
     if(b.dataset.more){ F.open = !F.open; drawForm(); return; }
-    var k = b.dataset.k, i = F.sel.findIndex(function(x){ return x.k === k; });
-    if(i > -1 && F.sel[i].kind === F.kind) F.sel.splice(i, 1); else if(i > -1) F.sel[i].kind = F.kind; else F.sel.push({k:k, kind:F.kind}); drawForm(); });
+    var k = b.dataset.k, kd = b.dataset.kind || F.kind, i = F.sel.findIndex(function(x){ return x.k === k; });
+    if(i > -1 && F.sel[i].kind === kd) F.sel.splice(i, 1); else if(i > -1) F.sel[i].kind = kd; else F.sel.push({k:k, kind:kd}); drawForm(); });
   $("fPicked").addEventListener("click", function(e){ var b = e.target.closest("[data-unpick]"); if(b){ F.sel.splice(+b.dataset.unpick, 1); drawForm(); }
     if(e.target.closest("[data-unown]")){ $("fName").value = ""; drawForm(); } });
   // Tapping a kind in the intro jumps to the form with it picked
@@ -840,7 +870,9 @@ footer p{margin:6px 0}
     var target = F.target && find(F.target);
     if(target){ ths.forEach(function(t){ target.things.push(t); }); target.title = ""; save(); var tid = target.id; closeSheet(); go("#p=" + CODE + "&r=" + tid); render(); toast(joinNames(ths) + " added to this page"); return; }
     var tog = together(), fresh = !P; if(fresh){ CODE = newCode(); P = {v:3, resets:[], ack:false}; }
-    var made = tog ? [makePage(ths)] : ths.map(function(t){ return makePage([t]); });
+    var made = tog ? [makePage(ths)] : ths.map(function(t){ return makePage([t]); }), chosen = pageSecs().slice();
+    var why = $("fWhyIn").value.trim();
+    made.forEach(function(r){ if(chosen.length) r.secs = chosen.slice(); if(why) r.why = why; });
     made.forEach(function(r){ P.resets.push(r); }); save(); closeSheet(); resetForm();
     go(made.length === 1 ? "#p=" + CODE + "&r=" + made[0].id : "#p=" + CODE);
     toast(made.length === 1 ? "This is your page – tap Edit page to add, move or remove boxes" : made.length + " pages added"); });
@@ -1061,6 +1093,9 @@ $("helpRot").textContent = GENERAL[0];
       h += '<div class="row" style="margin-top:18px"><button type="button" class="btn" data-a="edit">Done</button></div>';
     } else {
       var op = OPEN[r.id] || (OPEN[r.id] = {}), anyOpen = secs.some(function(s){ return op[s]; });
+      // Your reasons, first thing on the page – for the moments you forget why you started
+      h += r.why ? '<div class="whynote" style="--c:' + g.c + '"><span class="wk">Remember why</span><p>' + esc(r.why) + '</p><button type="button" class="link" data-a="editwhy">Change</button></div>'
+        : '<button type="button" class="whyadd" data-a="editwhy">+ Write down why you’re doing this – it’ll be here for the hard moments</button>';
       h += '<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="link" data-a="' + (anyOpen ? "closeall" : "openall") + '">' + (anyOpen ? "Close all" : "Open all") + "</button></div>";
       h += '<div class="secs">' + secs.map(function(s){ var o = !!op[s];
         return '<section class="card sec' + (o ? " open" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle">' + esc(SECS[s].n) + '</span><span class="sprev">' + PREVIEW[s](r) + '</span><span class="chev" aria-hidden="true">›</span></button>'
@@ -1136,6 +1171,7 @@ $("helpRot").textContent = GENERAL[0];
     var a = d.a;
     if(a === "back") go("#p=" + CODE);
     else if(a === "openall" || a === "closeall"){ var oa = OPEN[r.id] = {}; if(a === "openall") r.secs.forEach(function(s){ oa[s] = true; }); redraw(r); }
+    else if(a === "editwhy"){ if(r.secs.indexOf("about") < 0){ r.secs.unshift("about"); save(); } (OPEN[r.id] || (OPEN[r.id] = {})).about = true; redraw(r, "aWhy"); var wy = $("aWhy"); if(wy) wy.scrollIntoView({behavior:"smooth", block:"center"}); }
     else if(a === "edit"){ EDIT = !EDIT; renderDetail(r); window.scrollTo(0, 0); }
     else if(a === "addthing") openSheet(r.id);
     else if(a === "addnote") addTo(r.notes, "jIn", r);
