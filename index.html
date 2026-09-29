@@ -1,4 +1,4 @@
-<!-- DueAReset v32 -->
+<!-- DueAReset v33 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -88,6 +88,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .qchips .chip{font-size:.85rem;padding:5px 11px}
 .qchips[hidden]{display:none}
+.fjumps{margin:10px 0 0;font-size:.85rem;color:var(--muted)}
+.fjumps a{color:var(--brand-deep);text-underline-offset:3px}
 #fSug:not(:empty){margin-top:8px}
 #fSug button{text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:9px 12px;font-size:.95rem}
 #fSug button:first-child{border-color:var(--brand)}
@@ -343,7 +345,8 @@ footer p{margin:6px 0}
       <button type="button" class="qrot" id="fOpen" aria-expanded="false" aria-controls="fBody"><span class="qq" id="start">What are you resetting?</span><span class="qa"><span id="fRot">Giving something up</span> <span class="qchev" aria-hidden="true">›</span></span></button>
       <form id="rf" novalidate autocomplete="off">
         <div class="fsearch"><input class="field" id="fSearch" maxlength="60" autocomplete="off" placeholder="Type it – e.g. quit vaping" aria-label="Type what you're resetting"><div id="fSug" role="listbox" aria-label="Suggestions"></div>
-          <div class="qchips" id="fQuick" aria-label="Popular resets"><button type="button" class="chip" data-qk="smoking" data-qkind="giveup">Quit smoking</button><button type="button" class="chip" data-qk="drinking" data-qkind="cutdown">Cut down on drinking</button><button type="button" class="chip" data-qk="exercise" data-qkind="more">Exercise more</button><button type="button" class="chip" data-qkind="adventure">Take on a challenge</button></div></div>
+          <div class="qchips" id="fQuick" aria-label="Popular resets"><button type="button" class="chip" data-qk="smoking" data-qkind="giveup">Quit smoking</button><button type="button" class="chip" data-qk="drinking" data-qkind="cutdown">Cut down on drinking</button><button type="button" class="chip" data-qk="exercise" data-qkind="more">Exercise more</button><button type="button" class="chip" data-qkind="adventure">Take on a challenge</button></div>
+          <p class="fjumps"><a href="#list" data-jump="waysCard">Common resets</a> · <a href="#" data-jump="helpCard">What’s worked for others</a></p></div>
         <div id="fBody">
         <div id="fKindWrap"><div class="lbl">Are you…</div>
         <div class="kpick" id="fKind" role="group" aria-label="Kind of reset"></div></div>
@@ -363,7 +366,7 @@ footer p{margin:6px 0}
    </div>
    <div class="colR">
     <section class="card why" aria-labelledby="whyAdv">
-      <button type="button" class="whyrow" id="whyOpen" aria-expanded="false" aria-controls="whyBody"><span><h2 id="whyAdv">Have you thought about a different kind of reset?</h2><span class="whysub">Sometimes the way round a habit is to do something hard.</span></span><span class="chev" aria-hidden="true">›</span></button>
+      <button type="button" class="whyrow" id="whyOpen" aria-expanded="false" aria-controls="whyBody"><span><h2 id="whyAdv">Have you thought about a different kind of reset?</h2><span class="whysub">Sometimes the way round a habit is to take on a challenge. Here are some ideas…</span></span><span class="chev" aria-hidden="true">›</span></button>
       <div id="whyBody" hidden>
         <p>Not every reset is about giving something up. Sometimes it's a challenge: take on something hard enough, and everything else can feel different afterwards – including the habits you wanted to change.</p>
         <p>One idea is the <b>misogi challenge</b>: one big challenge, taken on on purpose, hard enough that you might not manage it – a long walk, a cold swim, a climb, a trip on your own. It has just two rules: <b>make it really hard, and don't die.</b></p>
@@ -406,7 +409,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
-    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v32</span></p>
+    <p>No account needed. If you choose to sign in, we keep your email address only to sign you in. No tracking, no ads. <span class="ver">v33</span></p>
   </footer>
 </div>
 
@@ -752,6 +755,7 @@ footer p{margin:6px 0}
     setTimeout(function(){ rotI = (rotI + 1) % KINDS.length; el.textContent = KINDS[rotI].n; el.classList.remove("fade"); }, 350); }, 2800);
   $("whyOpen").addEventListener("click", function(){ var o = $("whyBody").hidden; $("whyBody").hidden = !o; this.setAttribute("aria-expanded", String(o)); });
   $("whyGo").addEventListener("click", function(){ pickKind("adventure"); $("formSlot").scrollIntoView({behavior:"smooth", block:"start"}); });
+  document.querySelector(".fjumps").addEventListener("click", function(e){ var a = e.target.closest("[data-jump]"); if(!a) return; e.preventDefault(); var c = $(a.dataset.jump); openCard(c, true); setTimeout(function(){ c.scrollIntoView({behavior:"smooth", block:"start"}); }, 50); });
   $("fOpen").addEventListener("click", function(){ F.expanded = !F.expanded; F.direct = false; if(!F.expanded){ F.kind = ""; F.sel = []; $("fName").value = ""; } drawForm(); });
   // Type to find it fast: everyday words map to the kind of reset and to the list of common resets
   var SYN = [[/vap/,"vaping"],[/smok|cig|tobacco|nicotin|fag/,"smoking"],[/drink|alcohol|booze|wine|beer|lager|pint|spirits/,"drinking"],[/sugar|sweet|chocolate|cake|biscuit|fizzy/,"sugar"],[/snack/,"snacking"],[/\beat|food|portion/,"eating"],[/junk|crisps|fast food|mcdonald/,"junk"],[/takeaway|deliveroo|uber eats|just eat/,"takeaways"],[/coffee|caffeine|energy drink/,"caffeine"],[/screen|phone|scroll/,"screen"],[/social|instagram|tiktok|facebook|twitter|youtube/,"social"],[/in bed/,"phonebed"],[/spend|shopping|buying/,"spending"],[/gambl|betting|\bbet/,"gambling"],[/nail/,"nails"],[/walk|steps/,"walking"],[/exercise|gym|\brun|running|workout|sport|move/,"exercise"],[/sleep|bedtime|early night/,"sleep"],[/healthy|veg|diet|eat better/,"eatwell"],[/water|hydrat/,"water"],[/read|book/,"reading"],[/meditat|mindful|breath/,"meditation"],[/morning|wake up|early/,"mornings"],[/cook/,"cooking"],[/outside|outdoors|nature/,"outside"],[/\bfast/,"fast"],[/dry|sober/,"dry"],[/detox|offline|unplug/,"detox"],[/no.?spend/,"nospend"],[/misogi|challenge/,"challenge"],[/trek|hike|long walk|climb/,"trek"],[/trip|travel/,"trip"],[/solo|on my own/,"solo"],[/learn|course|skill|class|lesson/,"learn"],[/camp/,"camping"],[/sabbatical|time off|time out|career break/,"timeout"]];
