@@ -295,6 +295,7 @@ textarea.field{resize:vertical;min-height:80px}
 footer{margin:36px 0 30px;font-size:.85rem;color:var(--muted)}
 footer p{margin:6px 0}
 .ver{color:var(--faint)}
+.stitle .sdate{font-weight:400;font-size:.8em;color:var(--muted);margin-left:4px}
 @media (min-width:700px){ .hero h1{font-size:3rem} }
 .who{border-color:transparent;background:var(--brand-wash);color:var(--brand-deep)}
 .quietpill{border-color:var(--line);color:var(--ink);font-weight:400}
@@ -515,14 +516,14 @@ footer p{margin:6px 0}
     words: {n:"Words to keep me strong", d:"A line to read when it's hard. Add your own."},
     about: {n:"All about my reset", d:"Why, how, and when it started and ends."},
     tips: {n:"Tips", d:"Ways people go about this. Tick the ones you're trying."},
-    journal: {n:"Journal", d:"Quick notes, stamped with the time and filed by day."},
+    journal: {n:"What’s on my mind", d:"Write anything – each note is stamped with the time and filed by day."},
     feel: {n:"Symptoms I'm noticing", d:"Log cravings, moods and symptoms with one tap."},
     canvas: {n:"My thoughts", d:"A blank page to write whatever's on your mind."},
     learn: {n:"Things I keep learning", d:"Facts and tips that keep coming up."},
     weight: {n:"Weight", d:"Log your weight any day and see the line."},
     plan: {n:"Plan", d:"A day-by-day list so you can plan ahead."}
   };
-  var SEC_ORDER = ["timer","ask","words","about","tips","journal","feel","canvas","weight","plan","learn"], SEC_DEFAULT = ["timer","ask","words","about","tips","journal"];
+  var SEC_ORDER = ["timer","ask","words","about","tips","journal","feel","canvas","weight","plan","learn"], SEC_DEFAULT = ["journal"], SEC_OLD = ["timer","ask","words","about","tips","journal"];
   var NHS_SMOKE = "https://www.nhs.uk/better-health/quit-smoking/", NHS_DRINK = "https://www.nhs.uk/live-well/alcohol-advice/";
   var OWN = {k:"own", n:"", g:"stop"};
   function T(k){ for(var i = 0; i < TYPES.length; i++) if(TYPES[i].k === k) return TYPES[i]; return OWN; }
@@ -592,7 +593,7 @@ footer p{margin:6px 0}
         ["key","g","mode","name","start","end","best"].forEach(function(f){ delete r[f]; });
       }
       if(r.title == null) r.title = "";
-      if(!r.secs) r.secs = SEC_DEFAULT.slice();
+      if(!r.secs) r.secs = SEC_OLD.slice();
       ["notes","learn","feel","words","ways","weight","plan","asks"].forEach(function(f){ if(!Array.isArray(r[f])) r[f] = []; });
       if(!r.askv){ r.askv = 1; if(r.secs.indexOf("ask") < 0) r.secs.splice(r.secs.indexOf("timer") + 1, 0, "ask"); }
       if(r.canvas == null) r.canvas = ""; if(r.how == null) r.how = ""; if(r.why == null) r.why = "";
@@ -772,11 +773,7 @@ footer p{margin:6px 0}
     $("fTogHint").textContent = tog ? "One page, with a counter for each." : "Each one gets its own page.";
     $("fGo").textContent = F.target ? "Add to this page" : P ? (n > 1 && !tog ? "Add them" : "Add it") : "Start my page"; }
   // Boxes suggested for the page: the usual ones, plus symptoms when stopping or reducing, weight for food, a plan for a challenge
-  function pageSecs(){ if(F.secs) return F.secs; var ks = pickKinds(), keys = F.sel.map(function(x){ return x.k; }), d = SEC_DEFAULT.slice();
-    if(ks.some(function(k){ return k === "giveup" || k === "cutdown"; })) d.push("feel");
-    if(keys.some(function(k){ return ["eating","snacking","junk","sugar","takeaways","eatwell","fast"].indexOf(k) > -1; })) d.push("weight");
-    if(ks.indexOf("adventure") > -1) d.push("plan");
-    return SEC_ORDER.filter(function(k){ return d.indexOf(k) > -1; }); }
+  function pageSecs(){ if(F.secs) return F.secs; return SEC_DEFAULT.slice(); }
   function selKeys(){ return F.sel.filter(function(x){ return x.kind === F.kind; }).map(function(x){ return x.k; }); }
   function drawForm(){ var kd = K(F.kind);
     if(F.kind || F.sel.length) F.expanded = true;
@@ -1117,7 +1114,7 @@ $("helpRot").textContent = GENERAL[0];
         : '<button type="button" class="whyadd" data-a="editwhy">+ Write down why you’re doing this – it’ll be here for the hard moments</button>';
       h += '<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="link" data-a="' + (anyOpen ? "closeall" : "openall") + '">' + (anyOpen ? "Close all" : "Open all") + "</button></div>";
       h += '<div class="secs">' + secs.map(function(s){ var o = !!op[s];
-        return '<section class="card sec' + (o ? " open" : "") + (s === "words" ? " wordsrow" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle' + (s === "words" ? " vh" : "") + '">' + esc(SECS[s].n) + '</span><span class="sprev">' + PREVIEW[s](r) + '</span><span class="chev" aria-hidden="true">›</span></button>'
+        return '<section class="card sec' + (o ? " open" : "") + (s === "words" ? " wordsrow" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle' + (s === "words" ? " vh" : "") + '">' + esc(SECS[s].n) + (s === "journal" ? ' <small class="sdate">' + esc(nice(Date.now())) + '</small>' : '') + '</span><span class="sprev">' + PREVIEW[s](r) + '</span><span class="chev" aria-hidden="true">›</span></button>'
           + (o ? '<div class="sbody">' + SECTION[s](r) + "</div>" : "") + "</section>"; }).join("") + "</div>";
       h += '<button type="button" class="add" data-a="edit">✎ Edit page – add, move or remove boxes</button>';
       h += '<div class="foot">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>' : '<button type="button" class="ghost" data-a="finish">Finish this reset</button>') + '<button type="button" class="link danger" data-a="delete">Delete this page</button></div>';
@@ -1221,8 +1218,12 @@ $("helpRot").textContent = GENERAL[0];
   function go(h){ if(location.hash === h) route(); else location.hash = h; }
   function show(id){ ["front", "mine", "detail"].forEach(function(x){ $(x).hidden = x !== id; }); }
   function render(){ route(true); }
+  var OPENED = Date.now(), BACKDONE = false;
   function route(keepScroll){
     var m = location.hash.match(/p=([a-z0-9]{12})/), rm = location.hash.match(/r=([a-z0-9]+)/);
+    if(m && P && !rm && !BACKDONE && Date.now() - OPENED < 8000){ BACKDONE = true; var last = ""; try{ last = localStorage.getItem("dueareset-last") || ""; }catch(e){}
+      if(last && find(last)){ location.replace("#p=" + m[1] + "&r=" + last); return; } }
+    if(m && P) BACKDONE = true;
     if(m && m[1] !== CODE){ var other = loadPage(m[1]);
       if(other){ CODE = m[1]; P = other; store(); sync(); }
       else { $("myBtn").hidden = $("signBtn").hidden = true; return fetchPage(m[1]); } }
@@ -1230,7 +1231,7 @@ $("helpRot").textContent = GENERAL[0];
     $("signBtn").hidden = !!USER || !!P;
     $("whoBtn").hidden = !USER; $("whoBtn").title = USER ? "Signed in as " + (USER.email || "") : "";
     if(m && P){ var r = rm && find(rm[1]);
-      if(r){ show("detail"); renderDetail(r); } else { show("mine"); renderMine(); }
+      if(r){ show("detail"); renderDetail(r); try{ localStorage.setItem("dueareset-last", r.id); }catch(e){} } else { show("mine"); renderMine(); }
     } else { show("front"); if($("sheet").hidden) drawForm(); drawList(); }
     if(keepScroll !== true) window.scrollTo(0, 0);
     if(!m && location.hash === "#list"){ openCard($("waysCard"), true); setTimeout(function(){ $("list").scrollIntoView({behavior:"smooth", block:"start"}); }, 50); }
