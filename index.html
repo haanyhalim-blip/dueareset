@@ -179,7 +179,10 @@ textarea.field{resize:vertical;min-height:80px}
 /* one reset: a page built from sections */
 .back{border:0;background:none;color:var(--brand);font-weight:700;padding:14px 0 4px;font-size:1rem}
 .dkind{font-size:.85rem;color:var(--c);text-transform:uppercase;letter-spacing:.06em;margin-top:8px;font-weight:700}
-.dname{font-size:1.9rem;color:var(--brand-deep)}
+.dname{color:var(--muted);font-weight:700}
+h1.dkind{margin:8px 0 0;font-family:inherit;line-height:1.35}
+.dkind .dsep{color:var(--muted);font-weight:400}
+.dhead{align-items:center}
 .shead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
 .shead h2{font-size:1.2rem}
 .sctl{display:flex;gap:2px;flex:none}
@@ -1115,7 +1118,7 @@ $("helpRot").textContent = GENERAL[0];
     if($("detail").dataset.id !== r.id) EDIT = false;
     var g = pG(r), secs = r.secs.filter(function(s){ return SECTION[s]; }), hidden = SEC_ORDER.filter(function(s){ return secs.indexOf(s) < 0; });
     var h = '<button type="button" class="back" data-a="back">← My resets</button>' + saveBoxHTML()
-      + '<div class="dhead"><div><div class="dkind" style="--c:' + g.c + '">' + esc(pKind(r)) + '</div><h1 class="dname">' + esc(pName(r)) + "</h1></div>"
+      + '<div class="dhead"><div><h1 class="dkind" style="--c:' + g.c + '">' + esc(pKind(r)) + ' <span class="dsep">·</span> <span class="dname">' + esc(pName(r)) + "</span></h1></div>"
       + '<button type="button" class="' + (EDIT ? "btn" : "ghost") + ' editbtn" data-a="edit">' + (EDIT ? "Done" : "✎ Edit page") + "</button></div>";
     if(EDIT){
       h += '<p class="small editnote">Move boxes with ↑ and ↓. Remove takes a box off your page – what you wrote in it is kept. Add more below, then tap Done.</p>'
