@@ -783,6 +783,9 @@ footer p{margin:6px 0}
     $("fKind").innerHTML = KINDS.filter(function(x){ return !x.hide; }).map(function(x){ return '<button type="button" data-kind="' + x.k + '" aria-pressed="' + (F.kind === x.k) + '"><b>' + esc(x.n) + "</b><span>" + esc(x.ex) + "</span></button>"; }).join("");
     var dir = F.direct && !!kd;
     $("fKindWrap").hidden = dir || (F.chip && !!kd); $("fStep2").hidden = !kd || dir; $("fChange").hidden = !(F.chip && kd);
+    // Once you've tapped Stopping / Reducing / …, the top box and the links step aside: one question, one box to type in
+    var chipMode = F.chip && !!kd && !dir, sw = $("fSearch").parentNode, sbox = sw.classList.contains("fsearch") ? $("fSearch") : sw;
+    sbox.style.display = chipMode ? "none" : ""; if(chipMode) $("fSug").innerHTML = ""; document.querySelector(".fjumps").hidden = F.expanded;
     $("fSearch").placeholder = (F.sel.length || $("fName").value.trim()) ? "Add another? Type it here" : "Type it – e.g. quit vaping";
     if(kd){ $("fQ").textContent = kd.q; $("fName").placeholder = F.kind === "other" ? "Type it in your own words" : "Or type your own, " + kd.eg; $("fPick").innerHTML = F.kind === "other" ? "" : topPicker(F.kind, F.open); $("fHint").hidden = F.kind === "other"; }
     var own = dir && $("fName").value.trim() ? "<span>" + esc($("fName").value.trim()) + " <small>(" + KWORD[F.kind] + ')</small><button type="button" class="x" data-unown="1" aria-label="Remove">×</button></span>' : "";
@@ -862,7 +865,8 @@ footer p{margin:6px 0}
   $("fSearch").addEventListener("input", function(){ drawSug(); $("fQuick").hidden = F.expanded || !!this.value.trim(); });
   $("fQuick").addEventListener("click", function(e){ var b = e.target.closest("[data-qkind]"); if(!b) return; var kd = b.dataset.qkind;
     if(b.dataset.qk){ if(!F.sel.some(function(x){ return x.k === b.dataset.qk; })) F.sel.push({k:b.dataset.qk, kind:kd}); F.direct = true; } else { F.direct = false; F.chip = true; }
-    F.kind = kd; F.expanded = true; drawForm(); });
+    F.kind = kd; F.expanded = true; drawForm();
+    if(F.chip) setTimeout(function(){ $("fStep2").scrollIntoView({behavior:"smooth", block:"start"}); $("fName").focus({preventScroll:true}); }, 60); });
   $("fSearch").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); var b = $("fSug").querySelector("button"); if(b) b.click(); } });
   $("fSug").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return; var kd = b.dataset.skind;
     if(b.dataset.sk){ var i = F.sel.findIndex(function(x){ return x.k === b.dataset.sk; }); if(i > -1) F.sel[i].kind = kd; else F.sel.push({k:b.dataset.sk, kind:kd}); F.kind = kd; if(!F.expanded || F.direct) F.direct = true; }
