@@ -165,6 +165,11 @@ textarea.field{resize:vertical;min-height:80px}
 .save{background:var(--brand-wash);border:0}
 .save h2{font-size:1.2rem;margin-bottom:6px}
 .save .row{margin-top:12px}
+.rtabs{position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:8px -16px 0;padding:10px 16px;background:color-mix(in srgb,var(--bg) 85%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.rtabs::-webkit-scrollbar{display:none}
+.rtabs button{flex:none;border:1.5px solid var(--c);color:var(--c);background:var(--card);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.92rem;white-space:nowrap}
+.rtabs button[aria-current]{background:var(--c);color:#fff}
+.rtabs .tnew{border-color:var(--line);color:var(--muted);font-size:1.1rem;padding:5px 13px;line-height:1}
 .rcard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0}
 .rtop{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
 .rname{font-weight:700;font-size:1.1rem}
@@ -1117,7 +1122,11 @@ $("helpRot").textContent = GENERAL[0];
   function renderDetail(r){
     if($("detail").dataset.id !== r.id) EDIT = false;
     var g = pG(r), secs = r.secs.filter(function(s){ return SECTION[s]; }), hidden = SEC_ORDER.filter(function(s){ return secs.indexOf(s) < 0; });
-    var h = '<button type="button" class="back" data-a="back">← My resets</button>' + saveBoxHTML()
+    // More than one reset on the go: a row of tabs at the top to jump between them
+    var tabs = P.resets.filter(function(x){ return !x.done || x === r; });
+    var h = '<button type="button" class="back" data-a="back">← My resets</button>'
+      + (tabs.length > 1 ? '<nav class="rtabs" aria-label="My resets">' + tabs.map(function(x){ return '<button type="button" data-tab="' + x.id + '" style="--c:' + pG(x).c + '"' + (x === r ? ' aria-current="page"' : "") + '>' + esc(pName(x)) + "</button>"; }).join("") + '<button type="button" class="tnew" data-a="newreset" aria-label="Add a reset">+</button></nav>' : "")
+      + saveBoxHTML()
       + '<div class="dhead"><div><h1 class="dkind" style="--c:' + g.c + '">' + esc(pKind(r)) + ' <span class="dsep">·</span> <span class="dname">' + esc(pName(r)) + "</span></h1></div>"
       + '<button type="button" class="' + (EDIT ? "btn" : "ghost") + ' editbtn" data-a="edit">' + (EDIT ? "Done" : "✎ Edit page") + "</button></div>";
     if(EDIT){
@@ -1177,6 +1186,8 @@ $("helpRot").textContent = GENERAL[0];
     if(el.classList.contains("tStart")){ var s = fromInput(el.value); if(s == null) return; delete t.notyet; if(t.end && s >= t.end){ toast("The start has to be before the end"); el.value = toInput(t.start); return; } t.start = s; save(); redraw(r); }
     if(el.classList.contains("tEnd")){ var en = fromInput(el.value); if(en != null && en <= t.start){ toast("The end has to be after the start"); el.value = t.end ? toInput(t.end) : ""; return; } t.end = en; save(); redraw(r); } });
   $("detail").addEventListener("click", function(e){ var r = current(), b = e.target.closest("button"); if(!r || !b) return; var d = b.dataset;
+    if(d.tab){ if(d.tab !== r.id) go("#p=" + CODE + "&r=" + d.tab); return; }
+    if(d.a === "newreset"){ openSheet(); return; }
     if(d.act) return linkActs(e);
     if(d.toggle){ var op = OPEN[r.id] || (OPEN[r.id] = {}); op[d.toggle] = !op[d.toggle]; return redraw(r); }
     if(d.up || d.down){ var s = d.up || d.down, i = r.secs.indexOf(s), j = d.up ? i - 1 : i + 1; r.secs.splice(i, 1); r.secs.splice(j, 0, s); save(); return redraw(r); }
