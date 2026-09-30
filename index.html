@@ -543,6 +543,23 @@ footer p{margin:6px 0}
     {k:"camping", n:"Wild camping", g:"adventure"},
     {k:"timeout", n:"Time out from work", g:"adventure"}
   ];
+  // "What to do to prep": ideas you can tap to add, for challenges
+  var PREP = {
+    challenge:["Pick the date","Tell someone who'll hold me to it","Work out what could stop me, and plan round it","Train for it, little by little","Sort the kit I'll need"],
+    c25k:["Running shoes that fit","Pick three days a week","Download a Couch to 5K app","Find a safe route","Find a parkrun for the finish"],
+    marathon:["Book the race","Pick a training plan","Get fitted for running shoes","Plan the long runs","Practise eating and drinking on long runs","Book travel and a bed for race weekend"],
+    threepeaks:["Book a group or plan the route","Training walks with hills","Break in the boots","Waterproofs and warm layers","Head torch and spare batteries","Check the weather the week before","Food and water for each peak"],
+    hard75:["Read the rules","Plan both workouts for each day","Pick the book(s)","Set the diet","Get a big water bottle","Set a daily photo reminder"],
+    trek:["Plan the route","Break in the boots","Build up the distance","Pack list: layers, first aid, water","Tell someone the route","Check the weather"],
+    trip:["Book travel","Book somewhere to stay","Passport and visas","Travel insurance","Money and cards sorted","Pack"],
+    solo:["Plan what I'll do","Tell someone where I'll be","Book what needs booking","Pack"],
+    learn:["Find a course, class or teacher","Get what I need to start","Put practice times in the diary","Pick a first small goal"],
+    camping:["Check the rules for the spot","Tent, sleeping bag and mat","Stove, food and water","Head torch","Check the weather","Tell someone where I'll be"],
+    timeout:["Agree the dates at work","Hand over what's needed","Out-of-office on","Plan how I'll spend it"],
+    other:["Pick the date","Train or practise for it","Sort the kit I'll need","Book what needs booking","Tell someone"]
+  };
+  function prepIdeas(r){ var seen = {}, out = []; things(r).forEach(function(t){ (PREP[t.key] || (t.g === "adventure" ? PREP.other : [])).forEach(function(x){ if(!seen[x]){ seen[x] = 1; out.push(x); } }); });
+    var have = (r.prep || []).map(function(x){ return x.t.toLowerCase(); }); return out.filter(function(x){ return have.indexOf(x.toLowerCase()) < 0; }); }
   var GENERAL = ["Write down why, and read it when it's hard","Tell one person","Count the days","Know your hard moments and plan for them","Start small","If you slip, start the count again – the days you did still count"];
   var WORDS = ["One day at a time.","I don't have to do this forever. Just today.","I've done hard things before.","The urge will pass whether I give in or not.","A slip is not a fall. Start the count again.","I'm doing this on purpose.","Notice it, name it, let it go by.","Every day counts, even the hard ones.","Future me is going to be glad.","Small steps still move me forward.","Hard is not the same as wrong.","I chose this."];
   var FEEL = ["Craving","Irritable","Restless","Tired","Hungry","Headache","Low mood","Anxious","Can't sleep","Can't focus","Feeling good","Proud"];
@@ -551,6 +568,7 @@ footer p{margin:6px 0}
     ask: {n:"Today's question", d:"Asked once a day: why is this hard? See how your answer changes."},
     words: {n:"Words to keep me strong", d:"A line to read when it's hard. Add your own."},
     when: {n:"When", d:"When it started, and an end date to count down to – a race day, the end of a dry month."},
+    prep: {n:"What to do to prep", d:"A checklist to get ready – kit, training, bookings. Tick things off as you go."},
     how: {n:"How I'm doing it", d:"The ways you're going about it."},
     about: {n:"What I'm resetting", d:"Stopping or reducing, and more than one thing on one page."},
     tips: {n:"Tips", d:"Ways people go about this. Tick the ones you're trying."},
@@ -561,7 +579,7 @@ footer p{margin:6px 0}
     weight: {n:"Weight", d:"Log your weight any day and see the line."},
     plan: {n:"Plan", d:"A day-by-day list so you can plan ahead."}
   };
-  var SEC_ORDER = ["timer","when","ask","words","how","tips","journal","feel","canvas","weight","plan","learn","about"], SEC_DEFAULT = ["journal"], SEC_OLD = ["timer","ask","words","about","tips","journal"];
+  var SEC_ORDER = ["timer","when","prep","ask","words","how","tips","journal","feel","canvas","weight","plan","learn","about"], SEC_DEFAULT = ["journal"], SEC_OLD = ["timer","ask","words","about","tips","journal"];
   var NHS_SMOKE = "https://www.nhs.uk/better-health/quit-smoking/", NHS_DRINK = "https://www.nhs.uk/live-well/alcohol-advice/";
   var OWN = {k:"own", n:"", g:"stop"};
   function T(k){ for(var i = 0; i < TYPES.length; i++) if(TYPES[i].k === k) return TYPES[i]; return OWN; }
@@ -644,7 +662,7 @@ footer p{margin:6px 0}
       }
       if(r.title == null) r.title = "";
       if(!r.secs) r.secs = SEC_OLD.slice();
-      ["notes","learn","feel","words","ways","weight","plan","asks"].forEach(function(f){ if(!Array.isArray(r[f])) r[f] = []; });
+      ["notes","learn","feel","words","ways","weight","plan","asks","prep"].forEach(function(f){ if(!Array.isArray(r[f])) r[f] = []; });
       if(!r.askv){ r.askv = 1; if(r.secs.indexOf("ask") < 0) r.secs.splice(r.secs.indexOf("timer") + 1, 0, "ask"); }
       if(!r.secv){ r.secv = 2; var ai = r.secs.indexOf("about"); if(ai > -1){ var add = ["when","how"].filter(function(x){ return r.secs.indexOf(x) < 0; }); r.secs.splice.apply(r.secs, [ai, (r.things || []).length > 1 ? 0 : 1].concat(add)); } }
       if(r.canvas == null) r.canvas = ""; if(!r.mytips) r.mytips = []; if(r.how == null) r.how = ""; if(r.why == null) r.why = "";
@@ -933,7 +951,7 @@ footer p{margin:6px 0}
     if(e.target.closest("[data-unown]")){ $("fName").value = ""; drawForm(); } });
   // Tapping a kind in the intro jumps to the form with it picked
   function makeThing(key, name, kind){ var t = T(key), kd = K(kind) || {}; return {id:uid(), kind:kind || "", key:key, g:kd.g || t.g || "stop", mode:kd.mode || (t.less ? "less" : "stop"), name:name || t.n, start:Date.now(), end:null, best:0}; }
-  function makePage(ths){ return {id:uid(), things:ths, title:"", why:"", how:"", ways:[], secs:SEC_DEFAULT.slice(), secv:2, notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", done:null, made:Date.now()}; }
+  function makePage(ths){ return {id:uid(), things:ths, title:"", why:"", how:"", ways:[], secs:SEC_DEFAULT.slice(), secv:2, prep:[], notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", done:null, made:Date.now()}; }
   $("rf").addEventListener("submit", function(e){ e.preventDefault();
     var typed = $("fName").value.trim(), picks = F.sel.slice();
     if(!F.kind && !picks.length){ toast("First pick what kind of reset it is"); return; }
@@ -948,6 +966,7 @@ footer p{margin:6px 0}
     var made = tog ? [makePage(ths)] : ths.map(function(t){ return makePage([t]); }), chosen = pageSecs().slice(); if(F.notyet && chosen.indexOf("timer") < 0) chosen.unshift("timer");
     var why = $("fWhyIn").value.trim();
     made.forEach(function(r){ if(chosen.length) r.secs = chosen.slice(); if(why) r.why = why;
+      if(anyT(r, function(t){ return t.g === "adventure"; }) && r.secs.indexOf("prep") < 0) r.secs.unshift("prep");
       if(anyT(r, function(t){ return t.g === "adventure" || t.g === "without"; }) && r.secs.indexOf("when") < 0) r.secs.unshift("when"); });
     made.forEach(function(r){ P.resets.push(r); }); save(); closeSheet(); resetForm();
     go(made.length === 1 ? "#p=" + CODE + "&r=" + made[0].id : "#p=" + CODE);
@@ -1089,6 +1108,10 @@ $("helpRot").textContent = GENERAL[0];
           + '<div><label class="lbl" for="te-' + t.id + '"' + (i === 0 && !multi ? ' style="margin-top:0"' : "") + '>Ends <span>(optional)</span></label><input class="field tEnd" type="datetime-local" id="te-' + t.id + '" data-t="' + t.id + '" value="' + (t.end ? toInput(t.end) : "") + '"></div></div>'
           + (t.end ? '<button type="button" class="link" data-noend="' + t.id + '">Clear end</button>' : "") + "</div>"; }).join("")
         + '<p class="small" style="margin:8px 0 0">Leave "Ends" blank to count up. Give it an end to count down – a race day, a fast or a dry month has an end, a quit doesn\'t.</p>'; },
+    prep: function(r){ var list = r.prep || [], ideas = prepIdeas(r);
+      return (list.length ? '<div class="pitems">' + list.map(function(it){ return '<div class="pitem' + (it.done ? " done" : "") + '"><button type="button" class="tick" data-preptick="' + it.id + '" aria-label="' + (it.done ? "Untick" : "Tick") + '">' + (it.done ? "✓" : "") + '</button><p>' + esc(it.t) + '</p><button type="button" class="x" data-delprep="' + it.id + '" aria-label="Delete">×</button></div>'; }).join("") + "</div>" : "")
+        + '<div class="jin" style="margin-top:10px"><input class="field" id="prepIn" maxlength="120" placeholder="Something to do or get, e.g. Break in my boots"><button type="button" class="ghost" data-a="addprep">Add</button></div>'
+        + (ideas.length ? '<p class="small" style="margin:12px 0 6px">Ideas – tap to add:</p><div class="chips">' + ideas.map(function(x){ return '<button type="button" class="chip" data-prepidea="' + esc(x) + '">+ ' + esc(x) + "</button>"; }).join("") + "</div>" : ""); },
     how: function(r){
       return (r.ways.length ? '<div class="hchips" style="margin-bottom:8px">' + r.ways.map(function(w){ return '<span class="hchip">' + esc(w) + "</span>"; }).join("") + "</div>" : "")
         + '<input class="field" id="aHow" data-f="how" maxlength="120" placeholder="' + (r.ways.length ? "Anything else" : "Cold turkey, patches, only at weekends…") + '" value="' + esc(r.how) + '">'
@@ -1152,8 +1175,11 @@ $("helpRot").textContent = GENERAL[0];
         : ths.map(function(t){ return esc(t.name) + ' <b data-live="big" data-t="' + t.id + '">' + esc(counter(t, r).big) + "</b>"; }).join(" · "); },
     ask: function(r){ var a = askToday(r); return '<span class="pq">' + esc(question(r)) + "</span>" + (a ? '<span class="pa">' + esc(clip(a.t, 140)) + "</span>" : '<span class="pa none">Not answered yet – tap to answer</span>'); },
     words: function(r){ var all = wordsFor(r); return "“" + esc(all[(wordIx[r.id] || 0) % all.length]) + "”"; },
-    when: function(r){ return things(r).map(function(t){ var fut = t.start > Date.now(), end = t.end ? (t.end > Date.now() ? "Ends " : "Ended ") + esc(nice(t.end)) : "";
+    when: function(r){ return things(r).map(function(t){ if(t.end && ds(t.end) === ds(t.start)) return "<b>" + esc(nice(t.start)) + "</b>";   // a one-day challenge: just the day
+      var fut = t.start > Date.now(), end = t.end ? (t.end > Date.now() ? "Ends " : "Ended ") + esc(nice(t.end)) : "";
       return (fut ? "Starts " : "Started ") + esc(nice(t.start)) + (end ? " · <b>" + end + "</b>" : ""); }).join("<br>"); },
+    prep: function(r){ var l = r.prep || [], d = l.filter(function(x){ return x.done; }).length, next = l.filter(function(x){ return !x.done; })[0];
+      return l.length ? "<b>" + d + " of " + l.length + " done</b>" + (next ? " · next: " + esc(clip(next.t, 50)) : " – all ready!") : '<span class="pe">Nothing yet – add what you need to do to get ready</span>'; },
     how: function(r){ var all = r.ways.concat(r.how ? [r.how] : []); return all.length ? esc(clip(all.join(", "), 90)) : '<span class="pe">How are you going about it?</span>'; },
     about: function(r){ return esc(pKind(r)) + " · " + esc(joinNames(things(r))); },
     tips: function(r){ return r.ways.length ? "Trying " + r.ways.length + ": " + esc(clip(r.ways.join(", "), 60)) : '<span class="pe">' + "Ways people go about it – tick the ones you try" + "</span>"; },
@@ -1216,6 +1242,7 @@ $("helpRot").textContent = GENERAL[0];
       ta.addEventListener("input", function(){ r.why = ta.value.trim(); saveSoon(); });   // kept as you type, so nothing is lost if you tap away
       var fo = function(){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }; fo(); setTimeout(fo, 40); }
 
+  function addPrep(r, text){ var v = (text != null ? text : $("prepIn").value).replace(/\s+/g, " ").trim(); if(!v) return; if(!r.prep) r.prep = []; r.prep.push({id:uid(), t:v, done:false}); save(); redraw(r, text != null ? null : "prepIn"); }
   function addTip(r){ var v = $("tipIn").value.replace(/\s+/g, " ").trim(); if(!v) return; if(!r.mytips) r.mytips = []; if(r.mytips.indexOf(v) < 0) r.mytips.push(v); if(r.ways.indexOf(v) < 0) r.ways.push(v); save(); redraw(r, "tipIn"); }
   function redraw(r, focusId){ var y = window.scrollY; renderDetail(r); window.scrollTo(0, y); if(focusId && $(focusId)) $(focusId).focus(); }
   function addTo(list, id, r){ var v = $(id).value.trim(); if(!v) return; list.push({id:uid(), ts:Date.now(), t:v}); save(); redraw(r, id); }
@@ -1240,6 +1267,7 @@ $("helpRot").textContent = GENERAL[0];
     else if(id === "pIn"){ e.preventDefault(); addPlan(r, planOpen, "pIn"); }
     else if(id === "qIn" && !e.shiftKey){ e.preventDefault(); addAsk(r); }
     else if(id === "tipIn"){ e.preventDefault(); addTip(r); }
+    else if(id === "prepIn"){ e.preventDefault(); addPrep(r); }
     else if(id === "pAny"){ e.preventDefault(); addPlan(r, $("pDate").value, "pAny"); } });
   // Typing in "All about my reset" and "My thoughts" saves as you go
   $("detail").addEventListener("input", function(e){ var r = current(); if(!r) return; var f = e.target.dataset.f;
@@ -1292,6 +1320,9 @@ $("helpRot").textContent = GENERAL[0];
     if(d.tremove){ var tt = thingById(r, d.tremove); if(!tt) return;
       ask("Take " + tt.name + " off this page? Its counter goes; your notes stay.", "Take it off", function(){
         var at2 = r.things.indexOf(tt); r.things.splice(at2, 1); r.title = ""; save(); redraw(r); toast(tt.name + " taken off", function(){ r.things.splice(at2, 0, tt); save(); redraw(r); }); }); return; }
+    if(d.preptick){ var pt = (r.prep || []).filter(function(x){ return x.id === d.preptick; })[0]; if(pt){ pt.done = !pt.done; save(); redraw(r); } return; }
+    if(d.delprep){ removeWithUndo(r, r.prep, d.delprep, "Taken off the list"); return; }
+    if(d.prepidea){ addPrep(r, d.prepidea); return; }
     if(d.deltip != null){ var dw = (r.mytips || [])[+d.deltip]; if(dw == null) return; r.mytips.splice(+d.deltip, 1); var wj = r.ways.indexOf(dw); if(wj > -1) r.ways.splice(wj, 1); save(); return redraw(r); }
     if(d.way){ var wi = r.ways.indexOf(d.way); if(wi > -1) r.ways.splice(wi, 1); else r.ways.push(d.way); save(); return redraw(r); }
     if(d.feel){ r.feel.push({id:uid(), ts:Date.now(), t:d.feel}); save(); redraw(r); return toast(d.feel + " – logged at " + hm(Date.now())); }
@@ -1308,6 +1339,7 @@ $("helpRot").textContent = GENERAL[0];
     if(a === "back") go("#p=" + CODE);
     else if(a === "openall" || a === "closeall"){ var oa = OPEN[r.id] = {}; if(a === "openall") r.secs.forEach(function(s){ oa[s] = true; }); redraw(r); }
     else if(a === "addtip") addTip(r);
+    else if(a === "addprep") addPrep(r);
     else if(a === "editwhy"){   // write your why right where it shows, no other box opens
       setTimeout(function(){ openWhy(r); }, 0); }
 
