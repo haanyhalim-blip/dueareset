@@ -95,6 +95,12 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .whynote .whyl{margin:8px 0 0;padding:0 0 0 1.2em;font-family:Fraunces,Georgia,serif;font-size:1.15rem;line-height:1.35;color:var(--brand-deep)}
 .whynote .whyl li{margin:0 0 6px;padding-left:2px}
 .whynote .whyl li::marker{color:var(--c,var(--brand))}
+.whyedit{margin:14px 0 4px;padding:14px 16px;border-radius:14px;background:var(--card,#fff);border:1.5px solid var(--c,var(--brand));border-left-width:6px}
+.whyedit .wk{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--brand));margin-bottom:6px}
+.whyedit textarea{width:100%;min-height:84px}
+.whyedit .row{display:flex;gap:14px;align-items:center;margin-top:8px}
+.local{font-size:.88rem;color:var(--muted);margin:12px 0 0}.local span{display:block;margin-top:2px}
+.aq{color:var(--muted);font-size:.8rem}
 .whyadd{display:block;width:100%;margin:14px 0 4px;padding:12px 14px;border-radius:12px;border:1.5px dashed var(--line,#ccc);background:transparent;color:var(--brand-deep);font:inherit;font-size:.92rem;text-align:left;cursor:pointer}
 .fjumps{margin:10px 0 0;font-size:.85rem;color:var(--muted)}
 .fjumps a{color:var(--brand-deep);text-underline-offset:3px}
@@ -169,6 +175,10 @@ textarea.field{resize:vertical;min-height:80px}
 .rtabs::-webkit-scrollbar{display:none}
 .rtabs button{flex:none;border:1.5px solid var(--c);color:var(--c);background:var(--card);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.92rem;white-space:nowrap}
 .rtabs button[aria-current]{background:var(--c);color:#fff}
+.rtabs .tpen{margin-left:6px;font-size:.8em;opacity:.8}
+.rtabs button.editing{padding:4px 10px}
+.rtabs .tabin{font:inherit;color:var(--ink);background:#fff;border:0;border-radius:999px;padding:3px 8px;min-width:8ch;max-width:70vw}
+.editlink{font-size:.9rem}
 .rtabs .tnew{border-color:var(--line);color:var(--muted);font-size:1.1rem;padding:5px 13px;line-height:1}
 .rcard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0}
 .rtop{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
@@ -446,7 +456,7 @@ footer p{margin:6px 0}
   <main id="detail" hidden></main>
 
   <footer>
-    <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to your GP.</p>
+    <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to a doctor.</p>
     <p>From Handy Little Tools – also try <a href="https://listbyaisle.com/">ListbyAisle</a> (a shopping list sorted by aisle), <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when).</p>
   </footer>
 </div>
@@ -513,7 +523,7 @@ footer p{margin:6px 0}
     {k:"detox", n:"A digital detox", g:"without", ways:["Telling people I'll be offline","Deleting the apps for the time","A basic phone for calls","Plans away from screens"]},
     {k:"nospend", n:"A no-spend month", g:"without"},
     {k:"challenge", n:"A misogi – a big challenge", g:"adventure", pop:1, ways:["Pick something with a real chance I won't manage it","A date in the diary","Training for it","Telling people so I can't back out"]},
-    {k:"c25k", n:"Couch to 5K", g:"adventure", ways:["The free NHS Couch to 5K app","Three runs a week","Repeating a week if I need to","Finishing at a parkrun"]},
+    {k:"c25k", n:"Couch to 5K", g:"adventure", ways:["A free Couch to 5K app","Three runs a week","Repeating a week if I need to","Finishing at a parkrun"]},
     {k:"marathon", n:"A marathon or half marathon", g:"adventure", ways:["A 12 to 16 week training plan","Booking the race so there's a date","Building the long run slowly","Running for a charity"]},
     {k:"threepeaks", n:"The Three Peaks", g:"adventure", ways:["Training walks with hills","Going with an organised group","Checking the weather","Breaking in boots first"]},
     {k:"hard75", n:"75 Hard", g:"adventure", ways:["Reading the rules first","Planning both workouts each day","A water bottle always with me","A photo at the same time each day"]},
@@ -531,7 +541,7 @@ footer p{margin:6px 0}
     timer: {n:"Timer", d:"Counts the days and hours since you started, or down to the end."},
     ask: {n:"Today's question", d:"Asked once a day: why is this hard? See how your answer changes."},
     words: {n:"Words to keep me strong", d:"A line to read when it's hard. Add your own."},
-    about: {n:"All about my reset", d:"Why, how, and when it started and ends."},
+    about: {n:"Dates and details", d:"When it started or ends, stopping or reducing, and how you\u2019re doing it."},
     tips: {n:"Tips", d:"Ways people go about this. Tick the ones you're trying."},
     journal: {n:"What’s on my mind", d:"Write anything – each note is stamped with the time and filed by day."},
     feel: {n:"Symptoms I'm noticing", d:"Log cravings, moods and symptoms with one tap."},
@@ -572,9 +582,9 @@ footer p{margin:6px 0}
     return parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1] : (parts[0] || "My reset"); }
   function headHTML(r){ return '<h1 class="dkind dfull" style="--c:' + pG(r).c + '">' + esc(fullName(r)) + '</h1><button type="button" class="link rename" data-a="rename" aria-label="Rename this reset">✎ Rename</button>'; }
   function extras(r){
-    return (anyT(r, isSmoke) ? '<a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a>' : "")
-      + (anyT(r, isDrink) ? '<a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a>' : "")
-      + (anyT(r, function(t){ return t.key === "fast"; }) ? '<p class="note">If you have a health condition or take medication, check with your GP before a fast.</p>' : "")
+    return (anyT(r, isSmoke) ? '<p class="local"><b>Help near you:</b> a doctor or pharmacist can point you to free local support to quit. <span>In the UK: <a href="' + NHS_SMOKE + '" target="_blank" rel="noopener">NHS quit smoking support ↗</a></span></p>' : "")
+      + (anyT(r, isDrink) ? '<p class="local"><b>Help near you:</b> a doctor can point you to local support for drinking less. <span>In the UK: <a href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a></span></p>' : "")
+      + (anyT(r, function(t){ return t.key === "fast"; }) ? '<p class="note">If you have a health condition or take medication, check with a doctor before a fast.</p>' : "")
       + (anyT(r, function(t){ return t.g === "adventure"; }) ? '<p class="book">' + esc(GROUPS.adventure.book) + '</p><p class="note">Make sure someone knows where you are and when you\'ll be back.</p>' : ""); }
 
   // ---------- Time ----------
@@ -625,7 +635,7 @@ footer p{margin:6px 0}
       if(!r.secs) r.secs = SEC_OLD.slice();
       ["notes","learn","feel","words","ways","weight","plan","asks"].forEach(function(f){ if(!Array.isArray(r[f])) r[f] = []; });
       if(!r.askv){ r.askv = 1; if(r.secs.indexOf("ask") < 0) r.secs.splice(r.secs.indexOf("timer") + 1, 0, "ask"); }
-      if(r.canvas == null) r.canvas = ""; if(r.how == null) r.how = ""; if(r.why == null) r.why = "";
+      if(r.canvas == null) r.canvas = ""; if(!r.mytips) r.mytips = []; if(r.how == null) r.how = ""; if(r.why == null) r.why = "";
       delete r.pub; delete r.fname;
       if(r.done && typeof r.done.at === "string") r.done.at = new Date(r.done.at + "T12:00").getTime();
     }); p.v = 3; return p; }
@@ -1028,18 +1038,21 @@ $("helpRot").textContent = GENERAL[0];
       + list.map(function(w, i){ return '<circle cx="' + X(xs[i]).toFixed(1) + '" cy="' + Y(ys[i]).toFixed(1) + '" r="' + (i === list.length - 1 ? 5.5 : 4) + '" fill="' + c + '"><title>' + esc(nice(new Date(w.d + "T12:00").getTime())) + ": " + esc(fmtW(w.kg)) + "</title></circle>"; }).join("") + "</svg>"; }
   var wAll = {}, planDays = {}, planOpen = "", askEdit = {}, tEdit = {};
   // Today's question: asked once a day, answers kept so you can see how they change
-  function question(r){ var k = pKind(r); return k === "Giving up" ? "Why do you think it's hard to give it up?" : k === "Cutting down" ? "Why do you think it's hard to cut down?" : k === "Doing more" ? "Why do you think it's hard to keep going?" : k === "Going without" ? "Why do you think it's hard to go without?" : "Why do you think this is hard?"; }
+  // Today's question: a different one each day, in turn – day 1 is always "What makes this hard?"
+  var QS = ["What makes this hard?", "What helped today?", "When was it hardest today – and what was going on?", "What would make tomorrow easier?", "What's changed since you started?", "What are you proud of today?", "Who or what could help you with this?"];
+  function question(r){ var n = Math.max(0, dayNo(Date.now()) - dayNo(pStart(r))); return QS[n % QS.length]; }
+  function sameQ(a){ return !a.q || a.q === QS[0]; }   // older answers (no question saved) were all "why is this hard"
   function askToday(r){ var t = ds(Date.now()); return r.asks.filter(function(a){ return a.d === t; })[0]; }
   function askWaiting(r){ return !r.done && r.secs.indexOf("ask") > -1 && !askToday(r) && Date.now() >= pStart(r); }
   function askDay(r, a){ var n = dayNo(new Date(a.d + "T12:00").getTime()) - dayNo(pStart(r)) + 1; return n > 0 ? "Day " + n : nice(new Date(a.d + "T12:00").getTime()); }
   var SECTION = {
-    ask: function(r){ var q = question(r), today = askToday(r), list = r.asks.slice().sort(function(a, b){ return a.d < b.d ? 1 : -1; }), first = list[list.length - 1];
+    ask: function(r){ var q = question(r), today = askToday(r), list = r.asks.slice().sort(function(a, b){ return a.d < b.d ? 1 : -1; }), hard = list.filter(sameQ), first = hard[hard.length - 1];
       var h = '<p class="words" style="font-size:1.3rem">' + esc(q) + "</p>";
       if(!today || askEdit[r.id]) h += '<div class="jin"><textarea class="field" id="qIn" rows="2" maxlength="1000" placeholder="In a line or two – there\'s no right answer">' + (today ? esc(today.t) : "") + '</textarea><button type="button" class="ghost" data-a="addask">Save</button></div>';
       else h += '<div class="litem" style="border-top:0"><p><b>Today:</b> ' + esc(today.t) + '</p><button type="button" class="link" data-a="editask">Change</button></div>';
-      if(list.length > 1 && first !== list[0]) h += '<div class="book" style="margin-top:12px"><b>' + esc(askDay(r, first)) + ' you said:</b> ' + esc(first.t) + (list[0] === today ? "" : '<br><b>' + esc(askDay(r, list[0])) + ' you said:</b> ' + esc(list[0].t)) + "</div>";
+      if(q === QS[0] && hard.length > 1 && first !== hard[0]) h += '<div class="book" style="margin-top:12px"><b>' + esc(askDay(r, first)) + ' you said:</b> ' + esc(first.t) + (hard[0] === today ? "" : '<br><b>' + esc(askDay(r, hard[0])) + ' you said:</b> ' + esc(hard[0].t)) + "</div>";
       var past = list.filter(function(a){ return a !== today; });
-      if(past.length) h += '<details class="jday"><summary>All your answers <span class="dn">· ' + list.length + "</span></summary>" + list.map(function(a){ return '<div class="jnote"><time style="width:56px">' + esc(askDay(r, a)) + '</time><p>' + esc(a.t) + "</p></div>"; }).join("") + "</details>";
+      if(past.length) h += '<details class="jday"><summary>All your answers <span class="dn">· ' + list.length + "</span></summary>" + list.map(function(a){ return '<div class="jnote"><time style="width:56px">' + esc(askDay(r, a)) + '</time><p>' + (a.q ? '<small class="aq">' + esc(a.q) + "</small><br>" : "") + esc(a.t) + "</p></div>"; }).join("") + "</details>";
       return h; },
     timer: function(r){ var ths = things(r), multi = ths.length > 1;
       return ths.map(function(t){ var c = counter(t, r);
@@ -1070,7 +1083,6 @@ $("helpRot").textContent = GENERAL[0];
           + "</div>"; }).join("")
         + '<p class="small" style="margin:8px 0 0">Leave "Ends" blank to count up. Give it an end to count down – a fast or a dry month has an end, a quit doesn\'t.</p>'
         + '<button type="button" class="more" data-a="addthing">+ Add something else to this page</button>'
-        + '<label class="lbl" for="aWhy">Why? <span>(as little or as much as you like)</span></label><textarea class="field" id="aWhy" data-f="why" maxlength="4000">' + esc(r.why) + "</textarea>"
         + '<label class="lbl" for="aHow">How I\'m doing it</label>'
         + (r.ways.length ? '<div class="hchips" style="margin-bottom:8px">' + r.ways.map(function(w){ return '<span class="hchip">' + esc(w) + "</span>"; }).join("") + "</div>" : "")
         + '<input class="field" id="aHow" data-f="how" maxlength="120" placeholder="' + (r.ways.length ? "Anything else" : "Cold turkey, patches, only at weekends…") + '" value="' + esc(r.how) + '">'
@@ -1081,6 +1093,10 @@ $("helpRot").textContent = GENERAL[0];
       ths.forEach(function(t){ var ws = (T(t.key).ways || []).filter(fresh); if(ws.length) h += (multi ? '<div class="grp">' + esc(t.name) + "</div>" : "") + '<ul class="ways">' + ws.map(li).join("") + "</ul>"; });
       var gt = []; ths.forEach(function(t){ (gOf(t).tips || []).filter(fresh).forEach(function(w){ gt.push(w); }); });
       if(gt.length) h += (h ? '<div class="grp">Also often helps</div>' : "") + '<ul class="ways">' + gt.map(li).join("") + "</ul>";
+      var mine = (r.mytips || []).map(function(w, i){ var on = r.ways.indexOf(w) > -1; return '<li><span>' + esc(w) + '</span><button type="button" class="doing" data-way="' + esc(w) + '" aria-pressed="' + on + '">' + (on ? "Trying ✓" : "I'm trying this") + '</button><button type="button" class="x" data-deltip="' + i + '" aria-label="Delete this tip">×</button></li>'; }).join("");
+      h = '<div class="grp" style="margin-top:0">My own tips</div>' + (mine ? '<ul class="ways">' + mine + "</ul>" : "")
+        + '<div class="jin"><input class="field" id="tipIn" maxlength="120" placeholder="Something that works for you, e.g. Chewing gum after meals"><button type="button" class="ghost" data-a="addtip">Add</button></div>'
+        + (h ? '<div class="grp">Tips from others</div>' + h : "");
       return h + extras(r); },
     journal: function(r){ return '<div class="jin"><textarea class="field" id="jIn" rows="2" maxlength="2000" placeholder="A thought, a craving, a good moment…"></textarea><button type="button" class="ghost" data-a="addnote">Add</button></div>'
       + (byDay(r.notes, r, function(n){ return '<div class="jnote"><time>' + hm(n.ts) + '</time><p>' + esc(n.t) + '</p><button type="button" class="x" data-dnote="' + n.id + '" aria-label="Delete note">×</button></div>'; })
@@ -1121,7 +1137,7 @@ $("helpRot").textContent = GENERAL[0];
         : ths.map(function(t){ return esc(t.name) + ' <b data-live="big" data-t="' + t.id + '">' + esc(counter(t, r).big) + "</b>"; }).join(" · "); },
     ask: function(r){ var a = askToday(r); return a ? "Today: " + esc(clip(a.t, 70)) : "<b>Not answered yet today</b> – " + esc(question(r)); },
     words: function(r){ var all = wordsFor(r); return "“" + esc(all[(wordIx[r.id] || 0) % all.length]) + "”"; },
-    about: function(r){ return r.why ? "Why: " + esc(clip(r.why, 70)) : "Add why you're doing this, and how"; },
+    about: function(r){ var t = things(r)[0]; return t ? "Started " + esc(nice(t.start)) + (t.end ? " · ends " + esc(nice(t.end)) : "") : ""; },
     tips: function(r){ return r.ways.length ? "Trying " + r.ways.length + ": " + esc(clip(r.ways.join(", "), 60)) : "Ways people go about it – tick the ones you try"; },
     journal: function(r){ var n = lastOf(r.notes); return n ? esc(hm(n.ts)) + " " + (ds(n.ts) === ds(Date.now()) ? "today" : esc(nice(n.ts))) + " – " + esc(clip(n.t, 60)) : "No notes yet"; },
     feel: function(r){ var n = lastOf(r.feel); return n ? "Last: " + esc(clip(n.t, 40)) + " at " + esc(hm(n.ts)) + (ds(n.ts) === ds(Date.now()) ? "" : ", " + esc(nice(n.ts))) : "Nothing logged yet"; },
@@ -1142,9 +1158,9 @@ $("helpRot").textContent = GENERAL[0];
     // More than one reset on the go: a row of tabs at the top to jump between them
     var tabs = P.resets.filter(function(x){ return !x.done || x === r; });
     var h = '<button type="button" class="back" data-a="back">← My resets</button>'
-      + (tabs.length > 1 ? '<nav class="rtabs" aria-label="My resets">' + tabs.map(function(x){ return '<button type="button" data-tab="' + x.id + '" style="--c:' + pG(x).c + '"' + (x === r ? ' aria-current="page"' : "") + '>' + esc(fullName(x)) + "</button>"; }).join("") + '<button type="button" class="tnew" data-a="newreset" aria-label="Add a reset">+</button></nav>' : "")
+      + (!EDIT ? '<nav class="rtabs" aria-label="My resets">' + tabs.map(function(x){ return '<button type="button" data-tab="' + x.id + '" style="--c:' + pG(x).c + '"' + (x === r ? ' aria-current="page"' : "") + (x === r ? ' title="Tap to rename"' : "") + '>' + esc(fullName(x)) + (x === r ? '<span class="tpen" aria-hidden="true">✎</span>' : "") + "</button>"; }).join("") + '<button type="button" class="tnew" data-a="newreset" aria-label="Add a reset">+</button></nav>' : "")
       + saveBoxHTML()
-      + '<div class="dhead"><div class="dtitle">' + headHTML(r) + "</div>"
+      + '<div class="dhead"' + (EDIT ? "" : " hidden") + '><div class="dtitle">' + headHTML(r) + "</div>"
       + '<button type="button" class="' + (EDIT ? "btn" : "ghost") + ' editbtn" data-a="edit">' + (EDIT ? "Done" : "✎ Edit page") + "</button></div>";
     if(EDIT){
       h += '<p class="small editnote">Move boxes with ↑ and ↓. Remove takes a box off your page – what you wrote in it is kept. Add more below, then tap Done.</p>'
@@ -1157,7 +1173,7 @@ $("helpRot").textContent = GENERAL[0];
       // Your reasons, first thing on the page – for the moments you forget why you started
       h += r.why ? '<div class="whynote" style="--c:' + g.c + '"><span class="wk">Remember why</span>' + whyList(r.why) + '<button type="button" class="link" data-a="editwhy">Change</button></div>'
         : '<button type="button" class="whyadd" data-a="editwhy">+ Write down why you’re doing this – it’ll be here for the hard moments</button>';
-      h += '<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="link" data-a="' + (anyOpen ? "closeall" : "openall") + '">' + (anyOpen ? "Close all" : "Open all") + "</button></div>";
+      h += '<div class="row" style="justify-content:space-between;align-items:center;margin-top:6px"><button type="button" class="link editlink" data-a="edit">✎ Edit page</button><button type="button" class="link" data-a="' + (anyOpen ? "closeall" : "openall") + '">' + (anyOpen ? "Close all" : "Open all") + "</button></div>";
       h += '<div class="secs">' + secs.map(function(s){ var o = !!op[s];
         return '<section class="card sec' + (o ? " open" : "") + (s === "words" ? " wordsrow" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle' + (s === "words" ? " vh" : "") + '">' + esc(SECS[s].n) + (s === "journal" ? ' <small class="sdate">' + esc(nice(Date.now())) + '</small>' : '') + '</span><span class="sprev">' + PREVIEW[s](r) + '</span><span class="chev" aria-hidden="true">›</span></button>'
           + (o ? '<div class="sbody">' + SECTION[s](r) + "</div>" : "") + "</section>"; }).join("") + "</div>";
@@ -1171,6 +1187,18 @@ $("helpRot").textContent = GENERAL[0];
   setInterval(function(){ var d = $("detail"); if(!d || d.hidden || document.hidden || !d.dataset.id) return; var el = d.querySelector('.wordsrow:not(.open) .sprev'); if(!el) return;
     var r = find(d.dataset.id); if(!r) return; el.classList.add("fade");
     setTimeout(function(){ wordIx[r.id] = (wordIx[r.id] || 0) + 1; el.innerHTML = PREVIEW.words(r); el.classList.remove("fade"); }, 400); }, 6000);
+  function openWhy(r){ var spot = document.querySelector("#detail .whynote, #detail .whyadd"); if(!spot) return;
+      var ed = document.createElement("div"); ed.className = "whyedit"; ed.style.setProperty("--c", pG(r).c);
+      ed.innerHTML = '<label class="wk" for="whyIn">Remember why</label><textarea class="field" id="whyIn" rows="3" maxlength="4000" placeholder="One reason per line, e.g. More energy for my kids">' + esc(r.why) + '</textarea><div class="row"><button type="button" class="btn" data-whysave="1">Save</button><button type="button" class="link" data-whyx="1">Cancel</button></div>';
+      spot.replaceWith(ed); var ta = $("whyIn"), closed = false, was = r.why;
+      var shut = function(keep){ if(closed) return; closed = true; if(!keep){ r.why = was; save(); } else { r.why = ta.value.replace(/[ \t]+\n/g, "\n").trim(); save(); } redraw(r); };
+      ed.querySelector("[data-whysave]").addEventListener("click", function(ev){ ev.stopPropagation(); shut(true); });
+      ed.querySelector("[data-whyx]").addEventListener("mousedown", function(ev){ ev.preventDefault(); });
+      ed.querySelector("[data-whyx]").addEventListener("click", function(ev){ ev.stopPropagation(); shut(false); });
+      ta.addEventListener("input", function(){ r.why = ta.value.trim(); saveSoon(); });   // kept as you type, so nothing is lost if you tap away
+      var fo = function(){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }; fo(); setTimeout(fo, 40); }
+
+  function addTip(r){ var v = $("tipIn").value.replace(/\s+/g, " ").trim(); if(!v) return; if(!r.mytips) r.mytips = []; if(r.mytips.indexOf(v) < 0) r.mytips.push(v); if(r.ways.indexOf(v) < 0) r.ways.push(v); save(); redraw(r, "tipIn"); }
   function redraw(r, focusId){ var y = window.scrollY; renderDetail(r); window.scrollTo(0, y); if(focusId && $(focusId)) $(focusId).focus(); }
   function addTo(list, id, r){ var v = $(id).value.trim(); if(!v) return; list.push({id:uid(), ts:Date.now(), t:v}); save(); redraw(r, id); }
   function addLearn(r){ var v = $("lIn").value.trim(); if(!v) return; r.learn.unshift({id:uid(), t:v}); save(); redraw(r, "lIn"); }
@@ -1180,7 +1208,7 @@ $("helpRot").textContent = GENERAL[0];
     else { var v = parseFloat(($("wVal").value || "").replace(",", ".")); kg = unit() === "kg" ? v : v * LB; }
     if(!(kg > 20 && kg < 400)){ toast("Type your weight first"); return; }
     r.weight = r.weight.filter(function(w){ return w.d !== d; }); r.weight.push({id:uid(), d:d, kg:Math.round(kg * 100) / 100}); save(); redraw(r); toast("Logged " + fmtW(kg)); }
-  function addAsk(r){ var v = $("qIn").value.trim(); if(!v) return; var t = ds(Date.now()); r.asks = r.asks.filter(function(a){ return a.d !== t; }); r.asks.push({id:uid(), d:t, t:v}); askEdit[r.id] = false; save(); redraw(r); toast("Saved – see you tomorrow"); }
+  function addAsk(r){ var v = $("qIn").value.trim(); if(!v) return; var t = ds(Date.now()); r.asks = r.asks.filter(function(a){ return a.d !== t; }); r.asks.push({id:uid(), d:t, t:v, q:question(r)}); askEdit[r.id] = false; save(); redraw(r); toast("Saved – see you tomorrow"); }
   function addPlan(r, d, inputId){ var v = $(inputId) && $(inputId).value.trim(); if(!v || !d) return; r.plan.push({id:uid(), d:d, t:v, done:false}); if(inputId === "pIn") planOpen = ""; save(); redraw(r, inputId === "pAny" ? "pAny" : null); }
   function reopen(r){ if(!r) return; r.done = null; save(); render(); toast("Reopened"); }
   function removeWithUndo(r, list, id, msg){ var i = list.findIndex(function(n){ return n.id === id; }); if(i < 0) return; var gone = list.splice(i, 1)[0]; save(); redraw(r);
@@ -1193,6 +1221,7 @@ $("helpRot").textContent = GENERAL[0];
     else if(id === "wVal" || id === "wSt" || id === "wLb"){ e.preventDefault(); addWeight(r); }
     else if(id === "pIn"){ e.preventDefault(); addPlan(r, planOpen, "pIn"); }
     else if(id === "qIn" && !e.shiftKey){ e.preventDefault(); addAsk(r); }
+    else if(id === "tipIn"){ e.preventDefault(); addTip(r); }
     else if(id === "pAny"){ e.preventDefault(); addPlan(r, $("pDate").value, "pAny"); } });
   // Typing in "All about my reset" and "My thoughts" saves as you go
   $("detail").addEventListener("input", function(e){ var r = current(); if(!r) return; var f = e.target.dataset.f;
@@ -1203,7 +1232,17 @@ $("helpRot").textContent = GENERAL[0];
     if(el.classList.contains("tStart")){ var s = fromInput(el.value); if(s == null) return; delete t.notyet; if(t.end && s >= t.end){ toast("The start has to be before the end"); el.value = toInput(t.start); return; } t.start = s; save(); redraw(r); }
     if(el.classList.contains("tEnd")){ var en = fromInput(el.value); if(en != null && en <= t.start){ toast("The end has to be after the start"); el.value = t.end ? toInput(t.end) : ""; return; } t.end = en; save(); redraw(r); } });
   $("detail").addEventListener("click", function(e){ var r = current(), b = e.target.closest("button"); if(!r || !b) return; var d = b.dataset;
-    if(d.tab){ if(d.tab !== r.id) go("#p=" + CODE + "&r=" + d.tab); return; }
+    if(d.tab){ if(d.tab !== r.id){ go("#p=" + CODE + "&r=" + d.tab); return; }
+      // the tab you're on: tap it to rename, right there in the tab
+      if(b.querySelector("input")) return; var was = fullName(r), done = false;
+      b.innerHTML = '<input class="tabin" maxlength="60" enterkeyhint="done" aria-label="Name of this reset" value="' + esc(was) + '">'; b.classList.add("editing");
+      var inp = b.querySelector("input"); inp.style.width = Math.max(8, was.length + 2) + "ch";
+      var fin = function(keep){ if(done) return; done = true; var v = inp.value.replace(/\s+/g, " ").trim(); if(keep && v !== was){ r.title = v; save(); } render(); };
+      inp.addEventListener("input", function(){ inp.style.width = Math.max(8, inp.value.length + 2) + "ch"; });
+      inp.addEventListener("keydown", function(ev){ if(ev.key === "Enter"){ ev.preventDefault(); fin(true); } else if(ev.key === "Escape") fin(false); });
+      inp.addEventListener("click", function(ev){ ev.stopPropagation(); });
+      inp.addEventListener("blur", function(){ setTimeout(function(){ if(document.activeElement !== inp) fin(true); }, 120); });
+      var fo = function(){ inp.focus(); inp.select(); }; fo(); setTimeout(fo, 40); return; }
     if(d.a === "newreset"){ openSheet(); return; }
     if(d.a === "rename"){ var box = document.querySelector("#detail .dtitle"), was = fullName(r);
       box.innerHTML = '<input class="field rnin" maxlength="60" enterkeyhint="done" aria-label="Name of this reset" value="' + esc(was) + '"><button type="button" class="btn rnok">Save</button>';
@@ -1235,6 +1274,7 @@ $("helpRot").textContent = GENERAL[0];
     if(d.tremove){ var tt = thingById(r, d.tremove); if(!tt) return;
       ask("Take " + tt.name + " off this page? Its counter goes; your notes stay.", "Take it off", function(){
         var at2 = r.things.indexOf(tt); r.things.splice(at2, 1); r.title = ""; save(); redraw(r); toast(tt.name + " taken off", function(){ r.things.splice(at2, 0, tt); save(); redraw(r); }); }); return; }
+    if(d.deltip != null){ var dw = (r.mytips || [])[+d.deltip]; if(dw == null) return; r.mytips.splice(+d.deltip, 1); var wj = r.ways.indexOf(dw); if(wj > -1) r.ways.splice(wj, 1); save(); return redraw(r); }
     if(d.way){ var wi = r.ways.indexOf(d.way); if(wi > -1) r.ways.splice(wi, 1); else r.ways.push(d.way); save(); return redraw(r); }
     if(d.feel){ r.feel.push({id:uid(), ts:Date.now(), t:d.feel}); save(); redraw(r); return toast(d.feel + " – logged at " + hm(Date.now())); }
     if(d.dnote) return removeWithUndo(r, r.notes, d.dnote, "Note deleted");
@@ -1249,7 +1289,10 @@ $("helpRot").textContent = GENERAL[0];
     var a = d.a;
     if(a === "back") go("#p=" + CODE);
     else if(a === "openall" || a === "closeall"){ var oa = OPEN[r.id] = {}; if(a === "openall") r.secs.forEach(function(s){ oa[s] = true; }); redraw(r); }
-    else if(a === "editwhy"){ if(r.secs.indexOf("about") < 0){ r.secs.unshift("about"); save(); } (OPEN[r.id] || (OPEN[r.id] = {})).about = true; redraw(r, "aWhy"); var wy = $("aWhy"); if(wy) wy.scrollIntoView({behavior:"smooth", block:"center"}); }
+    else if(a === "addtip") addTip(r);
+    else if(a === "editwhy"){   // write your why right where it shows, no other box opens
+      setTimeout(function(){ openWhy(r); }, 0); }
+
     else if(a === "edit"){ EDIT = !EDIT; renderDetail(r); window.scrollTo(0, 0); }
     else if(a === "addthing") openSheet(r.id);
     else if(a === "addnote") addTo(r.notes, "jIn", r);
