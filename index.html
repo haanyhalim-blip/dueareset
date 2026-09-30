@@ -665,7 +665,7 @@ footer p{margin:6px 0}
       ["notes","learn","feel","words","ways","weight","plan","asks","prep"].forEach(function(f){ if(!Array.isArray(r[f])) r[f] = []; });
       if(!r.askv){ r.askv = 1; if(r.secs.indexOf("ask") < 0) r.secs.splice(r.secs.indexOf("timer") + 1, 0, "ask"); }
       if(!r.secv){ r.secv = 2; var ai = r.secs.indexOf("about"); if(ai > -1){ var add = ["when","how"].filter(function(x){ return r.secs.indexOf(x) < 0; }); r.secs.splice.apply(r.secs, [ai, (r.things || []).length > 1 ? 0 : 1].concat(add)); } }
-      if(r.canvas == null) r.canvas = ""; if(!r.mytips) r.mytips = []; if(r.how == null) r.how = ""; if(r.why == null) r.why = "";
+      if(r.canvas == null) r.canvas = ""; if(!r.mytips) r.mytips = []; if(r.how == null) r.how = ""; if(r.why == null) r.why = ""; if(r.hard == null) r.hard = "";
       delete r.pub; delete r.fname;
       if(r.done && typeof r.done.at === "string") r.done.at = new Date(r.done.at + "T12:00").getTime();
     }); p.v = 3; return p; }
@@ -951,7 +951,7 @@ footer p{margin:6px 0}
     if(e.target.closest("[data-unown]")){ $("fName").value = ""; drawForm(); } });
   // Tapping a kind in the intro jumps to the form with it picked
   function makeThing(key, name, kind){ var t = T(key), kd = K(kind) || {}; return {id:uid(), kind:kind || "", key:key, g:kd.g || t.g || "stop", mode:kd.mode || (t.less ? "less" : "stop"), name:name || t.n, start:Date.now(), end:null, best:0}; }
-  function makePage(ths){ return {id:uid(), things:ths, title:"", why:"", how:"", ways:[], secs:SEC_DEFAULT.slice(), secv:2, prep:[], notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", done:null, made:Date.now()}; }
+  function makePage(ths){ return {id:uid(), things:ths, title:"", why:"", hard:"", how:"", ways:[], secs:SEC_DEFAULT.slice(), secv:2, prep:[], notes:[], learn:[], feel:[], words:[], weight:[], plan:[], asks:[], askv:1, canvas:"", done:null, made:Date.now()}; }
   $("rf").addEventListener("submit", function(e){ e.preventDefault();
     var typed = $("fName").value.trim(), picks = F.sel.slice();
     if(!F.kind && !picks.length){ toast("First pick what kind of reset it is"); return; }
@@ -1215,8 +1215,10 @@ $("helpRot").textContent = GENERAL[0];
     } else {
       var op = OPEN[r.id] || (OPEN[r.id] = {}), anyOpen = secs.some(function(s){ return op[s]; });
       // Your reasons, first thing on the page – for the moments you forget why you started
-      h += r.why ? '<div class="whynote" style="--c:' + g.c + '"><span class="wk">Remember why</span>' + whyList(r.why) + '<button type="button" class="link" data-a="editwhy">Change</button></div>'
-        : '<button type="button" class="whyadd" data-a="editwhy">+ Write down why you’re doing this – it’ll be here for the hard moments</button>';
+      // Two things worth keeping in sight: why you're doing it, and why it's a challenge for you
+      NOTES.forEach(function(n){ var v = r[n.k] || "";
+        h += v ? '<div class="whynote" data-note="' + n.k + '" style="--c:' + g.c + '"><span class="wk">' + n.label + '</span>' + whyList(v) + '<button type="button" class="link" data-a="editwhy" data-k="' + n.k + '">Change</button></div>'
+          : '<button type="button" class="whyadd" data-note="' + n.k + '" data-a="editwhy" data-k="' + n.k + '">' + n.prompt + '</button>'; });
       h += '<div class="row" style="justify-content:space-between;align-items:center;margin-top:6px"><button type="button" class="link editlink" data-a="edit">✎ Edit page</button><button type="button" class="link" data-a="' + (anyOpen ? "closeall" : "openall") + '">' + (anyOpen ? "Close all" : "Open all") + "</button></div>";
       h += '<div class="secs">' + secs.map(function(s){ var o = !!op[s];
         return '<section class="card sec' + (o ? " open" : "") + (s === "words" ? " wordsrow" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle' + (s === "words" ? " vh" : "") + '">' + esc(SECS[s].n) + (s === "journal" ? ' <small class="sdate">' + esc(nice(Date.now())) + '</small>' : '') + '</span><span class="sprev">' + PREVIEW[s](r) + '</span><span class="chev" aria-hidden="true">›</span></button>'
@@ -1231,15 +1233,17 @@ $("helpRot").textContent = GENERAL[0];
   setInterval(function(){ var d = $("detail"); if(!d || d.hidden || document.hidden || !d.dataset.id) return; var el = d.querySelector('.wordsrow:not(.open) .sprev'); if(!el) return;
     var r = find(d.dataset.id); if(!r) return; el.classList.add("fade");
     setTimeout(function(){ wordIx[r.id] = (wordIx[r.id] || 0) + 1; el.innerHTML = PREVIEW.words(r); el.classList.remove("fade"); }, 400); }, 6000);
-  function openWhy(r){ var spot = document.querySelector("#detail .whynote, #detail .whyadd"); if(!spot) return;
+  var NOTES = [{k:"why", label:"Remember why", prompt:"+ Write down why you’re doing this – it’ll be here for the hard moments", ph:"One reason per line, e.g. More energy for my kids"},
+    {k:"hard", label:"Why this is a challenge for me", prompt:"+ Why do you think this is a challenge for you?", ph:"One thing per line, e.g. It's how I relax after work"}];
+  function openWhy(r, k){ k = k || "why"; var n = NOTES.filter(function(x){ return x.k === k; })[0], spot = document.querySelector('#detail [data-note="' + k + '"]'); if(!spot || !n) return;
       var ed = document.createElement("div"); ed.className = "whyedit"; ed.style.setProperty("--c", pG(r).c);
-      ed.innerHTML = '<label class="wk" for="whyIn">Remember why</label><textarea class="field" id="whyIn" rows="3" maxlength="4000" placeholder="One reason per line, e.g. More energy for my kids">' + esc(r.why) + '</textarea><div class="row"><button type="button" class="btn" data-whysave="1">Save</button><button type="button" class="link" data-whyx="1">Cancel</button></div>';
-      spot.replaceWith(ed); var ta = $("whyIn"), closed = false, was = r.why;
-      var shut = function(keep){ if(closed) return; closed = true; if(!keep){ r.why = was; save(); } else { r.why = ta.value.replace(/[ \t]+\n/g, "\n").trim(); save(); } redraw(r); };
+      ed.innerHTML = '<label class="wk" for="whyIn">' + n.label + '</label><textarea class="field" id="whyIn" rows="3" maxlength="4000" placeholder="' + esc(n.ph) + '">' + esc(r[k] || "") + '</textarea><div class="row"><button type="button" class="btn" data-whysave="1">Save</button><button type="button" class="link" data-whyx="1">Cancel</button></div>';
+      spot.replaceWith(ed); var ta = $("whyIn"), closed = false, was = r[k] || "";
+      var shut = function(keep){ if(closed) return; closed = true; if(!keep){ r[k] = was; save(); } else { r[k] = ta.value.replace(/[ \t]+\n/g, "\n").trim(); save(); } redraw(r); };
       ed.querySelector("[data-whysave]").addEventListener("click", function(ev){ ev.stopPropagation(); shut(true); });
       ed.querySelector("[data-whyx]").addEventListener("mousedown", function(ev){ ev.preventDefault(); });
       ed.querySelector("[data-whyx]").addEventListener("click", function(ev){ ev.stopPropagation(); shut(false); });
-      ta.addEventListener("input", function(){ r.why = ta.value.trim(); saveSoon(); });   // kept as you type, so nothing is lost if you tap away
+      ta.addEventListener("input", function(){ r[k] = ta.value.trim(); saveSoon(); });   // kept as you type, so nothing is lost if you tap away
       var fo = function(){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }; fo(); setTimeout(fo, 40); }
 
   function addPrep(r, text){ var v = (text != null ? text : $("prepIn").value).replace(/\s+/g, " ").trim(); if(!v) return; if(!r.prep) r.prep = []; r.prep.push({id:uid(), t:v, done:false}); save(); redraw(r, text != null ? null : "prepIn"); }
@@ -1341,7 +1345,7 @@ $("helpRot").textContent = GENERAL[0];
     else if(a === "addtip") addTip(r);
     else if(a === "addprep") addPrep(r);
     else if(a === "editwhy"){   // write your why right where it shows, no other box opens
-      setTimeout(function(){ openWhy(r); }, 0); }
+      var nk = d.k; setTimeout(function(){ openWhy(r, nk); }, 0); }
 
     else if(a === "edit"){ EDIT = !EDIT; renderDetail(r); window.scrollTo(0, 0); }
     else if(a === "addthing") openSheet(r.id);
