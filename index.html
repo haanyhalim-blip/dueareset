@@ -173,6 +173,7 @@ textarea.field{resize:vertical;min-height:80px}
 .rcard{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0}
 .rtop{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
 .rname{font-weight:700;font-size:1.1rem}
+.rcard{border-left:5px solid var(--c)}
 .rkind{font-size:.8rem;color:var(--c);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
 .rcount{font-family:Fraunces,Georgia,serif;font-size:1.3rem;color:var(--brand-deep);white-space:nowrap}
 .add{display:block;width:100%;border:2px dashed var(--line);background:transparent;border-radius:14px;padding:14px;font-weight:700;color:var(--brand);margin:10px 0}
@@ -185,6 +186,11 @@ textarea.field{resize:vertical;min-height:80px}
 .back{border:0;background:none;color:var(--brand);font-weight:700;padding:14px 0 4px;font-size:1rem}
 .dkind{font-size:.85rem;color:var(--c);text-transform:uppercase;letter-spacing:.06em;margin-top:8px;font-weight:700}
 .dname{color:var(--muted);font-weight:700}
+.dtitle{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+h1.dfull{text-transform:none;letter-spacing:0;font-size:1rem}
+.dtitle .rename{font-size:.85rem;color:var(--muted)}
+.dtitle .rnin{flex:1 1 200px;margin:8px 0 0;font-size:1rem;padding:8px 10px}
+.dtitle .rnok{margin-top:8px;padding:8px 14px}
 h1.dkind{margin:8px 0 0;font-family:inherit;line-height:1.35}
 .dkind .dsep{color:var(--muted);font-weight:400}
 .dhead{align-items:center}
@@ -554,6 +560,17 @@ footer p{margin:6px 0}
   function pG(r){ var gs = uniq(things(r).map(function(t){ return t.g; })); return gs.length === 1 ? (GROUPS[gs[0]] || GROUPS.stop) : MIXED; }
   function joinNames(ths){ var n = ths.map(function(t){ return t.name; }); return n.length > 1 ? n.slice(0, -1).join(", ") + " and " + n[n.length - 1] : (n[0] || "My reset"); }
   function pName(r){ return r.title || joinNames(things(r)); }
+  // The name said in full, the doing word first: "Reducing smoking weed", "Stopping smoking and drinking"
+  var VERB = {Stopping:1, Reducing:1, Increasing:1, Starting:1};
+  function lc1(s){ return /^[A-Z][a-z]/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s; }
+  function fullName(r){ if(r.title) return r.title; var groups = [], by = {};
+    things(r).forEach(function(t){ var k = kindOf(t), n = t.name || "";
+      if(!VERB[k] || /^(stop|quit|giv|reduc|cut|less|more|increas|start|begin|no )/i.test(n)){ groups.push({k:"", ns:[n]}); return; }
+      if(!by[k]){ by[k] = {k:k, ns:[]}; groups.push(by[k]); } by[k].ns.push(lc1(n)); });
+    var parts = groups.map(function(g){ var n = g.ns.length > 1 ? g.ns.slice(0, -1).join(", ") + " and " + g.ns[g.ns.length - 1] : g.ns[0]; return g.k ? g.k + " " + n : n; });
+    parts = parts.map(function(x, i){ return i ? lc1(x) : x; });
+    return parts.length > 1 ? parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1] : (parts[0] || "My reset"); }
+  function headHTML(r){ return '<h1 class="dkind dfull" style="--c:' + pG(r).c + '">' + esc(fullName(r)) + '</h1><button type="button" class="link rename" data-a="rename" aria-label="Rename this reset">✎ Rename</button>'; }
   function extras(r){
     return (anyT(r, isSmoke) ? '<a class="nhs" href="' + NHS_SMOKE + '" target="_blank" rel="noopener">Free NHS support to quit smoking ↗</a>' : "")
       + (anyT(r, isDrink) ? '<a class="nhs" href="' + NHS_DRINK + '" target="_blank" rel="noopener">NHS advice on cutting down ↗</a>' : "")
@@ -973,11 +990,11 @@ $("helpRot").textContent = GENERAL[0];
     $("acct").innerHTML = acctHTML();
     var live = P.resets.filter(function(r){ return !r.done; }), done = P.resets.filter(function(r){ return r.done; });
     $("cards").innerHTML = live.length ? live.map(function(r){ var ths = things(r), one = ths.length === 1;
-      return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + pG(r).c + '"><div class="rkind">' + esc(pKind(r)) + '</div><div class="rtop"><span class="rname">' + esc(pName(r)) + '</span>' + (one ? '<span class="rcount">' + esc(counter(ths[0], r).big) + "</span>" : "") + "</div>"
+      return '<button type="button" class="rcard" data-id="' + r.id + '" style="--c:' + pG(r).c + '"><div class="rtop"><span class="rname">' + esc(fullName(r)) + '</span>' + (one ? '<span class="rcount">' + esc(counter(ths[0], r).big) + "</span>" : "") + "</div>"
         + (one ? "" : '<div class="rthings">' + ths.map(function(t){ return "<span>" + esc(t.name) + " · <b>" + esc(counter(t, r).big) + "</b></span>"; }).join("") + "</div>") + (askWaiting(r) ? '<div class="small" style="margin-top:4px">● Today\'s question is waiting</div>' : "") + "</button>"; }).join("")
       : '<p class="empty">Nothing on the go. Add a reset below.</p>';
     $("doneBox").hidden = !done.length;
-    $("doneList").innerHTML = done.map(function(r){ return '<div class="drow"><button type="button" class="name" data-id="' + r.id + '">' + esc(pName(r)) + ' – <b>' + days(r.done.days) + '</b></button><button type="button" class="ghost" data-reopen="' + r.id + '">Reopen</button></div>'; }).join("");
+    $("doneList").innerHTML = done.map(function(r){ return '<div class="drow"><button type="button" class="name" data-id="' + r.id + '">' + esc(fullName(r)) + ' – <b>' + days(r.done.days) + '</b></button><button type="button" class="ghost" data-reopen="' + r.id + '">Reopen</button></div>'; }).join("");
   }
   $("cards").addEventListener("click", function(e){ var b = e.target.closest(".rcard"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
   $("doneList").addEventListener("click", function(e){ var b = e.target.closest("[data-reopen]"); if(b){ reopen(find(b.dataset.reopen)); return; } b = e.target.closest("[data-id]"); if(b) go("#p=" + CODE + "&r=" + b.dataset.id); });
@@ -1125,9 +1142,9 @@ $("helpRot").textContent = GENERAL[0];
     // More than one reset on the go: a row of tabs at the top to jump between them
     var tabs = P.resets.filter(function(x){ return !x.done || x === r; });
     var h = '<button type="button" class="back" data-a="back">← My resets</button>'
-      + (tabs.length > 1 ? '<nav class="rtabs" aria-label="My resets">' + tabs.map(function(x){ return '<button type="button" data-tab="' + x.id + '" style="--c:' + pG(x).c + '"' + (x === r ? ' aria-current="page"' : "") + '>' + esc(pName(x)) + "</button>"; }).join("") + '<button type="button" class="tnew" data-a="newreset" aria-label="Add a reset">+</button></nav>' : "")
+      + (tabs.length > 1 ? '<nav class="rtabs" aria-label="My resets">' + tabs.map(function(x){ return '<button type="button" data-tab="' + x.id + '" style="--c:' + pG(x).c + '"' + (x === r ? ' aria-current="page"' : "") + '>' + esc(fullName(x)) + "</button>"; }).join("") + '<button type="button" class="tnew" data-a="newreset" aria-label="Add a reset">+</button></nav>' : "")
       + saveBoxHTML()
-      + '<div class="dhead"><div><h1 class="dkind" style="--c:' + g.c + '">' + esc(pKind(r)) + ' <span class="dsep">·</span> <span class="dname">' + esc(pName(r)) + "</span></h1></div>"
+      + '<div class="dhead"><div class="dtitle">' + headHTML(r) + "</div>"
       + '<button type="button" class="' + (EDIT ? "btn" : "ghost") + ' editbtn" data-a="edit">' + (EDIT ? "Done" : "✎ Edit page") + "</button></div>";
     if(EDIT){
       h += '<p class="small editnote">Move boxes with ↑ and ↓. Remove takes a box off your page – what you wrote in it is kept. Add more below, then tap Done.</p>'
@@ -1179,15 +1196,25 @@ $("helpRot").textContent = GENERAL[0];
     else if(id === "pAny"){ e.preventDefault(); addPlan(r, $("pDate").value, "pAny"); } });
   // Typing in "All about my reset" and "My thoughts" saves as you go
   $("detail").addEventListener("input", function(e){ var r = current(); if(!r) return; var f = e.target.dataset.f;
-    if(e.target.dataset.tf){ var t = thingById(r, e.target.dataset.t); if(!t) return; t.name = e.target.value.trim() || T(t.key).n || "My reset"; saveSoon(); document.querySelector("#detail .dname").textContent = pName(r); return; }
+    if(e.target.dataset.tf){ var t = thingById(r, e.target.dataset.t); if(!t) return; t.name = e.target.value.trim() || T(t.key).n || "My reset"; saveSoon(); var dt = document.querySelector("#detail .dtitle"); if(dt) dt.innerHTML = headHTML(r); return; }
     if(!f) return; r[f] = f === "title" ? e.target.value.trim() : e.target.value; saveSoon();
-    if(f === "title") document.querySelector("#detail .dname").textContent = pName(r); });
+    if(f === "title") var dt = document.querySelector("#detail .dtitle"); if(dt) dt.innerHTML = headHTML(r); });
   $("detail").addEventListener("change", function(e){ var r = current(); if(!r) return; var el = e.target, t = el.dataset.t && thingById(r, el.dataset.t); if(!t) return;
     if(el.classList.contains("tStart")){ var s = fromInput(el.value); if(s == null) return; delete t.notyet; if(t.end && s >= t.end){ toast("The start has to be before the end"); el.value = toInput(t.start); return; } t.start = s; save(); redraw(r); }
     if(el.classList.contains("tEnd")){ var en = fromInput(el.value); if(en != null && en <= t.start){ toast("The end has to be after the start"); el.value = t.end ? toInput(t.end) : ""; return; } t.end = en; save(); redraw(r); } });
   $("detail").addEventListener("click", function(e){ var r = current(), b = e.target.closest("button"); if(!r || !b) return; var d = b.dataset;
     if(d.tab){ if(d.tab !== r.id) go("#p=" + CODE + "&r=" + d.tab); return; }
     if(d.a === "newreset"){ openSheet(); return; }
+    if(d.a === "rename"){ var box = document.querySelector("#detail .dtitle"), was = fullName(r);
+      box.innerHTML = '<input class="field rnin" maxlength="60" enterkeyhint="done" aria-label="Name of this reset" value="' + esc(was) + '"><button type="button" class="btn rnok">Save</button>';
+      var inp = box.querySelector("input"), done = false;
+      var fin = function(keep){ if(done) return; done = true; var v = inp.value.replace(/\s+/g, " ").trim();
+        if(keep && v && v !== was){ r.title = v; save(); } else if(keep && !v){ r.title = ""; save(); }
+        render(); };
+      inp.addEventListener("keydown", function(ev){ if(ev.key === "Enter"){ ev.preventDefault(); fin(true); } else if(ev.key === "Escape") fin(false); });
+      inp.addEventListener("blur", function(){ setTimeout(function(){ fin(true); }, 150); });
+      box.querySelector(".rnok").addEventListener("click", function(ev){ ev.stopPropagation(); fin(true); });
+      inp.focus(); inp.select(); return; }
     if(d.act) return linkActs(e);
     if(d.toggle){ var op = OPEN[r.id] || (OPEN[r.id] = {}); op[d.toggle] = !op[d.toggle]; return redraw(r); }
     if(d.up || d.down){ var s = d.up || d.down, i = r.secs.indexOf(s), j = d.up ? i - 1 : i + 1; r.secs.splice(i, 1); r.secs.splice(j, 0, s); save(); return redraw(r); }
@@ -1238,8 +1265,8 @@ $("helpRot").textContent = GENERAL[0];
     else if(a === "addplanany") addPlan(r, $("pDate").value, "pAny");
     else if(a === "planmore"){ planDays[r.id] = (planDays[r.id] || 14) + 14; redraw(r); }
     else if(a === "reopen") reopen(r);
-    else if(a === "finish"){ r.done = {at:Date.now(), days:Math.max.apply(null, things(r).map(reached).concat([0]))}; save(); go("#p=" + CODE); toast(pName(r) + " – moved to Done", function(){ r.done = null; save(); render(); }); }
-    else if(a === "delete") ask("Delete \"" + pName(r) + "\" and everything on its page? To keep it, use Finish instead.", "Delete", function(){ P.resets = P.resets.filter(function(x){ return x !== r; }); save(); go("#p=" + CODE); toast("Deleted"); });
+    else if(a === "finish"){ r.done = {at:Date.now(), days:Math.max.apply(null, things(r).map(reached).concat([0]))}; save(); go("#p=" + CODE); toast(fullName(r) + " – moved to Done", function(){ r.done = null; save(); render(); }); }
+    else if(a === "delete") ask("Delete \"" + fullName(r) + "\" and everything on its page? To keep it, use Finish instead.", "Delete", function(){ P.resets = P.resets.filter(function(x){ return x !== r; }); save(); go("#p=" + CODE); toast("Deleted"); });
   });
   // The timer ticks every second
   setInterval(function(){ if($("detail").hidden) return; var r = current(); if(!r) return; var cache = {};
