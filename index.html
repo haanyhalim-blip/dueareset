@@ -1,4 +1,4 @@
-<!-- DueAReset v41 -->
+<!-- DueAReset v42 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -1217,6 +1217,7 @@ $("helpRot").textContent = GENERAL[0];
   };
   function clip(t, n){ t = String(t || "").replace(/\s+/g, " ").trim(); return t.length > n ? t.slice(0, n - 1) + "…" : t; }
   function lastOf(list){ return list.slice().sort(function(a, b){ return b.ts - a.ts; })[0]; }
+  var TITLEONLY = {journal:1, feel:1, canvas:1};   // private writing: just the title on the page – tap to open and read it
   var PREVIEW = {
     timer: function(r){ var ths = things(r);
       return ths.length === 1 ? '<b data-live="big" data-t="' + ths[0].id + '">' + esc(counter(ths[0], r).big) + '</b> · <span data-live="live" data-t="' + ths[0].id + '">' + esc(counter(ths[0], r).live) + "</span>"
@@ -1271,7 +1272,7 @@ $("helpRot").textContent = GENERAL[0];
           : '<button type="button" class="whyadd" data-note="' + n.k + '" data-a="editwhy" data-k="' + n.k + '">' + n.prompt + '</button>'; });
       h += '<div class="row" style="justify-content:space-between;align-items:center;margin-top:6px"><button type="button" class="link editlink" data-a="edit">✎ Edit page</button><button type="button" class="link" data-a="' + (anyOpen ? "closeall" : "openall") + '">' + (anyOpen ? "Close all" : "Open all") + "</button></div>";
       h += '<div class="secs">' + secs.map(function(s){ var o = !!op[s];
-        return '<section class="card sec' + (o ? " open" : "") + (s === "words" ? " wordsrow" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle' + (s === "words" ? " vh" : "") + '">' + esc(SECS[s].n) + (s === "journal" ? ' <small class="sdate">' + esc(nice(Date.now())) + '</small>' : '') + '</span><span class="sprev">' + PREVIEW[s](r) + '</span><span class="chev" aria-hidden="true">›</span></button>'
+        return '<section class="card sec' + (o ? " open" : "") + (s === "words" ? " wordsrow" : "") + '" data-sec="' + s + '" style="--c:' + g.c + '"><button type="button" class="srow" data-toggle="' + s + '" aria-expanded="' + o + '"><span class="stitle' + (s === "words" ? " vh" : "") + '">' + esc(SECS[s].n) + '</span>' + (TITLEONLY[s] ? '' : '<span class="sprev">' + PREVIEW[s](r) + '</span>') + '<span class="chev" aria-hidden="true">›</span></button>'
           + (o ? '<div class="sbody">' + SECTION[s](r) + "</div>" : "") + "</section>"; }).join("") + "</div>";
       h += '<button type="button" class="add" data-a="edit">✎ Edit page – add, move or remove boxes</button>';
       h += '<div class="foot">' + (r.done ? '<button type="button" class="btn" data-a="reopen">Reopen</button>' : '<button type="button" class="ghost" data-a="finish">Finish this reset</button>') + '<button type="button" class="link danger" data-a="delete">Delete this page</button></div>';
