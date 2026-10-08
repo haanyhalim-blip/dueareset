@@ -1,4 +1,4 @@
-<!-- DueAReset v46 -->
+<!-- DueAReset v47 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -404,6 +404,9 @@ footer p{margin:6px 0}
 /* the old "still under construction" wording is replaced by "We're building this with you" above; its Claude and ChatGPT buttons stay */
 #wip>span:first-child,#wipBtn{display:none}
 .ailine{display:block;flex-basis:100%;font-size:.88rem;font-weight:600;color:var(--muted,#666);margin:6px 0 4px}
+
+.swcard .shead{padding:6px 10px 8px;margin:0 0 4px;border-bottom:1px solid var(--line,#e2e2e2);font-weight:800;font-size:.95rem;line-height:1.2}
+.swcard .shead small{display:block;font-weight:400;color:var(--muted,#777);font-size:.78rem;margin-top:2px}
 </style>
 </head>
 <body>
@@ -424,10 +427,12 @@ footer p{margin:6px 0}
   <header class="top">
     <a class="brand" href="#">DueAReset</a>
     <span class="row"><span class="swwrap"><button class="swb" id="swBtn" type="button" aria-expanded="false" aria-controls="swCard" title="Our other handy sites" aria-label="Switch to our other sites"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="currentColor"><circle cx="5" cy="5" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg></button><div class="swcard" id="swCard" hidden>
+      <div class="shead">Family Ecosphere<small>Tools for your family</small></div>
       <a href="https://dobytoday.com/"><span class="sic" style="background:#f7e3d6">✅</span><span><b>DoByToday</b><small>To-do lists, by when</small></span></a>
       <a href="https://packbybag.com/"><span class="sic" style="background:#dfeee6">🧳</span><span><b>PackByBag</b><small>Packing lists, by bag</small></span></a>
       <a href="https://listbyaisle.com/"><span class="sic" style="background:#e3e8f6">🛒</span><span><b>ListByAisle</b><small>Shopping lists, by aisle</small></span></a>
       <a href="https://watchbyvalues.com/"><span class="sic" style="background:#ece6f5">🎬</span><span><b>WatchByValues</b><small>Films, by values</small></span></a>
+      <a href="https://learnbyyear.com/"><span class="sic" style="background:#e6edfb">📚</span><span><b>LearnByYear</b><small>What your child learns this year</small></span></a>
       <a class="on" aria-current="page"><span class="sic" style="background:#e6efe0">🌱</span><span><b>DueAReset</b><small>A page of your own to change a habit</small></span><span class="stk" aria-hidden="true">✓</span></a>
     </div></span><button class="pill who" id="whoBtn" type="button" hidden>✓ Signed in</button><button class="pill" id="signBtn" type="button" hidden>Sign in</button><button class="pill" id="myBtn" type="button" hidden>My page</button></span>
   </header>
@@ -536,7 +541,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). DueAReset is a notebook, not medical advice – if you need help, talk to a doctor.</p>
-    <p>From Handy Little Tools – also try <a href="https://listbyaisle.com/">ListbyAisle</a> (a shopping list sorted by aisle), <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when). <span class="ver" style="color:inherit;opacity:.6">v46</span></p>
+    <p>From Handy Little Tools – also try <a href="https://listbyaisle.com/">ListbyAisle</a> (a shopping list sorted by aisle), <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when). <span class="ver" style="color:inherit;opacity:.6">v47</span></p>
   </footer>
 </div>
 
