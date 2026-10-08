@@ -1,4 +1,4 @@
-<!-- ResetbyChoice v51 -->
+<!-- ResetbyChoice v52 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -103,6 +103,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .qchips .chip{font-size:.85rem;padding:5px 11px}
 .qchips[hidden]{display:none}
+.famband{margin:14px 0 4px;padding:12px 16px;border-radius:14px;background:var(--card,#fff);border:1.5px dashed var(--c,var(--brand))}
+.famband .wk{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--brand))}
+.famband .famwho{margin:4px 0 6px;font-weight:700;font-size:1.05rem}
+.famband ul{margin:0;padding-left:18px;font-size:.92rem}
+.famband li{margin:2px 0}
 .whynote{margin:14px 0 4px;padding:14px 16px;border-radius:14px;background:var(--card,#fff);border:1.5px solid var(--c,var(--brand));border-left-width:6px;position:relative}
 .whynote .wk{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--brand))}
 .whynote p{margin:4px 0 0;font-family:Fraunces,Georgia,serif;font-size:1.25rem;line-height:1.35;color:var(--brand-deep);white-space:pre-line}
@@ -476,7 +481,7 @@ footer p{margin:6px 0}
       <button type="button" class="qrot" id="fOpen" aria-expanded="false" aria-controls="fBody"><span class="qq" id="start">What are you resetting?</span><span class="qa"><span class="qchev" aria-hidden="true">›</span></span></button>
       <form id="rf" novalidate autocomplete="off">
         <div class="fsearch"><input class="field" id="fSearch" maxlength="60" autocomplete="off" placeholder="Type it – e.g. quit vaping" aria-label="Type what you're resetting"><div id="fSug" role="listbox" aria-label="Suggestions"></div>
-          <div class="qchips" id="fQuick" aria-label="Or choose what kind of reset"><button type="button" class="chip" data-qkind="giveup">Stopping</button><button type="button" class="chip" data-qkind="cutdown">Reducing</button><button type="button" class="chip" data-qkind="more">Increasing</button><button type="button" class="chip" data-qkind="begin">Starting</button><button type="button" class="chip" data-qkind="adventure">A challenge</button><button type="button" class="chip" data-qkind="other">Something else</button></div>
+          <div class="qchips" id="fQuick" aria-label="Or choose what kind of reset"><button type="button" class="chip" data-qkind="giveup">Stopping</button><button type="button" class="chip" data-qkind="cutdown">Reducing</button><button type="button" class="chip" data-qkind="more">Increasing</button><button type="button" class="chip" data-qkind="begin">Starting</button><button type="button" class="chip" data-qkind="adventure">A challenge</button><button type="button" class="chip" data-qkind="other">Something else</button><button type="button" class="chip" data-qfam="1">👨‍👩‍👧 With family</button></div>
           <p class="fjumps"><a href="#list" data-jump="waysCard">Common resets from others</a> · <a href="#" data-jump="helpCard">We’re all different – find what works for you</a></p></div>
         <div id="fBody">
         <div id="fKindWrap"><div class="lbl">Are you…</div>
@@ -489,6 +494,9 @@ footer p{margin:6px 0}
         </div>
         <div class="picked" id="fPicked"></div>
         <div id="fTogether" hidden><div class="lbl">Put them on…</div><div class="chips"><button type="button" class="chip" data-tog="1">One page</button><button type="button" class="chip" data-tog="0">A page each</button></div><p class="small" id="fTogHint" style="margin:6px 0 0"></p></div>
+        <div id="fWho" hidden><div class="lbl">Who's doing it?</div><div class="chips"><button type="button" class="chip" data-fam="0">Just me</button><button type="button" class="chip" data-fam="1">👨‍👩‍👧 Together as a family</button></div>
+          <div id="fCrewWrap" hidden><label class="lbl" for="fCrew">Who's in? <span class="small">(first names, optional)</span></label><input class="field" id="fCrew" maxlength="120" placeholder="e.g. Mum, Dad, Amy, Sam"></div>
+          <p class="small" style="margin:6px 0 0" id="fWhoHint">One page for everyone – you do it together and keep each other going.</p></div>
         <div id="fWhy" hidden><label class="lbl" for="fWhyIn">Why are you doing this? <span class="small">(optional)</span></label><textarea class="field" id="fWhyIn" rows="2" maxlength="4000" placeholder="e.g. I want more energy for my kids"></textarea><p class="small" style="margin:6px 0 0">It goes at the top of your page, so it’s the first thing you see when it gets hard.</p></div>
         <div id="fSecs" hidden><div class="lbl">What would you like on your page?</div><div class="chips" id="fSecChips"></div><p class="small" style="margin:6px 0 0">You can change these any time with Edit page.</p></div>
         <div id="fWhen" hidden><label class="lbl" for="fStart">When did you start – or when will you?</label><div class="win"><input class="field" type="datetime-local" id="fStart"><button type="button" class="chip" data-when="now">Just now</button><button type="button" class="chip" data-when="yday">Yesterday</button><button type="button" class="chip" data-when="not" aria-pressed="false">Not started yet</button></div></div>
@@ -542,7 +550,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). ResetbyChoice is a notebook, not medical advice – if you need help, talk to a doctor.</p>
-    <p>From Handy Little Tools – also try <a href="https://listbyaisle.com/">ListbyAisle</a> (a shopping list sorted by aisle), <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when). <span class="ver" style="color:inherit;opacity:.6">v51</span></p>
+    <p>From Handy Little Tools – also try <a href="https://listbyaisle.com/">ListbyAisle</a> (a shopping list sorted by aisle), <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when). <span class="ver" style="color:inherit;opacity:.6">v52</span></p>
   </footer>
 </div>
 
@@ -913,7 +921,9 @@ footer p{margin:6px 0}
   function drawBottom(){ var n = pickCount(), tog = together();
     $("fTogether").hidden = n < 2 || !!F.target;
     $("fWhen").hidden = n < 1;
-    $("fSecs").hidden = $("fWhy").hidden = n < 1 || !!F.target || !!P; var ss = pageSecs();
+    $("fSecs").hidden = $("fWhy").hidden = $("fWho").hidden = n < 1 || !!F.target || !!P; var ss = pageSecs();
+    document.querySelectorAll("#fWho [data-fam]").forEach(function(b){ b.setAttribute("aria-pressed", String((b.dataset.fam === "1") === !!F.fam)); }); $("fCrewWrap").hidden = $("fWhoHint").hidden = !F.fam;
+    document.querySelectorAll("#fQuick [data-qfam]").forEach(function(b){ b.setAttribute("aria-pressed", String(!!F.fam)); });
     $("fSecChips").innerHTML = SEC_ORDER.map(function(k){ return '<button type="button" class="chip" data-sec="' + k + '" aria-pressed="' + (ss.indexOf(k) > -1) + '" title="' + esc(SECS[k].d) + '">' + esc(SECS[k].n) + "</button>"; }).join("");
     document.querySelectorAll("#fTogether [data-tog]").forEach(function(b){ b.setAttribute("aria-pressed", String((b.dataset.tog === "1") === tog)); });
     $("fTogHint").textContent = tog ? "One page, with a counter for each." : "Each one gets its own page.";
@@ -936,12 +946,15 @@ footer p{margin:6px 0}
     var own = dir && $("fName").value.trim() ? "<span>" + esc($("fName").value.trim()) + " <small>(" + KWORD[F.kind] + ')</small><button type="button" class="x" data-unown="1" aria-label="Remove">×</button></span>' : "";
     $("fPicked").innerHTML = (F.sel.length ? F.sel.map(function(x, i){ return "<span>" + esc(T(x.k).n) + " <small>(" + KWORD[x.kind] + ')</small><button type="button" class="x" data-unpick="' + i + '" aria-label="Remove">×</button></span>'; }).join("") : "") + own;
     drawBottom(); }
-  function resetForm(){ if(typeof notYet === "function") notYet(false); F.direct = false; F.chip = false; F.secs = null; $("fWhyIn").value = ""; F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
+  function resetForm(){ if(typeof notYet === "function") notYet(false); F.fam = false; $("fCrew").value = ""; F.direct = false; F.chip = false; F.secs = null; $("fWhyIn").value = ""; F.kind = ""; F.sel = []; F.open = false; F.together = null; F.target = ""; F.expanded = false; $("fSearch").value = ""; $("fSug").innerHTML = ""; $("fName").value = ""; $("fStart").value = toInput(Date.now()); drawForm(); }
   // "Not started yet": the page is ready, and the count begins when you tap "I'm starting now" (or pick a date, even a future one)
   function notYet(on){ F.notyet = on; var c = $("fWhen").querySelector('[data-when="not"]'); if(c) c.setAttribute("aria-pressed", String(on)); }
   $("fWhen").addEventListener("click", function(e){ var b = e.target.closest("[data-when]"); if(!b) return; if(b.dataset.when === "not"){ notYet(!F.notyet); if(F.notyet) $("fStart").value = ""; return; } notYet(false); $("fStart").value = toInput(b.dataset.when === "yday" ? Date.now() - DAY : Date.now()); });
   $("fStart").addEventListener("input", function(){ if(this.value) notYet(false); });
   $("fSecs").addEventListener("click", function(e){ var b = e.target.closest("[data-sec]"); if(!b) return; var ss = pageSecs().slice(), k = b.dataset.sec, i = ss.indexOf(k); if(i > -1) ss.splice(i, 1); else ss.push(k); F.secs = SEC_ORDER.filter(function(x){ return ss.indexOf(x) > -1; }); drawBottom(); });
+  // Reset with family: one page for everyone at home, doing it together
+  $("fWho").addEventListener("click", function(e){ var b = e.target.closest("[data-fam]"); if(!b) return; F.fam = b.dataset.fam === "1"; drawBottom(); if(F.fam) $("fCrew").focus({preventScroll:true}); });
+  $("fQuick").addEventListener("click", function(e){ if(!e.target.closest("[data-qfam]")) return; F.fam = true; F.expanded = true; drawForm(); toast("Now pick what you're resetting together"); setTimeout(function(){ $("fKind").scrollIntoView({behavior:"smooth", block:"center"}); }, 60); });
   $("fTogether").addEventListener("click", function(e){ var b = e.target.closest("[data-tog]"); if(!b) return; F.together = b.dataset.tog === "1"; drawBottom(); });
   function pickKind(k){ F.kind = k; F.open = false; F.direct = false; F.chip = false; drawForm(); }
   $("fChange").addEventListener("click", function(e){ e.preventDefault(); F.chip = false; drawForm(); $("fKind").scrollIntoView({behavior:"smooth", block:"center"}); });
@@ -1042,7 +1055,8 @@ footer p{margin:6px 0}
     var tog = together(), fresh = !P; if(fresh){ CODE = newCode(); P = {v:3, resets:[], ack:false}; }
     var made = tog ? [makePage(ths)] : ths.map(function(t){ return makePage([t]); }), chosen = pageSecs().slice(); if(F.notyet && chosen.indexOf("timer") < 0) chosen.unshift("timer");
     var why = $("fWhyIn").value.trim();
-    made.forEach(function(r){ if(chosen.length) r.secs = chosen.slice(); if(why) r.why = why;
+    var crew = F.fam ? $("fCrew").value.split(/\s*(?:,|\band\b|&)\s*/i).map(function(x){ return x.trim(); }).filter(Boolean).slice(0, 12) : null;
+    made.forEach(function(r){ if(chosen.length) r.secs = chosen.slice(); if(why) r.why = why; if(F.fam){ r.fam = 1; r.crew = crew; }
       if(anyT(r, function(t){ return t.g === "adventure"; }) && r.secs.indexOf("prep") < 0) r.secs.unshift("prep");
       if(anyT(r, function(t){ return t.g === "adventure" || t.g === "without"; }) && r.secs.indexOf("when") < 0) r.secs.unshift("when"); });
     made.forEach(function(r){ P.resets.push(r); }); save(); closeSheet(); resetForm();
@@ -1286,6 +1300,7 @@ $("helpRot").textContent = GENERAL[0];
   function whyList(t){ var parts = String(t).split(/\n+/).map(function(x){ return x.trim(); }).filter(Boolean);
     if(parts.length < 2) parts = String(t).split(/(?<=[.!?])\s+(?=\S)/).map(function(x){ return x.trim(); }).filter(Boolean);
     return parts.length < 2 ? '<p>' + esc(t) + '</p>' : '<ul class="whyl">' + parts.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join("") + '</ul>'; }
+  var FAMTIPS = ["Agree it together, so it's everyone's reset", "Check in at dinner: how did today go?", "Cheer each other on – small wins count", "A hard day is fine for anyone: start again tomorrow, no blame"];
   function renderDetail(r){
     if($("detail").dataset.id !== r.id) EDIT = false;
     var g = pG(r), secs = r.secs.filter(function(s){ return SECTION[s]; }), hidden = SEC_ORDER.filter(function(s){ return secs.indexOf(s) < 0; });
@@ -1306,6 +1321,7 @@ $("helpRot").textContent = GENERAL[0];
       var op = OPEN[r.id] || (OPEN[r.id] = {}), anyOpen = secs.some(function(s){ return op[s]; });
       // Your reasons, first thing on the page – for the moments you forget why you started
       // Two things worth keeping in sight: why you're doing it, and why it's a challenge for you
+      if(r.fam) h += '<div class="famband" style="--c:' + g.c + '"><span class="wk">👨‍👩‍👧 Together as a family</span><p class="famwho">' + (r.crew && r.crew.length ? esc(r.crew.join(", ")) : "Everyone at home") + '</p><ul>' + FAMTIPS.map(function(x){ return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>";
       NOTES.forEach(function(n){ var v = r[n.k] || "";
         h += v ? '<div class="whynote" data-note="' + n.k + '" style="--c:' + g.c + '"><span class="wk">' + n.label + '</span>' + whyList(v) + '<button type="button" class="link" data-a="editwhy" data-k="' + n.k + '">Change</button></div>'
           : '<button type="button" class="whyadd" data-note="' + n.k + '" data-a="editwhy" data-k="' + n.k + '">' + n.prompt + '</button>'; });
