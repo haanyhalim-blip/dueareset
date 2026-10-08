@@ -1,4 +1,4 @@
-<!-- ResetbyChoice v53 -->
+<!-- ResetbyChoice v54 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -423,6 +423,7 @@ footer p{margin:6px 0}
 .bwy .bwyb{padding:14px 14px 14px;position:relative}
 .bwy .bwyb .bwyh{margin:0 28px 8px 0;font-weight:800;font-size:1.05rem;color:var(--ink,#222)}
 .bwyx{position:absolute;right:8px;top:6px;border:0;background:none;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--muted,#777)}
+.bwy .bwysi{font:inherit;font-weight:700;background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
 </style>
 </head>
 <body>
@@ -458,12 +459,17 @@ footer p{margin:6px 0}
   <p>They keep growing based on what you need. If there's anything that would make them more helpful, let us know. We read every message, and we usually add things quickly.</p>
   <label for="bwyText"><b>What would help you more?</b></label>
   <textarea id="bwyText" maxlength="2000" placeholder="An idea, something missing, or something that gets in the way"></textarea>
-  <div class="bwyr"><button type="button" class="bwys" id="bwySend">Send</button><small id="bwyNote">No account needed.</small></div>
+  <div class="bwyr"><button type="button" class="bwys" id="bwySend">Send</button><small id="bwyNote"></small></div>
 </div></details>
 <script>
-(function(){ var b = document.getElementById("bwySend"), t = document.getElementById("bwyText"), n = document.getElementById("bwyNote"); if(!b) return;
-  b.addEventListener("click", function(){ var v = t.value.trim(); if(!v){ n.textContent = "Write a line first."; t.focus(); return; } b.disabled = true; n.textContent = "Sending…";
-    fetch("https://formspree.io/f/meaqbeqq", {method:"POST", headers:{"Content-Type":"application/json", "Accept":"application/json"}, body: JSON.stringify({message:"[ResetbyChoice] Building with you: " + v, page: location.href})})
+(function(){ var b = document.getElementById("bwySend"), t = document.getElementById("bwyText"), n = document.getElementById("bwyNote"), d = document.getElementById("bwy"); if(!b) return;
+  // Sending an idea needs you to be signed in, so we can reply to you
+  function who(){ try{ var j = JSON.parse(localStorage.getItem("dueareset-auth") || "null"); return (j && (j.user || (j.currentSession || {}).user) || {}).email || ""; }catch(e){ return ""; } }
+  function hint(){ var em = who(); if(em) n.textContent = "We'll reply to " + em + ".";
+    else { n.innerHTML = 'Please <button type="button" class="bwysi">sign in</button> to send, so we can reply to you.'; n.querySelector(".bwysi").addEventListener("click", function(){ if(d) d.open = false; var sb = document.getElementById("signBtn"); if(sb) sb.click(); }); } }
+  if(d) d.addEventListener("toggle", function(){ if(d.open) hint(); }); hint();
+  b.addEventListener("click", function(){ var v = t.value.trim(), em = who(); if(!em){ hint(); return; } if(!v){ n.textContent = "Write a line first."; t.focus(); return; } b.disabled = true; n.textContent = "Sending…";
+    fetch("https://formspree.io/f/meaqbeqq", {method:"POST", headers:{"Content-Type":"application/json", "Accept":"application/json"}, body: JSON.stringify({email: who(), message:"[ResetbyChoice] Building with you: " + v, page: location.href})})
       .then(function(r){ if(!r.ok) throw 0; t.value = ""; n.textContent = "Thank you – we've got it."; })
       .catch(function(){ n.textContent = "That didn't send – check your connection and try again."; })
       .then(function(){ b.disabled = false; }); }); })();
@@ -560,7 +566,7 @@ footer p{margin:6px 0}
 
   <footer>
     <p>For adults (18+). ResetbyChoice is a notebook, not medical advice – if you need help, talk to a doctor.</p>
-    <p>From Handy Little Tools – also try <a href="https://listbyaisle.com/">ListbyAisle</a> (a shopping list sorted by aisle), <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when). <span class="ver" style="color:inherit;opacity:.6">v53</span></p>
+    <p>From Handy Little Tools – also try <a href="https://listbyaisle.com/">ListbyAisle</a> (a shopping list sorted by aisle), <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when). <span class="ver" style="color:inherit;opacity:.6">v54</span></p>
   </footer>
 </div>
 
